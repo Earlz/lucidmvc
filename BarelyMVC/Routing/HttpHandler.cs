@@ -29,6 +29,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Web;
 using System.Collections.Generic;
+using Earlz.BarelyMVC.Authentication;
+using Earlz.BarelyMVC.ViewEngine;
 namespace Earlz.BarelyMVC
 {
 	/**The base class used to handle HTTP requests.
@@ -58,6 +60,9 @@ namespace Earlz.BarelyMVC
 		/**Writes to the output stream**/
 		public void Write(string s){
 			Response.Write(s);
+		}
+		public void Write(IBarelyView view){
+			Response.Write(view.RenderView());
 		}
 		/**The current HttpContext**/
 		public HttpContext Context{get;set;}
@@ -97,5 +102,11 @@ namespace Earlz.BarelyMVC
 		}
 		/**The route's id that handled the current request**/
 		public string RouteID{get;set;}
+		
+		public IUserStore CurrentUser{
+			get{
+				return FSCAuth.UserStore;
+			}
+		}
 	}
 }
