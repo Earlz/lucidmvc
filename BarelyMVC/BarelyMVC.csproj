@@ -54,6 +54,7 @@
     <Compile Include="ViewEngine\ViewEngine.cs">
       <DependentUpon>ViewEngine.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewEngine\Helpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

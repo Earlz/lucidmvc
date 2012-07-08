@@ -39,7 +39,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <#
 /*CONFIGURATION VARIABLES*/
 	string Namespace="Earlz.BarelyMVC.ViewEngine"; //default namespace to use
-	string DefaultBaseClass="Earlz.BarelyMVC.Internal.BarelyViewDummy"; //default base class name to use (You must specify a valid class implementing IBarelyView!)
+	string DefaultBaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy"; //default base class name to use (You must specify a valid class implementing IBarelyView!)
 	string SearchPattern="*.html|*.htm"; //What files to process. Use the | symbol to match multiple filters.
 	string TemplateDirectory=""; //Note! This is relative to the location of the T4 template, not the project! (usually you want "" here)
 	string CustomUsing=@"
@@ -72,25 +72,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		}
 	}
 #>
-//Internal base class
-namespace Earlz.BarelyMVC.ViewEngine
-{
-	public interface IBarelyView
-	{
-		string RenderView();
-	}
-}
-//internal empty namespace declaration
-namespace Earlz.BarelyMVC.ViewEngine.Helpers{}
-
-namespace Earlz.BarelyMVC.ViewEngine.Internal{
-	public abstract class BarelyViewDummy : Earlz.BarelyMVC.ViewEngine.IBarelyView{ /*This is needed because we have to make a function overridden. */
-		public virtual string RenderView(){throw new NotImplementedException();}
-		public override string ToString(){return RenderView();}
-	}
-}
-
-
 
 <#+
 	class ViewGenerator{
@@ -101,6 +82,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal{
 			public string VarType;
 		}
 		public string Blah{get;set;}
+		bool HasFlash=false;
 		string Name;
 		string Namespace;
 		string Layout;
@@ -157,7 +139,14 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal{
 				}else{
 					v.VarType=v.VarType.Substring(0,v.VarType.Length-1);
 				}
-				Variables.Add(v);
+				if(v.Name=="Flash"){
+					HasFlash=true;
+					if(v.VarType.ToLower()!="string" && v.Access!="public"){
+						throw new ApplicationException("Flash variable must be a public string");
+					}
+				}else{
+					Variables.Add(v);
+				}
 			}		
 			return end+=3; //+=2 for @} ending
 		}
@@ -423,6 +412,21 @@ public "+(Layout??"IBarelyView")+@" Layout{get;set;}
 //END OUTPUT//
 	}
 //Internal code
+	
+");
+	if(!HasFlash){
+		output.Append(@"
+	public override string Flash{
+		get{
+			return Layout.Flash;
+		}
+		set{
+			Layout.Flash=value;
+		}
+	}");
+	}
+	output.Append(@"
+	
 	bool __InLayout=false; //internally used to prevent recursive loops in RenderView()
 	public override string RenderView(){
 		if(Layout==null){

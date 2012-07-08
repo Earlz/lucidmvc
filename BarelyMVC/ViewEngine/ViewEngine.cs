@@ -10,23 +10,4 @@ using Earlz.BarelyMVC.ViewEngine.Helpers;
 		//custom using statements for your views go here:
 		
 	
-//Internal base class
-namespace Earlz.BarelyMVC.ViewEngine
-{
-	public interface IBarelyView
-	{
-		string RenderView();
-	}
-}
-//internal empty namespace declaration
-namespace Earlz.BarelyMVC.ViewEngine.Helpers{}
-
-namespace Earlz.BarelyMVC.ViewEngine.Internal{
-	public abstract class BarelyViewDummy : Earlz.BarelyMVC.ViewEngine.IBarelyView{ /*This is needed because we have to make a function overridden. */
-		public virtual string RenderView(){throw new NotImplementedException();}
-		public override string ToString(){return RenderView();}
-	}
-}
-
-
 
