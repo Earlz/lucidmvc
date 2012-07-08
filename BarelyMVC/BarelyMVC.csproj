@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Earlz.BarelyMVC</RootNamespace>
+    <AssemblyName>BarelyMVC</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Routing\Routing.cs" />
+    <Compile Include="Routing\SimplePattern.cs" />
+    <Compile Include="Routing\Router.cs" />
+    <Compile Include="Routing\ParameterDictionary.cs" />
+    <Compile Include="Routing\TextHandler.cs" />
+    <Compile Include="Routing\HttpHandler.cs" />
+    <Compile Include="Authentication\Authentication.cs" />
+    <Compile Include="Authentication\CustomErrorsFixer.cs" />
+    <Compile Include="Authentication\GroupData.cs" />
+    <Compile Include="Authentication\HashHelper.cs" />
+    <Compile Include="Authentication\IUserStore.cs" />
+    <Compile Include="Authentication\UserData.cs" />
+    <Compile Include="Authentication\UserExistsException.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="README" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Routing\" />
+    <Folder Include="Authentication\" />
+  </ItemGroup>
+</Project>
