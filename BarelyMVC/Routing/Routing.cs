@@ -62,6 +62,14 @@ namespace Earlz.BarelyMVC
 			}
 			router.AddRoute(id,type,pattern,handler);
 		}
+		static public void AddRoute(string id,string pattern,HandlerInvoker handler){
+			/**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
+			 * "collection modified" exception from .Net. **/
+			if(router==null){
+				router=new Router();
+			}
+			router.AddRoute(id,pattern,handler);
+		}
 	}
 }
 

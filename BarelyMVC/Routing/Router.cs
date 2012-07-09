@@ -35,6 +35,7 @@ using System.Web.UI;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using Earlz.BarelyMVC.ViewEngine;
 
 namespace Earlz.BarelyMVC
 {
@@ -61,6 +62,11 @@ namespace Earlz.BarelyMVC
 		public void AddRoute(string id,PatternTypes type,string pattern,HandlerInvoker handler)
 		{
 			var r=new Route{Pattern=pattern, Handler=handler, PatternType=type, ID=id};
+			Routes.Add(r);
+		}
+		public void AddRoute(string id,string pattern, HandlerInvoker handler)
+		{
+			var r=new Route{Pattern=pattern, Handler=handler, PatternType=PatternTypes.Simple, ID=id};
 			Routes.Add(r);
 		}
 		
@@ -119,22 +125,24 @@ namespace Earlz.BarelyMVC
 			}
 		}
 		void CallMethod(HttpHandler h){
+			IBarelyView view;
 			switch(h.Method){
 				case HttpMethod.Get:
-					h.Get();
+					view=h.Get();
 					break;
 				case HttpMethod.Delete:
-					h.Delete();
+					view=h.Delete();
 					break;
 				case HttpMethod.Post:
-					h.Post();
+					view=h.Post();
 					break;
 				case HttpMethod.Put:
-					h.Put();
+					view=h.Put();
 					break;
 				default:
 					throw new ApplicationException("Cannot call appropriate method handler");
 			}
+			HttpContext.Current.Response.Write(view.RenderView());
 		}
 		
 	}

@@ -42,19 +42,22 @@ namespace Earlz.BarelyMVC
 		{
 		}
 		/**Handles the HTTP GET method**/
-		public virtual void Get(){
+		public virtual IBarelyView Get(){
 			throw new NotImplementedException();
 		}
 		/**Handles the HTTP POST method**/
-		public virtual void Post(){
+		public virtual IBarelyView Post(){
 			throw new NotImplementedException();
 		}
 		/**Handles the HTTP PUT method**/
-		public virtual void Put(){
+		public virtual IBarelyView Put(){
 			throw new NotImplementedException();
 		}
 		/**Handles the HTTP DELETE method**/
-		public virtual void Delete(){
+		public virtual IBarelyView Delete(){
+			throw new NotImplementedException();
+		}
+		public virtual IBarelyView Error(){
 			throw new NotImplementedException();
 		}
 		/**Writes to the output stream**/

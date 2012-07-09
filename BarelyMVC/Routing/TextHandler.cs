@@ -28,6 +28,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Web;
+using Earlz.BarelyMVC.ViewEngine;
 namespace Earlz.BarelyMVC
 {
 	public class TextHandler : HttpHandler
@@ -37,10 +38,10 @@ namespace Earlz.BarelyMVC
 		{
 			Text=text;
 		}
-		public override void Get ()
+		public override IBarelyView Get ()
 		{
 			Response.ContentType="text/plain";
-			Write(Text);
+			return new WrapperView(Text);
 		}
 		
 		

@@ -9,6 +9,22 @@ namespace Earlz.BarelyMVC.ViewEngine
 		string RenderView();
 		string Flash{get;set;}
 	}
+	/// <summary>
+	/// A psuedo view for wrapping just plain old text. 
+	/// </summary>
+	public class WrapperView: IBarelyView
+	{
+		public WrapperView(string text)
+		{
+			Text=text;
+		}
+		string Text;
+		public virtual string RenderView()
+		{
+			return Text;
+		}
+		public virtual string Flash{get;set;}
+	}
 }
 //internal empty namespace declaration
 namespace Earlz.BarelyMVC.ViewEngine.Helpers{}
