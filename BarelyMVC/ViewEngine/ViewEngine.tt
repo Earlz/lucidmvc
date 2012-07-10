@@ -482,7 +482,7 @@ public "+(Layout??"IBarelyView")+@" Layout{get;set;}
 	}
 	TextWriter __Writer;
 	bool __RenderDirectly="+RenderDirectly.ToString().ToLower()+@";
-	public bool RenderedDirectly{
+	public override bool RenderedDirectly{
 		get{
 			return __RenderDirectly;
 		}

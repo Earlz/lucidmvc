@@ -142,7 +142,9 @@ namespace Earlz.BarelyMVC
 				default:
 					throw new ApplicationException("Cannot call appropriate method handler");
 			}
-			HttpContext.Current.Response.Write(view.RenderView());
+			if(!view.RenderedDirectly){
+				HttpContext.Current.Response.Write(view.RenderView());
+			}
 		}
 		
 	}

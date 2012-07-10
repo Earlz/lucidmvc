@@ -9,6 +9,7 @@ namespace Earlz.BarelyMVC.ViewEngine
 	{
 		string RenderView();
 		string Flash{get;set;}
+		bool RenderedDirectly{get;}
 	}
 	/// <summary>
 	/// A psuedo view for wrapping just plain old text. 
@@ -20,6 +21,11 @@ namespace Earlz.BarelyMVC.ViewEngine
 			Text=text;
 		}
 		string Text;
+		public virtual bool RenderedDirectly{
+			get{
+				return false;
+			}
+		}
 		public virtual string RenderView()
 		{
 			return Text;
@@ -35,6 +41,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal{
 		public virtual string RenderView(){throw new NotImplementedException();}
 		public override string ToString(){return RenderView();}
 		public virtual string Flash{get;set;}
+		public abstract bool RenderedDirectly{get;}
 	}
 }
 
