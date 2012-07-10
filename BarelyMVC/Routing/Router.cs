@@ -44,7 +44,8 @@ namespace Earlz.BarelyMVC
 		Get,
 		Put,
 		Post,
-		Delete
+		Delete,
+		Head
 	};
 	public delegate HttpHandler HandlerInvoker();
 	
@@ -120,6 +121,8 @@ namespace Earlz.BarelyMVC
 					return HttpMethod.Post;
 				case "DELETE":
 					return HttpMethod.Delete;
+				case "HEAD":
+					return HttpMethod.Head;
 				default:
 					throw new ApplicationException("Cannot convert method name to a method type.");
 			}
@@ -139,10 +142,14 @@ namespace Earlz.BarelyMVC
 				case HttpMethod.Put:
 					view=h.Put();
 					break;
+				case HttpMethod.Head:
+					view=null;
+					h.Head();
+					break;
 				default:
 					throw new ApplicationException("Cannot call appropriate method handler");
 			}
-			if(!view.RenderedDirectly){
+			if(view!=null && !view.RenderedDirectly){
 				HttpContext.Current.Response.Write(view.RenderView());
 			}
 		}

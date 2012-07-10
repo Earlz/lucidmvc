@@ -31,6 +31,7 @@ using System.Web;
 using System.Collections.Generic;
 using Earlz.BarelyMVC.Authentication;
 using Earlz.BarelyMVC.ViewEngine;
+using System.IO;
 namespace Earlz.BarelyMVC
 {
 	/**The base class used to handle HTTP requests.
@@ -38,6 +39,18 @@ namespace Earlz.BarelyMVC
 	 */
 	public abstract class HttpHandler
 	{
+		public static TextWriter CurrentWriter{
+			get{
+				if(HttpContext.Current.Items.Contains("BarelyMVC_Writer")){
+					return (TextWriter)HttpContext.Current.Items["BarelyMVC_Writer"];
+				}else{
+					return HttpContext.Current.Response.Output;
+				}
+			}
+			set{
+				HttpContext.Current.Items["BarelyMVC_Writer"]=value;
+			}
+		}
 		public HttpHandler ()
 		{
 		}
@@ -60,12 +73,24 @@ namespace Earlz.BarelyMVC
 		public virtual IBarelyView Error(){
 			throw new NotImplementedException();
 		}
+		/// <summary>
+		/// The default implementation will make it so that nothing is rendered, but otherwise does a regular Get function.
+		/// This is enough for most cases. Only override if you expect to obey the standard behavior of GET, but with no content. 
+		/// </summary>
+		public virtual void Head(){
+			CurrentWriter=null;
+			Get();
+		}
 		/**Writes to the output stream**/
 		public void Write(string s){
-			Response.Write(s);
+			if(CurrentWriter!=null){
+				CurrentWriter.Write(s);
+			}
 		}
 		public void Write(IBarelyView view){
-			Response.Write(view.RenderView());
+			if(CurrentWriter!=null){
+				CurrentWriter.Write(view.RenderView());
+			}
 		}
 		/**The current HttpContext**/
 		public HttpContext Context{get;set;}
