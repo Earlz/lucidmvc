@@ -68,7 +68,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	WriteLine("using System.IO;");
 	WriteLine("using System;");
 	WriteLine("using Earlz.BarelyMVC.ViewEngine;");
-	WriteLine("using Earlz.BarelyMVC.ViewEngine.Helpers;");
+	//WriteLine("using Earlz.BarelyMVC.ViewEngine.Helpers;");
 	WriteLine(CustomUsing);
 	ViewGenerator.DefaultBaseClass=DefaultBaseClass;
 	
@@ -213,7 +213,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 						foreach(var item in e){ 
 							var view=item as Earlz.BarelyMVC.ViewEngine.IBarelyView;
 							if(view!=null){
-								__Write(view.RenderView());
+								__Write(view);
 							}else{
 								__Write(item.ToString());
 							}
@@ -221,7 +221,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 					}else{
 						var view=v as Earlz.BarelyMVC.ViewEngine.IBarelyView;
 						if(view!=null){
-							__Write(view.RenderView());
+							__Write(view);
 						}else{
 							__Write(v.ToString());
 						}
@@ -279,7 +279,12 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			
 			block=block.Substring(stop);
 			block=block.Trim();
-			view.AppendLine("__Write(new "+classname+"{"+block+"});");
+			view.AppendLine(@"
+			{
+				var __v=new "+classname+"{"+block+@"};
+				__Write(__v);
+			}
+			");
 			return end+=3;
 		}
 		int ParseKeyword(int start){
@@ -526,9 +531,12 @@ public "+(Layout??"IBarelyView")+@" Layout{get;set;}
 		}
 		__Output.Append(s);
 	}
-
 	protected virtual void __Write(IBarelyView v){
-		__Write(v.RenderView());
+		string s=v.RenderView();
+		if(!v.RenderedDirectly){
+			__Write(s);
+		}
+		__Output.Append(s);
 	}
 }
 } //for namespace

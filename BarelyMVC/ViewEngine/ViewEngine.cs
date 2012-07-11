@@ -7,7 +7,6 @@ using System.Web;
 using System.IO;
 using System;
 using Earlz.BarelyMVC.ViewEngine;
-using Earlz.BarelyMVC.ViewEngine.Helpers;
 
 		//custom using statements for your views go here:
 		

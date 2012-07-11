@@ -36,6 +36,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Earlz.BarelyMVC.ViewEngine;
+using System.Linq;
 
 namespace Earlz.BarelyMVC
 {
@@ -129,6 +130,7 @@ namespace Earlz.BarelyMVC
 		}
 		void CallMethod(HttpHandler h){
 			IBarelyView view;
+			bool IgnoreView=false;
 			switch(h.Method){
 				case HttpMethod.Get:
 					view=h.Get();
@@ -143,15 +145,30 @@ namespace Earlz.BarelyMVC
 					view=h.Put();
 					break;
 				case HttpMethod.Head:
-					view=null;
-					h.Head();
+					view=h.Head();
 					break;
 				default:
 					throw new ApplicationException("Cannot call appropriate method handler");
 			}
-			if(view!=null && !view.RenderedDirectly){
-				HttpContext.Current.Response.Write(view.RenderView());
+			int length=0;
+			var r=HttpContext.Current.Response;
+			if(view!=null){
+				//even if "directly-rendered", if ignoring the view, it won't really be rendered
+				var s=view.RenderView();
+				
+				length+=s.Length;
+				
+				if(IgnoreView && !view.RenderedDirectly){
+					r.Write(s);
+				}
 			}
+			length+=h.ContentLength;
+			if(r.Headers.AllKeys.Contains("Content-Length")){
+				r.Headers["Content-Length"]=length.ToString();
+			}else{
+				r.AddHeader("Content-Length",length.ToString());
+			}
+				
 		}
 		
 	}

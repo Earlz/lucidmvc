@@ -74,22 +74,33 @@ namespace Earlz.BarelyMVC
 			throw new NotImplementedException();
 		}
 		/// <summary>
+		/// Mostly an internal thing. Used to calculate content length for HEAD requests(does not include views that are "returned" to the router)
+		/// </summary>
+		/// <value>
+		/// The length of the content.
+		/// </value>
+		public int ContentLength{get; protected set;}
+		/// <summary>
 		/// The default implementation will make it so that nothing is rendered, but otherwise does a regular Get function.
 		/// This is enough for most cases. Only override if you expect to obey the standard behavior of GET, but with no content. 
+		/// The returned view is "rendered", but not sent to the Response stream. It is only rendered to get content-length
 		/// </summary>
-		public virtual void Head(){
-			CurrentWriter=null;
-			Get();
+		public virtual IBarelyView Head(){
+			CurrentWriter=null; //force 
+			return Get();
 		}
 		/**Writes to the output stream**/
 		public void Write(string s){
+			ContentLength+=s.Length;
 			if(CurrentWriter!=null){
 				CurrentWriter.Write(s);
 			}
 		}
 		public void Write(IBarelyView view){
+			string s=view.RenderView();
+			ContentLength+=s.Length;
 			if(CurrentWriter!=null){
-				CurrentWriter.Write(view.RenderView());
+				CurrentWriter.Write(s);
 			}
 		}
 		/**The current HttpContext**/
@@ -131,9 +142,9 @@ namespace Earlz.BarelyMVC
 		/**The route's id that handled the current request**/
 		public string RouteID{get;set;}
 		
-		public IUserStore CurrentUser{
+		public UserData CurrentUser{
 			get{
-				return FSCAuth.UserStore;
+				return FSCAuth.CurrentUser;
 			}
 		}
 	}
