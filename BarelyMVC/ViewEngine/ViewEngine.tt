@@ -282,6 +282,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			view.AppendLine(@"
 			{
 				var __v=new "+classname+"{"+block+@"};
+				__v.Layout=null; //HACK
 				__Write(__v);
 			}
 			");
@@ -473,6 +474,7 @@ public "+(Layout??"IBarelyView")+@" Layout{get;set;}
 	
 	bool __InLayout=false; //internally used to prevent recursive loops in RenderView()
 	public override string RenderView(){
+		__Output=new StringBuilder();
 		if(Layout==null){
 			BuildOutput();
 			return __Output.ToString();
@@ -534,7 +536,7 @@ public "+(Layout??"IBarelyView")+@" Layout{get;set;}
 	protected virtual void __Write(IBarelyView v){
 		string s=v.RenderView();
 		if(!v.RenderedDirectly){
-			__Write(s);
+			//__Write(s);
 		}
 		__Output.Append(s);
 	}

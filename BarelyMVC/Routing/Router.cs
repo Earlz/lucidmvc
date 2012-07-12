@@ -158,7 +158,7 @@ namespace Earlz.BarelyMVC
 				
 				length+=s.Length;
 				
-				if(IgnoreView && !view.RenderedDirectly){
+				if(!IgnoreView && !view.RenderedDirectly){
 					r.Write(s);
 				}
 			}
