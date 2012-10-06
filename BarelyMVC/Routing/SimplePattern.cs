@@ -32,10 +32,22 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 // needs to parse /products/{action=[view, edit, delete]}/{id} and /products/{action=[new]}
 // also needs to parse /products/{id}/{*} where the * is optional for instance for /products/20/some-product-name
+using System.Web.Caching;
+using System.Web;
+
+
 namespace Earlz.BarelyMVC
 {
 	public class SimplePattern
 	{
+		static List<Group> GetGroup(string pattern)
+		{
+			return HttpContext.Current.Cache.Get(pattern) as List<Group>;
+		}
+		static void SetGroup(string pattern, List<Group> groups)
+		{
+			HttpContext.Current.Cache.Add(pattern, groups, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
+		}
 		private string pattern;
 		private List<Group> Groups;
 		
@@ -60,8 +72,13 @@ namespace Earlz.BarelyMVC
 				if (value == null)
 					throw new ArgumentNullException ("pattern");
 				pattern = value;
-				
-				UpdateGroups ();
+				var tmp=GetGroup(pattern);
+				if(tmp!=null){
+					Groups=tmp;
+				}else{
+					UpdateGroups ();
+					SetGroup(pattern, Groups);
+				}
 			}
 		}
 		
