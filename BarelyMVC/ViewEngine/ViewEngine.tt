@@ -88,4 +88,4 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	}
 #>
 
-<#@ include file="ViewEngineInternal.tt.include" #>
+<#@ include file="ViewEngineInternal.tt.cs" #>
