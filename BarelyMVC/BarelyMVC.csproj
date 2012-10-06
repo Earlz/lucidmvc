@@ -63,7 +63,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ViewEngine.cs</LastGenOutput>
     </None>
-    <None Include="ViewEngine\ViewEngineInternal.tt.include" />
+    <None Include="ViewEngine\ViewEngineInternal.tt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Routing\" />
