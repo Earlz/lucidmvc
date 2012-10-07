@@ -69,6 +69,14 @@ namespace Earlz.BarelyMVC
 			}
 			router.AddRoute(id,pattern,handler);
 		}
+		static public void AddRoute(string id, IPatternMatcher pattern, HandlerInvoker handler)
+		{
+			if(router==null)
+			{
+				router=new Router();
+			}
+			router.AddRoute(id, pattern, handler);
+		}
 	}
 }
 

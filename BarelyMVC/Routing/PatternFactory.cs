@@ -11,13 +11,10 @@ namespace Earlz.BarelyMVC
 			{
 			case PatternTypes.Plain:
 				return new PlainPatternMatcher(pattern);
-				break;
 			case PatternTypes.Regex:
 				return new RegexPatternMatcher(pattern);
-				break;
 			case PatternTypes.Simple:
 				return new SimplePattern(pattern);
-				break;
 			default:
 				throw new NotSupportedException("PatternMatcher of that type not found");
 			}

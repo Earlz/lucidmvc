@@ -35,13 +35,46 @@ using System.Collections.Specialized;
 using System.Web.Caching;
 using System.Web;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 
 namespace Earlz.BarelyMVC
 {
+	public enum GroupMatchType
+	{
+		Integer,
+		Float,
+		HexString,
+		AlphaNumeric
+	}
+
 	public class SimplePattern : IPatternMatcher
 	{
 		//.Where("var","pattern")
+
+		public SimplePattern Where(string variable, string regexPattern)
+		{
+			Groups.Single(x=>x.ParamName==variable).MatchType=new Regex(regexPattern,RegexOptions.Compiled);
+			return this;
+		}
+
+		public SimplePattern Where(string variable, GroupMatchType matchtype)
+		{
+			switch(matchtype)
+			{
+			case GroupMatchType.AlphaNumeric:
+				return Where(variable, "^[0-9a-zA-Z]+$");
+			case GroupMatchType.Float:
+				return Where(variable, @"^[-+]?[0-9]*\.?[0-9]+$");
+			case GroupMatchType.Integer:
+				return Where(variable, "^[-+]?[0-9]*$");
+			case GroupMatchType.HexString:
+				return Where(variable, "^[0-9A-Fa-f]+$");
+			default:
+				throw new NotSupportedException("That match type isn't supported");
+			}
+		}
+
 		static List<Group> GetGroup(string pattern)
 		{
 			return HttpContext.Current.Cache.Get(pattern) as List<Group>;
@@ -61,6 +94,7 @@ namespace Earlz.BarelyMVC
 			public bool MatchAll=true;
 			public bool Optional=false;
 			public char End;
+			public Regex MatchType=null;
 		}
 		
 		public SimplePattern (string pattern)
@@ -115,9 +149,24 @@ namespace Earlz.BarelyMVC
 						}
 						int slash=s.IndexOf('/');
 						if(slash==-1 || g.Optional){
+							if(g.MatchType!=null)
+							{
+								if(!g.MatchType.IsMatch(s.Substring(0,end)))
+								{
+									return false;
+								}
+							}
 							Params.Add(g.ParamName,s.Substring(0,end));
 							s=""; //doesn't matter. 
 						}else{
+							if(g.MatchType!=null)
+							{
+								if(!g.MatchType.IsMatch(s.Substring(0,slash)))
+								{
+									return false;
+								}
+
+							}
 							Params.Add(g.ParamName,s.Substring(0,slash));
 							s=s.Substring(slash); //doesn't matter. 
 								
@@ -133,6 +182,13 @@ namespace Earlz.BarelyMVC
 						}
 						if(matched==false){
 							return false;
+						}
+						if(g.MatchType!=null)
+						{
+							if(!g.MatchType.IsMatch(t))
+							{
+								return false;
+							}
 						}
 						Params.Add(g.ParamName,t);
 						s=s.Substring(end);
