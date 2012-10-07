@@ -55,6 +55,8 @@
       <DependentUpon>ViewEngine.tt</DependentUpon>
     </Compile>
     <Compile Include="ViewEngine\Helpers.cs" />
+    <Compile Include="Routing\IPatternMatcher.cs" />
+    <Compile Include="Routing\PatternFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

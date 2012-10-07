@@ -34,12 +34,14 @@ using System.Collections.Specialized;
 // also needs to parse /products/{id}/{*} where the * is optional for instance for /products/20/some-product-name
 using System.Web.Caching;
 using System.Web;
+using System.Text.RegularExpressions;
 
 
 namespace Earlz.BarelyMVC
 {
-	public class SimplePattern
+	public class SimplePattern : IPatternMatcher
 	{
+		//.Where("var","pattern")
 		static List<Group> GetGroup(string pattern)
 		{
 			return HttpContext.Current.Cache.Get(pattern) as List<Group>;
@@ -48,7 +50,7 @@ namespace Earlz.BarelyMVC
 		{
 			HttpContext.Current.Cache.Add(pattern, groups, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
 		}
-		private string pattern;
+		private string Pattern;
 		private List<Group> Groups;
 		
 		private class Group {
@@ -64,27 +66,14 @@ namespace Earlz.BarelyMVC
 		public SimplePattern (string pattern)
 		{
 			Pattern = pattern;
+			UpdateGroups();
 		}
 		
-		public string Pattern {
-			get { return pattern; }
-			set {
-				if (value == null)
-					throw new ArgumentNullException ("pattern");
-				pattern = value;
-				var tmp=GetGroup(pattern);
-				if(tmp!=null){
-					Groups=tmp;
-				}else{
-					UpdateGroups ();
-					SetGroup(pattern, Groups);
-				}
-			}
-		}
-		
-		public ParameterDictionary Params{get;set;}
+
+
+		public ParameterDictionary Params{get;private set;}
 		/**This method returns true(and populates Params) if the input string matches the Pattern string. **/
-		public bool DoMatch (string input)
+		public bool IsMatch (string input)
 		{
 			Params=new ParameterDictionary();
 			string s=input;

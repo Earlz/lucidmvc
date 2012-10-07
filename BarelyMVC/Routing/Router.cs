@@ -61,7 +61,7 @@ namespace Earlz.BarelyMVC
 		/// </summary>
 		public void AddRoute(string id,PatternTypes type,string pattern,HandlerInvoker handler)
 		{
-			var r=new Route{Pattern=pattern, Handler=handler, PatternType=type, ID=id};
+			var r=new Route{Pattern=PatternFactory.GetPattern(type,pattern), Handler=handler, ID=id};
 			Routes.Add(r);
 		}
 		/// <summary>
@@ -69,7 +69,12 @@ namespace Earlz.BarelyMVC
 		/// </summary>
 		public void AddRoute(string id,string pattern, HandlerInvoker handler)
 		{
-			var r=new Route{Pattern=pattern, Handler=handler, PatternType=PatternTypes.Simple, ID=id};
+			var r=new Route{Pattern=PatternFactory.GetPattern(PatternTypes.Simple,pattern), Handler=handler, ID=id};
+			Routes.Add(r);
+		}
+		public void AddRoute(string id, IPatternMatcher pattern, HandlerInvoker handler)
+		{
+			var r=new Route{Pattern=pattern, ID=id, Handler=handler};
 			Routes.Add(r);
 		}
 		
@@ -83,36 +88,20 @@ namespace Earlz.BarelyMVC
 			h.RouteParams=p;
 			CallMethod(h);
 		}
-		/**Handles the current route and calls the appropriate HttpHandler**/
+		/// <summary>
+		/// Handles the current request
+		/// </summary>
 		public bool DoRoute(HttpContext c){
 			foreach(var r in Routes){
-				switch(r.PatternType){
-				case PatternTypes.Regex:
-						if(Regex.IsMatch(c.Request.Url.AbsolutePath,r.Pattern)){
-							DoHandler(r,c,null);
-							return true;
-						}
-					break;
-				case PatternTypes.Plain:
-					if(c.Request.Url.AbsolutePath==r.Pattern){
-						DoHandler(r,c,null);
-						return true;
-					}
-					break;
-				case PatternTypes.Simple:
-					var p=new SimplePattern(r.Pattern);
-					if(p.DoMatch(c.Request.Url.AbsolutePath)){
-						DoHandler(r,c,p.Params);
-						return true;
-					}
-					break;
-				default:
-					throw new NotImplementedException();
+				if(r.Pattern.IsMatch(c.Request.Url.AbsolutePath))
+				{
+					DoHandler(r, c, r.Pattern.Params);
+					return true;
 				}
-				
 			}
 			return false;
 		}
+
 		HttpMethod ConvertMethod(string m){
 			switch(m.ToUpper()){
 				case "GET":
@@ -131,7 +120,7 @@ namespace Earlz.BarelyMVC
 		}
 		void CallMethod(HttpHandler h){
 			IBarelyView view;
-			bool IgnoreView=false;
+			bool IgnoreView=false; //wtf is this used for? 
 			switch(h.Method){
 				case HttpMethod.Get:
 					view=h.Get();
@@ -181,6 +170,7 @@ namespace Earlz.BarelyMVC
 		}
 		
 	}
+
 	public enum PatternTypes{
 		/**Use a Regular Expression for pattern matching. Allows the most expression.**/
 		Regex, 
@@ -194,10 +184,8 @@ namespace Earlz.BarelyMVC
 	
 	public class Route
 	{
-		public string Pattern;
+		public IPatternMatcher Pattern;
 		public HandlerInvoker Handler;  
-		//public Type Handler;
-		public PatternTypes PatternType;
 		public string ID;
 	}
 	
