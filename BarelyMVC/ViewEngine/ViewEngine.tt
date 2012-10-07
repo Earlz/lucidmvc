@@ -8,7 +8,7 @@
 
 <#
 /*
-Copyright (c) 2010 - 2012 Jordan "Earlz/hckr83" Earls  <http://lastyearswishes.com
+Copyright (c) 2010 - 2012 Jordan "Earlz/hckr83" Earls  <http://lastyearswishes.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -39,25 +39,39 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <#
 /*CONFIGURATION VARIABLES*/
-	string Namespace="Earlz.BarelyMVC.ViewEngine"; //default namespace to use
-	string DefaultBaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy"; //default base class name to use (You must specify a valid class implementing IBarelyView!)
-	string SearchPattern="*.html|*.htm"; //What files to process. Use the | symbol to match multiple filters.
-	string TemplateDirectory=""; //Note! This is relative to the location of the T4 template, not the project! (usually you want "" here)
-		//If true, will render to HttpContext.Current.Response while building the view, instead	
-		//of building a huge string. If you will be rendering views directly to the Response stream, set to true. 
-		//If youre using this not as a view engine, but as a templating engine, set to true. 
+	//default namespace for your views to use
+	string Namespace="Earlz.BarelyMVC.ViewEngine"; 
+	
+	//default base class name to use (You must specify a valid class implementing IBarelyView!)
+	string DefaultBaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy"; 
+	
+	//What files to process as views. Use the | symbol to match multiple filetypes
+	string SearchPattern="*.html"; 
+	
+	//The path relative to THIS file to look for View files (you almost always just want "" here)
+	string TemplateDirectory=""; 
+	
+	//Specifies if to default to rendering directly to the HttpResponse or instead building a string and 
+	//then writing the final string out to response all at one time. 
 	bool DefaultRenderDirectly=false;
-		//If true, NullReferenceExceptions will attempt to be detected(and ignored) 
-		//This makes development much easier, but has performance penalty because a 
-		//try-catch attempt is needed at each variable output block `{= =}` Note, only the variable output block is affected by this setting.
-		//There is no attempts to detect nulls anywhere else. 
+	
+	//Specifies if `{= =}` output blocks should swallow and ignore null reference exceptions
+	//This makes development much easier, but has a performance penalty because a 
+	//try-catch attempt is needed at each variable output block `{= =}` Note, only the variable output block is affected by this setting.
+	//There is no attempts to detect nulls anywhere else. 
 	bool DefaultDetectNulls=true;
-		//The default writer object to use(when direct rendering) 
+	
+	//The default writer object to use(when direct rendering) 
+	//you should only need to change this if you're not integrating this viewengine with BarelyMVC
 	string DefaultWriterReference="Earlz.BarelyMVC.HttpHandler.CurrentWriter";
+	
+	//If your views require using statements, put them here.
+	//A few essential namespaces are automatically included already
 	string CustomUsing=@"
 		//custom using statements for your views go here:
 		
 	";
+	
 /*END CONFIGURATION -- Touch everything past here at your own risk!*/	
 //TODO Make this code more readable.. somehow. T4 is awesome, but hard to write and even harder to read. 
 	string p=Path.GetDirectoryName(Host.TemplateFile);

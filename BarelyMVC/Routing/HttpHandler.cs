@@ -54,33 +54,41 @@ namespace Earlz.BarelyMVC
 		public HttpHandler ()
 		{
 		}
-		/**Handles the HTTP GET method**/
+		/// <summary>
+		/// Handles HTTP GET requests
+		/// </summary>
 		public virtual IBarelyView Get(){
 			throw new NotImplementedException();
 		}
-		/**Handles the HTTP POST method**/
+		/// <summary>
+		/// Handles HTTP POST requests
+		/// </summary>
 		public virtual IBarelyView Post(){
 			throw new NotImplementedException();
 		}
-		/**Handles the HTTP PUT method**/
+		/// <summary>
+		/// Handles HTTP PUT requests
+		/// </summary>
 		public virtual IBarelyView Put(){
 			throw new NotImplementedException();
 		}
-		/**Handles the HTTP DELETE method**/
+		/// <summary>
+		/// Handles HTTP DELETE requests
+		/// </summary>
 		public virtual IBarelyView Delete(){
 			throw new NotImplementedException();
 		}
-		public virtual IBarelyView Error(){
-			throw new NotImplementedException();
-		}
+
 		/// <summary>
 		/// Mostly an internal thing. Used to calculate content length for HEAD requests(does not include views that are "returned" to the router)
+		/// You normally shouldn't need to touch this
 		/// </summary>
 		/// <value>
 		/// The length of the content.
 		/// </value>
 		public int ContentLength{get; protected set;}
 		/// <summary>
+		/// Handles HTTP HEAD requests
 		/// The default implementation will make it so that nothing is rendered, but otherwise does a regular Get function.
 		/// This is enough for most cases. Only override if you expect to obey the standard behavior of GET, but with no content. 
 		/// The returned view is "rendered", but not sent to the Response stream. It is only rendered to get content-length
@@ -103,31 +111,46 @@ namespace Earlz.BarelyMVC
 				CurrentWriter.Write(s);
 			}
 		}
-		/**The current HttpContext**/
+		/// <summary>
+		/// The current HttpContext
+		/// </summary>
 		public HttpContext Context{get;set;}
-		/**The route that handled the request.**/
+		/// <summary>
+		/// The route that is currently being handled
+		/// </summary>
 		public Route RouteRequest{get;set;}
-		/**A shortcut for Context.Request**/
+		/// <summary>
+		/// The current HttpRequest being handled
+		/// </summary>
 		public HttpRequest Request{
 			get{
 				return Context.Request;
 			}
 		}
-		/**A shortcut for Context.Response**/
+		/// <summary>
+		/// The current HttpResponse being written to
+		/// </summary>
 		public HttpResponse Response{
 			get{
 				return Context.Response;
 			}
 		}
-		/**The current HttpMethod for the request**/
+		/// <summary>
+		/// The current HTTP Method
+		/// </summary>
 		public HttpMethod Method{get;set;}
+		/// <summary>
+		/// The HTTP Form NameValueCollection. This is populated during POST and PUT requests
+		/// </summary>
 		public System.Collections.Specialized.NameValueCollection Form{
 			get{
 				return Request.Form;
 			}
 		}
 		ParameterDictionary routeparams=null;
-		/**When using SimplePattern, this is populated with the route parameters.**/
+		/// <summary>
+		/// When using SimplePattern, this will be populated with router variables
+		/// </summary>
 		public ParameterDictionary RouteParams{
 			get{
 				return routeparams;
@@ -139,9 +162,13 @@ namespace Earlz.BarelyMVC
 				routeparams=value;
 			}
 		}
-		/**The route's id that handled the current request**/
+		/// <summary>
+		/// The current RouteID being handled
+		/// </summary>
 		public string RouteID{get;set;}
-		
+		/// <summary>
+		/// The current user logged in with FSCAuth
+		/// </summary>
 		public UserData CurrentUser{
 			get{
 				return FSCAuth.CurrentUser;

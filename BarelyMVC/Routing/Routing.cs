@@ -35,10 +35,9 @@ namespace Earlz.BarelyMVC
 	{
 		public static Router Router{get{return Router;}}
 		static Router router;
-		/**Handles the current request and calls the appropriate HttpHandler
-		 * @param c The current HttpContext. From Global.asax, just use `Context`
-		 * @param app The current HttpApplication. From Global.asax, just use `this`
-		 * **/
+		/// <summary>
+		/// Handles the current HttpRequest and calls the appropriate HttpHandler
+		/// </summary>
 		static public void DoRequest(HttpContext c,HttpApplication app){
 			c.Response.ContentType="text/html"; //default
 			if(c.Request.Url.AbsolutePath.Substring(0,Math.Min(c.Request.Url.AbsolutePath.Length,8))=="/static/"){
@@ -48,12 +47,9 @@ namespace Earlz.BarelyMVC
 				app.CompleteRequest();
 			}
 		}
-		/**Add a route to the list of routes.
-		 * @param id The RouteID
-		 * @param type The pattern type to use
-		 * @param pattern The route pattern to match to
-		 * @param handler A lambda(or similar) to invoke a new HttpHandler, such as ()=>{return new MyHandler;}
-		 */
+		/// <summary>
+		/// Adds a route to the router using the given pattern type
+		/// </summary>
 		static public void AddRoute(string id,PatternTypes type,string pattern,HandlerInvoker handler){
 			/**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
 			 * "collection modified" exception from .Net. **/
@@ -62,6 +58,9 @@ namespace Earlz.BarelyMVC
 			}
 			router.AddRoute(id,type,pattern,handler);
 		}
+		/// <summary>
+		/// Adds a route to the router
+		/// </summary>
 		static public void AddRoute(string id,string pattern,HandlerInvoker handler){
 			/**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
 			 * "collection modified" exception from .Net. **/

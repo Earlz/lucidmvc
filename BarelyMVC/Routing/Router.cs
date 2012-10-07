@@ -55,17 +55,18 @@ namespace Earlz.BarelyMVC
 	public class Router
 	{
 		List<Route> Routes=new List<Route>();
-		/**Add a route to the list of routes.
-		 * @param id The RouteID
-		 * @param type The pattern type to use
-		 * @param pattern The route pattern to match to
-		 * @param handler A lambda(or similar) to invoke a new HttpHandler, such as ()=>{return new MyHandler;}
-		 */
+
+		/// <summary>
+		/// Adds a route to the router using the given pattern type
+		/// </summary>
 		public void AddRoute(string id,PatternTypes type,string pattern,HandlerInvoker handler)
 		{
 			var r=new Route{Pattern=pattern, Handler=handler, PatternType=type, ID=id};
 			Routes.Add(r);
 		}
+		/// <summary>
+		/// Adds a route to the router
+		/// </summary>
 		public void AddRoute(string id,string pattern, HandlerInvoker handler)
 		{
 			var r=new Route{Pattern=pattern, Handler=handler, PatternType=PatternTypes.Simple, ID=id};
@@ -162,11 +163,19 @@ namespace Earlz.BarelyMVC
 					r.Write(s);
 				}
 			}
-			length+=h.ContentLength;
-			if(r.Headers.AllKeys.Contains("Content-Length")){
-				r.Headers["Content-Length"]=length.ToString();
-			}else{
-				r.AddHeader("Content-Length",length.ToString());
+			if(IgnoreView){
+				length+=h.ContentLength; //TODO Note this could be incorrect. We assume 1 byte per character here! Not sure how to correctly handle this?
+				try{
+					if(r.Headers.AllKeys.Contains("Content-Length")){
+						r.Headers["Content-Length"]=length.ToString();
+					}else{
+						r.AddHeader("Content-Length",length.ToString());
+					}
+				}
+				catch(PlatformNotSupportedException)
+				{
+					throw new NotSupportedException("HEAD requests are not supported when running under Cassini(try Mono's XSP or using IIS)");
+				}
 			}
 				
 		}
