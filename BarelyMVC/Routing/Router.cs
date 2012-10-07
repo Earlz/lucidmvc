@@ -48,7 +48,7 @@ namespace Earlz.BarelyMVC
 		Delete,
 		Head
 	};
-	public delegate HttpHandler HandlerInvoker();
+	public delegate HttpHandler HandlerInvoker(ParameterDictionary p);
 	
 	/**The routing engine of EFramework.
 	 * This is a simple, but powerful router utilizing simple route pattern matching and lambdas for initializing the HttpHandler for a request.**/
@@ -80,7 +80,7 @@ namespace Earlz.BarelyMVC
 		
 		void DoHandler (Route r,HttpContext c,ParameterDictionary p)
 		{
-			HttpHandler h=r.Handler();
+			HttpHandler h=r.Handler(p);
 			h.Context=c;
 			h.RouteRequest=r;
 			h.Method=ConvertMethod(c.Request.HttpMethod);
