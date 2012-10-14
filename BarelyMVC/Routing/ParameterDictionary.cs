@@ -29,79 +29,36 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Specialized;
+
+
 namespace Earlz.BarelyMVC
 {
-	public class ParameterDictionary 
+	/// <summary>
+	/// This is a straight rip of Dictionary<string, string> so far.
+	/// This fact may change in the future however
+	/// </summary>
+	public class ParameterDictionary : Dictionary<string, string>
 	{
-		//TODO fix so that it's not stupid at trying to implement an interface. 
-		public ParameterDictionary ()
+		public T Fill<T>(T target)
 		{
+			ParameterFiller p=new ParameterFiller(this, target);
+			return (T)p.Fill();
 		}
-		Dictionary<string,string> d=new Dictionary<string, string>();
-		public string this[string key] {
-			get {
-				if(d.ContainsKey(key)){
-					return d[key];
-				}else{
-					return null;
+	}
+	public static class Extensions
+	{
+		public static ParameterDictionary ToParameters(this NameValueCollection c)
+		{
+			var p=new ParameterDictionary();
+			foreach(string key in c.Keys)
+			{
+				if(key!=null)
+				{
+					p.Add(key, c[key]);
 				}
 			}
-			set {
-				if(d.ContainsKey(key)){
-					d[key]=value;
-				}else{
-					d.Add(key,value);
-				}
-			}
-		}
-	
-		public void Add (string key, string value)
-		{
-			d.Add(key,value);
-		}
-
-		public void Clear ()
-		{
-			d.Clear();
-		}
-
-		public bool Contains (string key)
-		{
-			return d.ContainsKey(key);
-		}
-		
-		public IDictionaryEnumerator GetEnumerator ()
-		{
-			return d.GetEnumerator();
-		}
-
-		public void Remove (string key)
-		{
-			d.Remove(key);
-		}
-
-		public bool IsFixedSize {
-			get {
-				return false;
-			}
-		}
-
-		public bool IsReadOnly {
-			get {
-				return false;
-			}
-		}
-
-		public ICollection Keys {
-			get {
-				return d.Keys;
-			}
-		}
-
-		public ICollection Values {
-			get {
-				return d.Values;
-			}
+			return p;
 		}
 	}
 }

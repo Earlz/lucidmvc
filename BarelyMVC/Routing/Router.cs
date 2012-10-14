@@ -46,9 +46,12 @@ namespace Earlz.BarelyMVC
 		Put,
 		Post,
 		Delete,
+		/// <summary>
+		/// Note you should never need to explicitly support this. If a HEAD request is made and a GET route exists, it will use the GET route
+		/// </summary>
 		Head
 	};
-	public delegate HttpHandler HandlerInvoker(ParameterDictionary p);
+	public delegate IBarelyView HandlerInvoker(ParameterDictionary route, ParameterDictionary form);
 	
 	/**The routing engine of EFramework.
 	 * This is a simple, but powerful router utilizing simple route pattern matching and lambdas for initializing the HttpHandler for a request.**/
@@ -57,36 +60,27 @@ namespace Earlz.BarelyMVC
 		List<Route> Routes=new List<Route>();
 
 		/// <summary>
-		/// Adds a route to the router using the given pattern type
-		/// </summary>
-		public void AddRoute(string id,PatternTypes type,string pattern,HandlerInvoker handler)
-		{
-			var r=new Route{Pattern=PatternFactory.GetPattern(type,pattern), Handler=handler, ID=id};
-			Routes.Add(r);
-		}
-		/// <summary>
 		/// Adds a route to the router
 		/// </summary>
-		public void AddRoute(string id,string pattern, HandlerInvoker handler)
+		public void AddRoute(string id,HttpMethod method, string pattern, HandlerInvoker handler)
 		{
-			var r=new Route{Pattern=PatternFactory.GetPattern(PatternTypes.Simple,pattern), Handler=handler, ID=id};
+			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=handler, ID=id};
 			Routes.Add(r);
 		}
-		public void AddRoute(string id, IPatternMatcher pattern, HandlerInvoker handler)
+		public void AddRoute(string id,HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
 		{
-			var r=new Route{Pattern=pattern, ID=id, Handler=handler};
+			var r=new Route{Pattern=pattern, ID=id, Invoker=handler};
 			Routes.Add(r);
 		}
 		
 		void DoHandler (Route r,HttpContext c,ParameterDictionary p)
 		{
-			HttpHandler h=r.Handler(p);
-			h.Context=c;
-			h.RouteRequest=r;
-			h.Method=ConvertMethod(c.Request.HttpMethod);
-			h.RouteID=r.ID;
-			h.RawRouteParams=p;
-			CallMethod(h);
+			//HttpHandler h=r.Handler(p);
+			HttpHandler.RouteRequest=r;
+			HttpHandler.Method=ConvertMethod(c.Request.HttpMethod);
+			HttpHandler.RawRouteParams=p;
+
+			CallMethod(r.Invoker);
 		}
 		/// <summary>
 		/// Handles the current request
@@ -95,8 +89,13 @@ namespace Earlz.BarelyMVC
 			foreach(var r in Routes){
 				if(r.Pattern.IsMatch(c.Request.Url.AbsolutePath))
 				{
-					DoHandler(r, c, r.Pattern.Params);
-					return true;
+					var m=ConvertMethod(c.Request.HttpMethod);
+					if(r.Method == HttpMethod.Any || m==r.Method || 
+					   (r.Method==HttpMethod.Get && m==HttpMethod.Head))
+					{
+						DoHandler(r, c, r.Pattern.Params);
+						return true;
+					}
 				}
 			}
 			return false;
@@ -118,28 +117,8 @@ namespace Earlz.BarelyMVC
 					throw new ApplicationException("Cannot convert method name to a method type.");
 			}
 		}
-		void CallMethod(HttpHandler h){
-			IBarelyView view;
-			bool IgnoreView=false; //wtf is this used for? 
-			switch(h.Method){
-				case HttpMethod.Get:
-					view=h.Get();
-					break;
-				case HttpMethod.Delete:
-					view=h.Delete();
-					break;
-				case HttpMethod.Post:
-					view=h.Post();
-					break;
-				case HttpMethod.Put:
-					view=h.Put();
-					break;
-				case HttpMethod.Head:
-					view=h.Head();
-					break;
-				default:
-					throw new ApplicationException("Cannot call appropriate method handler");
-			}
+		void CallMethod(HandlerInvoker invoker){
+			IBarelyView view=invoker(HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
 			int length=0;
 			var r=HttpContext.Current.Response;
 			if(view!=null){
@@ -148,22 +127,8 @@ namespace Earlz.BarelyMVC
 				
 				length+=s.Length;
 				
-				if(!IgnoreView && !view.RenderedDirectly){
+				if(!view.RenderedDirectly){
 					r.Write(s);
-				}
-			}
-			if(IgnoreView){
-				length+=h.ContentLength; //TODO Note this could be incorrect. We assume 1 byte per character here! Not sure how to correctly handle this?
-				try{
-					if(r.Headers.AllKeys.Contains("Content-Length")){
-						r.Headers["Content-Length"]=length.ToString();
-					}else{
-						r.AddHeader("Content-Length",length.ToString());
-					}
-				}
-				catch(PlatformNotSupportedException)
-				{
-					throw new NotSupportedException("HEAD requests are not supported when running under Cassini(try Mono's XSP or using IIS)");
 				}
 			}
 				
@@ -171,21 +136,11 @@ namespace Earlz.BarelyMVC
 		
 	}
 
-	public enum PatternTypes{
-		/**Use a Regular Expression for pattern matching. Allows the most expression.**/
-		Regex, 
-		/**Use a plain and exact match for the pattern.**/
-		Plain, 
-		/**Use the SimplePattern type. 
-		 * This is the easiest pattern to use, but is also fairly expressive and allows simple parameter extraction
-		 */
-		Simple  
-	};
-	
 	public class Route
 	{
 		public IPatternMatcher Pattern;
-		public HandlerInvoker Handler;  
+		public HandlerInvoker Invoker;  
+		public HttpMethod Method;
 		public string ID;
 	}
 	

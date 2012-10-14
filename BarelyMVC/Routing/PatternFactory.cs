@@ -31,23 +31,6 @@ using System.Text.RegularExpressions;
 
 namespace Earlz.BarelyMVC
 {
-	public static class PatternFactory
-	{
-		public static IPatternMatcher GetPattern(PatternTypes type, string pattern)
-		{
-			switch(type)
-			{
-			case PatternTypes.Plain:
-				return new PlainPatternMatcher(pattern);
-			case PatternTypes.Regex:
-				return new RegexPatternMatcher(pattern);
-			case PatternTypes.Simple:
-				return new SimplePattern(pattern);
-			default:
-				throw new NotSupportedException("PatternMatcher of that type not found");
-			}
-		}
-	}
 	public class RegexPatternMatcher : IPatternMatcher
 	{
 		Regex regex;

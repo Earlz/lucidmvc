@@ -92,7 +92,17 @@ namespace Earlz.BarelyMVC
 		/// <value>
 		/// The length of the content.
 		/// </value>
-		public int ContentLength{get; protected set;}
+		public int ContentLength
+		{
+			get
+			{
+				return HttpContext.Current.Items["BarelyMVC_ContentLength"] as int? ?? 0;
+			}
+			set
+			{
+				HttpContext.Current.Items["BarelyMVC_ContentLength"]=value;
+			}
+		}
 		/// <summary>
 		/// Handles HTTP HEAD requests
 		/// The default implementation will make it so that nothing is rendered, but otherwise does a regular Get function.
@@ -120,15 +130,31 @@ namespace Earlz.BarelyMVC
 		/// <summary>
 		/// The current HttpContext
 		/// </summary>
-		public HttpContext Context{get;set;}
+		public static HttpContext Context
+		{
+			get
+			{
+				return HttpContext.Current;
+			}
+		}
 		/// <summary>
 		/// The route that is currently being handled
 		/// </summary>
-		public Route RouteRequest{get;set;}
+		public static Route RouteRequest
+		{
+			get
+			{
+				return HttpContext.Current.Items["BarelyMVC_RouteRequest"] as Route;
+			}
+			internal set
+			{
+				HttpContext.Current.Items["BarelyMVC_RouteRequest"]=value;
+			}
+		}
 		/// <summary>
 		/// The current HttpRequest being handled
 		/// </summary>
-		public HttpRequest Request{
+		public static HttpRequest Request{
 			get{
 				return Context.Request;
 			}
@@ -136,7 +162,7 @@ namespace Earlz.BarelyMVC
 		/// <summary>
 		/// The current HttpResponse being written to
 		/// </summary>
-		public HttpResponse Response{
+		public static HttpResponse Response{
 			get{
 				return Context.Response;
 			}
@@ -144,38 +170,51 @@ namespace Earlz.BarelyMVC
 		/// <summary>
 		/// The current HTTP Method
 		/// </summary>
-		public HttpMethod Method{get;set;}
+		public static HttpMethod Method
+		{
+			get
+			{
+				return (HttpMethod) HttpContext.Current.Items["BarelyMVC_RouteMethod"];
+			}
+			internal set
+			{
+				HttpContext.Current.Items["BarelyMVC_RouteMethod"]=value;
+			}
+
+		}
 		/// <summary>
 		/// The HTTP Form NameValueCollection. This is populated during POST and PUT requests
 		/// </summary>
-		public System.Collections.Specialized.NameValueCollection Form{
+		public static System.Collections.Specialized.NameValueCollection Form{
 			get{
 				return Request.Form;
 			}
 		}
-		ParameterDictionary routeparams=null;
 		/// <summary>
 		/// When using SimplePattern, this will be populated with router variables
 		/// </summary>
-		public ParameterDictionary RawRouteParams{
+		public static ParameterDictionary RawRouteParams{
 			get{
-				return routeparams;
+				return (ParameterDictionary) HttpContext.Current.Items["BarelyMVC_RawRouteParams"];
 			}
-			set{
-				if(routeparams!=null){
-					throw new ArgumentException("RouteParams is already set.","value");
-				}
-				routeparams=value;
+			internal set{
+				HttpContext.Current.Items["BarelyMVC_RawRouteParams"]=value;
 			}
 		}
 		/// <summary>
 		/// The current RouteID being handled
 		/// </summary>
-		public string RouteID{get;set;}
+		public static string RouteID
+		{
+			get
+			{
+				return RouteRequest.ID;
+			}
+		}
 		/// <summary>
 		/// The current user logged in with FSCAuth
 		/// </summary>
-		public UserData CurrentUser{
+		public static UserData CurrentUser{
 			get{
 				return FSCAuth.CurrentUser;
 			}

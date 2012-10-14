@@ -62,34 +62,23 @@ namespace Earlz.BarelyMVC
 			}
 		}
 		/// <summary>
-		/// Adds a route to the router using the given pattern type
-		/// </summary>
-		static public void AddRoute(string id,PatternTypes type,string pattern,HandlerInvoker handler){
-			/**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
-			 * "collection modified" exception from .Net. **/
-			if(router==null){
-				router=new Router();
-			}
-			router.AddRoute(id,type,pattern,handler);
-		}
-		/// <summary>
 		/// Adds a route to the router
 		/// </summary>
-		static public void AddRoute(string id,string pattern,HandlerInvoker handler){
+		static public void AddRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
 			/**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
 			 * "collection modified" exception from .Net. **/
 			if(router==null){
 				router=new Router();
 			}
-			router.AddRoute(id,pattern,handler);
+			router.AddRoute(id,method,pattern,handler);
 		}
-		static public void AddRoute(string id, IPatternMatcher pattern, HandlerInvoker handler)
+		static public void AddRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
 		{
 			if(router==null)
 			{
 				router=new Router();
 			}
-			router.AddRoute(id, pattern, handler);
+			router.AddRoute(id, method, pattern, handler);
 		}
 		/// <summary>
 		/// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"
