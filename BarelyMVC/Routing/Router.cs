@@ -85,7 +85,7 @@ namespace Earlz.BarelyMVC
 			h.RouteRequest=r;
 			h.Method=ConvertMethod(c.Request.HttpMethod);
 			h.RouteID=r.ID;
-			h.RouteParams=p;
+			h.RawRouteParams=p;
 			CallMethod(h);
 		}
 		/// <summary>

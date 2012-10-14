@@ -34,6 +34,9 @@ using Earlz.BarelyMVC.ViewEngine;
 using System.IO;
 namespace Earlz.BarelyMVC
 {
+	public abstract class BareHttpHandler : HttpHandler
+	{
+	}
 	/**The base class used to handle HTTP requests.
 	 * This class should be derived from for every different handler for HTTP requests.
 	 */
@@ -51,6 +54,9 @@ namespace Earlz.BarelyMVC
 				HttpContext.Current.Items["BarelyMVC_Writer"]=value;
 			}
 		}
+
+
+
 		public HttpHandler ()
 		{
 		}
@@ -151,7 +157,7 @@ namespace Earlz.BarelyMVC
 		/// <summary>
 		/// When using SimplePattern, this will be populated with router variables
 		/// </summary>
-		public ParameterDictionary RouteParams{
+		public ParameterDictionary RawRouteParams{
 			get{
 				return routeparams;
 			}

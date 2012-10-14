@@ -58,6 +58,7 @@
     <Compile Include="Routing\IPatternMatcher.cs" />
     <Compile Include="Routing\PatternFactory.cs" />
     <Compile Include="Routing\RedirectHandler.cs" />
+    <Compile Include="Routing\ParameterFiller.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
