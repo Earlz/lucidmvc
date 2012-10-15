@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace Earlz.BarelyMVC
 {
@@ -53,25 +54,39 @@ namespace Earlz.BarelyMVC
 	/// and dynamically fill it in as appropriate using reflection. (hint: awesome!)
 	/// Only properties are supported right now
 	/// </summary>			
-	public class ParameterFiller
+	public class ParameterFiller<T>
 	{
+		//because this is always deterministic, the cache is extremely simple without a need to ever clear.
+		static Dictionary<Type, HashSet<ParameterCacheObject<T>>> Cache=new Dictionary<Type, HashSet<ParameterCacheObject<T>>>();
 		IDictionary<string, string> Values;
-		public object Target{get{return target_;}}
-		object target_;
-		public ParameterFiller(IDictionary<string, string> values, object target)
+		public T Target{get{return target_;}}
+		T target_;
+		public ParameterFiller(IDictionary<string, string> values, T target)
 		{
 			target_=target;
 			Values=values;
+			if(!Cache.ContainsKey(Target.GetType()))
+			{
+				Cache.Add(Target.GetType(),new HashSet<ParameterCacheObject<T>>());
+				FillCache();
+			}
 		}
 		public object Fill()
 		{
-			foreach(var p in Target.GetType().GetProperties())
+			foreach(var p in Cache[Target.GetType()])
 			{
 				MatchProperty(p);
 			}
 			return Target;
 		}
-		void MatchProperty(PropertyInfo p)
+		void FillCache()
+		{
+			foreach(var p in Target.GetType().GetProperties())
+			{
+				CacheProperty(p);
+			}
+		}
+		void CacheProperty(PropertyInfo p)
 		{
 			string matchname=p.Name;
 			object defaultval=null;
@@ -99,21 +114,33 @@ namespace Earlz.BarelyMVC
 						converter=(ParameterConverterAttribute)attrib;
 					}*/
 			}
-			if(!Values.ContainsKey(matchname))
+			var c=new ParameterCacheObject<T>();
+			c.Caller=MakeSetterDelegate(p); //(Action<object>) Delegate.CreateDelegate(typeof(Action<object>), p.GetSetMethod());
+			c.Default=defaultval;
+			c.MappedName=matchname;
+			c.PropertyType=p.PropertyType;
+			if(!Cache[Target.GetType()].Add(c))
 			{
-				if(defaultval!=null)
+				throw new ApplicationException("The (mapped) property "+c.MappedName+" is already mapped and cached!");
+			}
+		}
+		void MatchProperty(ParameterCacheObject<T> p){
+			if(!Values.ContainsKey(p.MappedName))
+			{
+				if(p.Default!=null)
 				{
-					p.SetValue(Target, defaultval, null); //set to default if not found (and only if we have a default attribute)
+					p.Caller(Target, p.Default);
+					//p.SetValue(Target, defaultval, null); //set to default if not found (and only if we have a default attribute)
 				}
 				return; //don't bother if we don't find a match
 			}
-			string val=Values[matchname];
-			
+			p.Caller(Target, ConvertValue(Values[p.MappedName],p.PropertyType, p.Default));
+
 			/*if(converter!=null)
 				{
 					p.SetValue(Target, converter.Convert(val), null);
 				}*/
-			p.SetValue(Target, ConvertValue(val, p.PropertyType, defaultval), null);
+			//p.SetValue(Target, ConvertValue(val, p.PropertyType, defaultval), null);
 		}
 		object ConvertValue(string fromval, Type totype, object defaultval)
 		{
@@ -131,6 +158,43 @@ namespace Earlz.BarelyMVC
 				return defaultval;
 			}
 		}
+		/// <summary>
+		/// http://stackoverflow.com/a/4085834/69742
+		/// </summary>
+		static Action<T, object> MakeSetterDelegate(PropertyInfo property)
+		{
+			MethodInfo setMethod = property.GetSetMethod();
+			if (setMethod != null && setMethod.GetParameters().Length == 1)
+			{
+				var target = Expression.Parameter(typeof(T),"");
+				var value = Expression.Parameter(typeof(object),"");
+				var body = Expression.Call(target, setMethod,
+				                           Expression.Convert(value, property.PropertyType));
+				return Expression.Lambda<Action<T, object>>(body, target, value)
+					.Compile();
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		//public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, in T7, in T8, out TResult>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8);
+
+		/*public static Func<T, object> MakeDelegate<U>(MethodInfo @get)
+		{
+		    var f = (Func<T, U>)Delegate.CreateDelegate(typeof(Func<T, U>), @get);
+		    return t => f(t);
+		}*/
+
+	}
+
+	internal class ParameterCacheObject<T>
+	{
+		public Action<T, object> Caller{get;set;}
+		public Type PropertyType{get;set;}
+		public string MappedName{get;set;}
+		public object Default{get;set;}
 	}
 
 }

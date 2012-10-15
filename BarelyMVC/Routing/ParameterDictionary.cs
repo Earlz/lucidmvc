@@ -42,7 +42,7 @@ namespace Earlz.BarelyMVC
 	{
 		public T Fill<T>(T target)
 		{
-			ParameterFiller p=new ParameterFiller(this, target);
+			ParameterFiller<T> p=new ParameterFiller<T>(this, target);
 			return (T)p.Fill();
 		}
 	}
