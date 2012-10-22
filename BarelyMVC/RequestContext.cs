@@ -29,10 +29,6 @@ namespace Earlz.BarelyMVC
 			{
 				return FSCAuth.CurrentUser;
 			}
-			set
-			{
-				FSCAuth.CurrentUser=value;
-			}
 		}
 		public virtual NameValueCollection QueryString{get; set;}
 		public string RawUrl{get; set;}
