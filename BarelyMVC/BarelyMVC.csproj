@@ -59,6 +59,10 @@
     <Compile Include="Routing\PatternFactory.cs" />
     <Compile Include="Routing\RedirectHandler.cs" />
     <Compile Include="Routing\ParameterFiller.cs" />
+    <Compile Include="RequestStore.cs" />
+    <Compile Include="CurrentRequest.cs" />
+    <Compile Include="RequestContext.cs" />
+    <Compile Include="Common\TrackedDictionary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -73,5 +77,6 @@
     <Folder Include="Routing\" />
     <Folder Include="Authentication\" />
     <Folder Include="ViewEngine\" />
+    <Folder Include="Common\" />
   </ItemGroup>
 </Project>
