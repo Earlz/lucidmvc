@@ -156,7 +156,9 @@ namespace Earlz.BarelyMVC
 									return false;
 								}
 							}
-							Params.Add(g.ParamName,s.Substring(0,end));
+							//Params.Add(g.ParamName, new List<string>());
+							//Params[g.ParamName]=s.Substring(0,end);
+							Params.Add(g.ParamName, s.Substring(0,end));
 							s=""; //doesn't matter. 
 						}else{
 							if(g.MatchType!=null)
@@ -167,6 +169,7 @@ namespace Earlz.BarelyMVC
 								}
 
 							}
+
 							Params.Add(g.ParamName,s.Substring(0,slash));
 							s=s.Substring(slash); //doesn't matter. 
 								

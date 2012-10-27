@@ -30,20 +30,46 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Linq;
 
 
 namespace Earlz.BarelyMVC
 {
 	/// <summary>
-	/// This is a straight rip of Dictionary<string, string> so far.
-	/// This fact may change in the future however
+	/// This is just a simple "specialized" dictionary. 
+	/// The reason it's values are of IList is because with Form values(and elsewhere), it is completely acceptable for their to be duplicate keys
+	/// Note if you use ParameterFiller with this containing duplicate keys, behavior can be undefined. Use a Converter for consistent and guaranteed behavior
 	/// </summary>
-	public class ParameterDictionary : Dictionary<string, string>
+	public class ParameterDictionary : Dictionary<string, IList<string>>
 	{
 		public T Fill<T>(T target)
 		{
 			ParameterFiller<T> p=new ParameterFiller<T>(this, target);
 			return (T)p.Fill();
+		}
+		public void Add(string key, string value)
+		{
+			Add (key, new List<string>());
+			base[key].Add(value);
+		}
+		public string this[string key]
+		{
+			get
+			{
+				if(ContainsKey(key))
+				{
+					return base[key].FirstOrDefault();
+				}
+				return null;
+			}
+		}
+		public IList<string> GetValues(string key)
+		{
+			return base[key];
+		}
+		public void SetValues(string key, IList<string> values)
+		{
+			base[key]=values;
 		}
 	}
 	public static class Extensions
