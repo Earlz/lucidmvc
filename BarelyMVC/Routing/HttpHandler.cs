@@ -32,6 +32,9 @@ using System.Collections.Generic;
 using Earlz.BarelyMVC.Authentication;
 using Earlz.BarelyMVC.ViewEngine;
 using System.IO;
+using System.Collections.Specialized;
+
+
 namespace Earlz.BarelyMVC
 {
 	public abstract class BareHttpHandler : HttpHandler
@@ -130,11 +133,11 @@ namespace Earlz.BarelyMVC
 		/// <summary>
 		/// The current HttpContext
 		/// </summary>
-		public static HttpContext Context
+		public static RequestContext Context
 		{
 			get
 			{
-				return HttpContext.Current;
+				return RequestContext.Current;
 			}
 		}
 		/// <summary>
@@ -174,18 +177,18 @@ namespace Earlz.BarelyMVC
 		{
 			get
 			{
-				return (HttpMethod) HttpContext.Current.Items["BarelyMVC_RouteMethod"];
+				return (HttpMethod) RequestContext.Current.Items["BarelyMVC_RouteMethod"];
 			}
 			internal set
 			{
-				HttpContext.Current.Items["BarelyMVC_RouteMethod"]=value;
+				RequestContext.Current.Items["BarelyMVC_RouteMethod"]=value;
 			}
 
 		}
 		/// <summary>
 		/// The HTTP Form NameValueCollection. This is populated during POST and PUT requests
 		/// </summary>
-		public static System.Collections.Specialized.NameValueCollection Form{
+		public static NameValueCollection Form{
 			get{
 				return Request.Form;
 			}

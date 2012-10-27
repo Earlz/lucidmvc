@@ -8,6 +8,19 @@ namespace Earlz.BarelyMVC
 	static internal class CurrentRequest
 	{
 		static ConcurrentDictionary<Thread, RequestContext> ThreadContexts=new ConcurrentDictionary<Thread, RequestContext>();
+		static internal RequestContext Request
+		{
+			get
+			{
+				RequestContext tmp;
+				if(!ThreadContexts.TryGetValue(Thread.CurrentThread, out tmp))
+				{
+					return null;
+				}else{
+					return tmp;
+				}
+			}
+		}
 		/// <summary>
 		/// Called from Router at the earliest part of the request
 		/// </summary>
