@@ -8,6 +8,9 @@ namespace Earlz.BarelyMVC
 {
 	interface IParameterConverter
 	{
+		/// <summary>
+		/// Converts string(or set of strings) to a different type
+		/// </summary>
 		object Convert(string key, ParameterDictionary dictionary);
 	}
 
