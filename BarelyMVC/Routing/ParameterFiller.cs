@@ -2,9 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace Earlz.BarelyMVC
 {
+	interface IParameterConverter
+	{
+		/// <summary>
+		/// Converts string(or set of strings) to a different type
+		/// </summary>
+		object Convert(string key, ParameterDictionary dictionary);
+	}
+
 	[AttributeUsage(AttributeTargets.Property)]
 	public class ParameterIgnoreAttribute : ParameterBaseAttribute
 	{
@@ -29,8 +38,16 @@ namespace Earlz.BarelyMVC
 		object value;
 		public object Value{get{return value;}}
 	}
-	public delegate object ParameterConverter(string val);
-	
+	[AttributeUsage(AttributeTargets.Property)]
+	public class ParameterConverterAttribute : ParameterBaseAttribute
+	{
+		public Type Converter{get;private set;}
+		public ParameterConverterAttribute(Type converter)
+		{
+			Converter=converter;
+		}
+	}
+
 	/*Attributes don't allow method arguments. TODO
 		 * [AttributeUsage(AttributeTargets.Property)]
 		public class ParameterConverterAttribute : ParameterBaseAttribute
@@ -58,10 +75,10 @@ namespace Earlz.BarelyMVC
 	{
 		//because this is always deterministic, the cache is extremely simple without a need to ever clear.
 		static Dictionary<Type, HashSet<ParameterCacheObject<T>>> Cache=new Dictionary<Type, HashSet<ParameterCacheObject<T>>>();
-		IDictionary<string, string> Values;
+		ParameterDictionary Values;
 		public T Target{get{return target_;}}
 		T target_;
-		public ParameterFiller(IDictionary<string, string> values, T target)
+		public ParameterFiller(ParameterDictionary values, T target)
 		{
 			target_=target;
 			Values=values;
@@ -90,6 +107,7 @@ namespace Earlz.BarelyMVC
 		{
 			string matchname=p.Name;
 			object defaultval=null;
+			IParameterConverter converter=null;
 			//ParameterConverterAttribute converter=null;
 			if(!p.CanWrite)
 			{
@@ -109,16 +127,24 @@ namespace Earlz.BarelyMVC
 				{
 					var tmp=(ParameterDefaultAttribute)attrib;
 					defaultval=tmp.Value;
-				}/*else if(attrib is ParameterConverterAttribute)
+				}else if(attrib is ParameterConverterAttribute)
+				{
+					var tmp=(ParameterConverterAttribute)attrib;
+					if(!tmp.Converter.GetInterfaces().Any(x=>x==typeof(IParameterConverter)))
 					{
-						converter=(ParameterConverterAttribute)attrib;
-					}*/
+						throw new NotSupportedException("The ParameterConverterAttribute must reference a type which implements IParameterConverter");
+					}
+					converter=(IParameterConverter)Activator.CreateInstance(tmp.Converter);
+					var constr=tmp.Converter.GetConstructor(new Type[]{});
+
+				}
 			}
 			var c=new ParameterCacheObject<T>();
 			c.Caller=MakeSetterDelegate(p); //(Action<object>) Delegate.CreateDelegate(typeof(Action<object>), p.GetSetMethod());
 			c.Default=defaultval;
 			c.MappedName=matchname;
 			c.PropertyType=p.PropertyType;
+			c.Converter=converter;
 			if(!Cache[Target.GetType()].Add(c))
 			{
 				throw new ApplicationException("The (mapped) property "+c.MappedName+" is already mapped and cached!");
@@ -134,7 +160,7 @@ namespace Earlz.BarelyMVC
 				}
 				return; //don't bother if we don't find a match
 			}
-			p.Caller(Target, ConvertValue(Values[p.MappedName],p.PropertyType, p.Default));
+			p.Caller(Target, ConvertValue(Values[p.MappedName],p.PropertyType, p.Default, p.Converter));
 
 			/*if(converter!=null)
 				{
@@ -142,11 +168,17 @@ namespace Earlz.BarelyMVC
 				}*/
 			//p.SetValue(Target, ConvertValue(val, p.PropertyType, defaultval), null);
 		}
-		object ConvertValue(string fromval, Type totype, object defaultval)
+		object ConvertValue(string fromval, Type totype, object defaultval, IParameterConverter converter)
 		{
 			try
 			{
-				object tmp=Convert.ChangeType(fromval, totype);
+				object tmp;
+				if(converter==null)
+				{
+					tmp=Convert.ChangeType(fromval, totype);
+				}else{
+					tmp=converter.Convert(fromval, Values);
+				}
 				if(tmp==null)
 				{
 					return defaultval;
@@ -195,6 +227,7 @@ namespace Earlz.BarelyMVC
 		public Type PropertyType{get;set;}
 		public string MappedName{get;set;}
 		public object Default{get;set;}
+		public IParameterConverter Converter{get;set;}
 	}
 
 }

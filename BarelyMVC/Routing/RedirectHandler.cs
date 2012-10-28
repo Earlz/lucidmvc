@@ -30,6 +30,7 @@ using System;
 
 namespace Earlz.BarelyMVC
 {
+
 	public class RedirectHandler : BareHttpHandler
 	{
 		string Url;

@@ -3,12 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarelyMVC", "BarelyMVC\BarelyMVC.csproj", "{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarelyMVC.Tests", "BarelyMVC.Tests\BarelyMVC.Tests.csproj", "{47FF3535-5630-4B00-8D0A-5CDDD839310C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47FF3535-5630-4B00-8D0A-5CDDD839310C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47FF3535-5630-4B00-8D0A-5CDDD839310C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47FF3535-5630-4B00-8D0A-5CDDD839310C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47FF3535-5630-4B00-8D0A-5CDDD839310C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
