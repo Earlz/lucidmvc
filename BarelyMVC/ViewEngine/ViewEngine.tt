@@ -1,6 +1,8 @@
 ﻿<#@ template language="C#v3.5" hostspecific="true" #>
 <#@ output extension="cs" #>
 <#@ assembly name="System.Core" #>
+<# /*MUST CHANGE WHEN RELOCATING!*/ #>
+<#@ assembly name="BarelyMVC.ViewEngine" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -40,6 +42,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <#
 /*CONFIGURATION VARIABLES*/
+	var foo=new Earlz.BarelyMVC.ViewEngine.TestStuff();
 	//default namespace for your views to use
 	string Namespace="Earlz.BarelyMVC.ViewEngine"; 
 	

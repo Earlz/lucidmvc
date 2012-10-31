@@ -5,10 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{47FF3535-5630-4B00-8D0A-5CDDD839310C}</ProjectGuid>
+    <ProjectGuid>{2742705D-6495-41AC-9636-A538B2CECF68}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>BarelyMVC.Tests</RootNamespace>
-    <AssemblyName>BarelyMVC.Tests</AssemblyName>
+    <RootNamespace>Earlz.BarelyMVC.ViewEngine</RootNamespace>
+    <AssemblyName>BarelyMVC.ViewEngine</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -30,20 +31,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="TestStuff.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\BarelyMVC\BarelyMVC.csproj">
-      <Project>{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}</Project>
-      <Name>BarelyMVC</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SimplePatternTest.cs" />
-  </ItemGroup>
 </Project>
