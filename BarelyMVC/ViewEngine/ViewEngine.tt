@@ -114,8 +114,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		var tmp=File.OpenText(Path.Combine(Path.GetDirectoryName(Host.TemplateFile),"ViewEngineInternal.tt.cs"));
 		string input=tmp.ReadToEnd();
 		//strip T4 code begin and end tags
-		input=input.Substring(0,input.Length-2);
-		input=input.Substring(3);
+		//input=input.Substring(0,input.Length-2);
+		//input=input.Substring(3);
 		Write(input);
 	}
 #>
