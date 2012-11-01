@@ -1,8 +1,6 @@
-﻿<#@ template language="C#v3.5" hostspecific="true" #>
+﻿<#@ template language="C#" hostspecific="true" #>
 <#@ output extension="cs" #>
 <#@ assembly name="System.Core" #>
-<# /*MUST CHANGE WHEN RELOCATING!*/ #>
-<#@ assembly name="BarelyMVC.ViewEngine" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -42,7 +40,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <#
 /*CONFIGURATION VARIABLES*/
-	var foo=new Earlz.BarelyMVC.ViewEngine.TestStuff();
 	//default namespace for your views to use
 	string Namespace="Earlz.BarelyMVC.ViewEngine"; 
 	
@@ -74,7 +71,11 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	string CustomUsing=@"
 		//custom using statements for your views go here:
 		
+		using System.Linq; //required if unit testing the ViewGenerator. (also doesn't hurt to be there anyway)
 	";
+	
+	//Do NOT turn this on in a production scenario. This should only be true if you wish to run unit tests on the internals of the ViewEngine
+	bool OutputViewGeneratorClass=true;
 	
 /*END CONFIGURATION -- Touch everything past here at your own risk!*/	
 //TODO Make this code more readable.. somehow. T4 is awesome, but hard to write and even harder to read. 
@@ -103,6 +104,19 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			var gen=new ViewGenerator(file,name,Namespace,DefaultRenderDirectly, DefaultDetectNulls, DefaultWriterReference);
 			WriteLine(gen.Generate());
 		}
+	}
+	//ZEE GOGGLES, ZEY DO NOTHING!
+	//I tried to avoid magic in this framework, but this is unavoidable.
+	//Take the code we just ran and take the literal text of the code and output it to the generated code(with some trimming to be compilable)
+	if(OutputViewGeneratorClass)
+	{
+		WriteLine("/*Internal ViewEngine class (only for unit testing) */");
+		var tmp=File.OpenText(Path.Combine(Path.GetDirectoryName(Host.TemplateFile),"ViewEngineInternal.tt.cs"));
+		string input=tmp.ReadToEnd();
+		//strip T4 code begin and end tags
+		input=input.Substring(0,input.Length-2);
+		input=input.Substring(3);
+		Write(input);
 	}
 #>
 

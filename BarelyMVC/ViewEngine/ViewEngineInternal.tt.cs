@@ -501,5 +501,4 @@ public "+(Layout??"IBarelyView")+@" Layout{get;set;}
 			return c.ToString();
 		}
 	}
-	
 #>

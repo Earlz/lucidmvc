@@ -75,10 +75,4 @@
     <Folder Include="ViewEngine\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BarelyMVC.ViewEngine\BarelyMVC.ViewEngine.csproj">
-      <Project>{2742705D-6495-41AC-9636-A538B2CECF68}</Project>
-      <Name>BarelyMVC.ViewEngine</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
