@@ -75,7 +75,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	";
 	
 	//Do NOT turn this on in a production scenario. This should only be true if you wish to run unit tests on the internals of the ViewEngine
-	bool OutputViewGeneratorClass=true;
+	bool OutputViewGeneratorClass=false; //true;
 	
 /*END CONFIGURATION -- Touch everything past here at your own risk!*/	
 //TODO Make this code more readable.. somehow. T4 is awesome, but hard to write and even harder to read. 

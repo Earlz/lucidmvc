@@ -60,6 +60,7 @@
     <Compile Include="Routing\RedirectHandler.cs" />
     <Compile Include="Routing\ParameterFiller.cs" />
     <Compile Include="Helpers\Converters.cs" />
+    <Compile Include="ViewEngine\ViewEngineInternal.tt.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -68,7 +69,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ViewEngine.cs</LastGenOutput>
     </None>
-    <None Include="ViewEngine\ViewEngineInternal.tt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Routing\" />
