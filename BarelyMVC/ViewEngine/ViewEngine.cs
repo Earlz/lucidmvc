@@ -10,7 +10,6 @@ using Earlz.BarelyMVC.ViewEngine;
 
 		//custom using statements for your views go here:
 		
-		using System.Linq; //required if unit testing the ViewGenerator. (also doesn't hurt to be there anyway)
 	
 
 //

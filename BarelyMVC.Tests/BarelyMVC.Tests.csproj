@@ -45,5 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SimplePatternTest.cs" />
+    <Compile Include="CodeDataObjects.cs" />
   </ItemGroup>
 </Project>
