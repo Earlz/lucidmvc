@@ -39,30 +39,41 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 #endif
 
 
-	public class ViewGenerator
+	public class ViewGenerator : ClassGenerator
 	{
-		const bool UseAutoVars=false; //set to true to enable the autovars(recommended off. Also, no longer tested)
-		class Variable
-		{
-			public string Access="public";
-			public string Name;
-			public string VarType;
-		}
-		public string Blah{get;set;}
 		bool HasFlash=false;
-		string Name;
-		string Namespace;
 		string Layout;
 		string LayoutField;
-		StringBuilder output=new StringBuilder();
+		/// <summary>
+		/// The stringbuilder for the body of the RenderView method
+		/// </summary>
 		StringBuilder view=new StringBuilder();
 		StringBuilder external=new StringBuilder();
-		String input;
+		public override string OtherCode {
+			get {
+				return external.ToString();
+			}
+			set {
+				external=new StringBuilder(value);
+			}
+		}
+
+		string input;
 		bool RenderDirectly=false;
-		string BaseClass=DefaultBaseClass;
+		//string BaseClass=DefaultBaseClass;
+		/// <summary>
+		/// This should be set in the T4 template
+		/// </summary>
+		public override string BaseClass {
+			get {
+				return base.BaseClass ?? DefaultBaseClass;
+			}
+			set {
+				base.BaseClass = value;
+			}
+		}
 		public static string DefaultBaseClass=null;
 		public bool DetectNulls=true;
-		List<Variable> Variables=new List<Variable>();
 		string DefaultWriter="";
 		public ViewGenerator(string file,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter){
 			var f=File.OpenText(file);
@@ -85,39 +96,40 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			}
 			string block=input.Substring(start+1,end);
 			block=block.Trim();
-			List<string> words=new List<string>(block.Split(new char[]{' ','\t','\n','\r'}));
+			List<string> words=new List<string>(block.Split(new char[]{' ','\t','\n','\r'},StringSplitOptions.RemoveEmptyEntries));
 			while(words.Contains("")){
 				words.Remove("");
 			}
 			int i;
 			for(i=0;i<words.Count-2;i+=3){
-				Variable v=new Variable();
-				v.Name=words[i];
-				if(v.Name=="private" || v.Name=="protected" || v.Name=="public"){
+				var p=new Property();
+				p.Accessibility="public";
+				p.Name=words[i];
+				if(p.Name=="private" || p.Name=="protected" || p.Name=="public"){
 					i++;
-					v.Access=v.Name;
-					v.Name=words[i];
+					p.Accessibility=p.Name;
+					p.Name=words[i];
 				}
 				if(words[i+1]!="as"){
 					throw new ApplicationException("'as' expected. Found: "+words[i+1]);
 				}
-				v.VarType=words[i+2];
+				p.Type=words[i+2];
 				
-				if(v.VarType[v.VarType.Length-1]!=';' && (i<words.Count-3 || words[i+3]!=";")){
+				if(p.Type[p.Type.Length-1]!=';' && (i<words.Count-3 || words[i+3]!=";")){
 					throw new ApplicationException("';' expected. Found: "+words[i+3]);
 				}
 				if(i<words.Count-3 && words[i+3]==";"){
 					i++;
 				}else{
-					v.VarType=v.VarType.Substring(0,v.VarType.Length-1);
+					p.Type=p.Type.Substring(0,p.Type.Length-1);
 				}
-				if(v.Name=="Flash"){
+				if(p.Name=="Flash"){
 					HasFlash=true;
-					if(v.VarType.ToLower()!="string" && v.Access!="public"){
+					if(p.Type.ToLower()!="string" && p.Accessibility!="public"){
 						throw new ApplicationException("Flash variable must be a public string");
 					}
 				}else{
-					Variables.Add(v);
+					Properties.Add(p);
 				}
 			}		
 			return end+=3; //+=2 for @} ending
@@ -130,18 +142,13 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			string block=input.Substring(start+1,end);
 			block=block.Trim();
 			
-			var v=Variables.Find(x=>x.Name==block);
+			var p=Properties.Find(x=>x.Name==block);
 			string code;
-			if(v==null){
+			if(p==null){
 				code=block;
-				if(UseAutoVars){
-					v=new Variable(){Name=block, VarType="string"};
-					Variables.Add(v);
-				}else{
-					//don't throw an error I guess?
-				}
+					//don't throw an error I guess? The properties could be coming from elsewhere (inheritance, etc)
 			}else{
-				code=v.Name;
+				code=p.Name;
 			}
 			view.AppendLine(@"{
 				object v;
@@ -295,7 +302,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 					view.AppendLine("}");
 					break;
 				case "use_once":
-					DoUseOnce(block,stop);
+					//DoUseOnce(block,stop);
 				break;
 				case "render_directly":
 					RenderDirectly=true;
@@ -325,6 +332,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			view.Append(block.Substring(stop+1));
 			view.AppendLine("){");
 		}
+		/*
 		public void DoUseOnce(string block,int stop){
 			//How to implement this?
 			//Intention is to have this create a public variable, and write it out only once. 
@@ -338,8 +346,8 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			v.VarType=pieces[2];
 			Variables.Add(v);
 		}
-		
-		public string Generate(){
+		*/
+		string GenerateViewBody(){
 			char last='\0';
 			view.Append("__Write(@\"");
 			for(int i=0;i<input.Length;i++){
@@ -384,128 +392,144 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 				}
 			}
 			view.AppendLine("\");");
-			
-			output.Append(
-	"namespace "+Namespace+@"{
-	class "+Name+" : "+BaseClass+@"{
-	//Internal variables
-	StringBuilder __Output=new StringBuilder();
-	public "+(Layout??"IBarelyView")+@" Layout{get;set;}
-	//vIEW VARIABLES//
-	");
-			foreach(var v in Variables){
-				output.AppendLine("\t"+v.Access+" "+v.VarType+" "+v.Name+"{get;set;}");
-			}      
-			output.Append(@"
-	//END VARIABLES//
-	//EXTERNAL CODE
-	");
-			output.Append(external);
-			output.Append(@"
-	//END EXTERNAL CODE
-	void BuildOutput(){
-	//VIEW OUTPUT CODE//
-	");
-			output.Append(view);
-			output.Append(@"
-	//END OUTPUT//
-	}
-	//Internal code
+			string s=view.ToString();
+			return s;
+		}
 
-	");
-	if(!HasFlash){
-		output.Append(@"
-	public override string Flash{
-		get{
-			return Layout.Flash;
+		public override string ToString ()
+		{
+			string s=base.ToString();
+			return s;
 		}
-		set{
-			Layout.Flash=value;
-		}
-	}");
-	}
-	output.Append(@"
+		bool GeneratedBefore=false;
+		public void Generate()
+		{
+			if(GeneratedBefore)
+			{
+				throw new NotSupportedException("The view class can only be generated once for each class. Create a new instance of this class to regenerate the class");
+			}
+			GeneratedBefore=true;
+			string viewbody=GenerateViewBody();
+			//add the internals required first
+			var f=new Field
+			{
+				Name="__Output",
+				Type="StringBuilder",
+				PrefixDocs="For internal use only!"
+			};
+			Fields.Add(f);
+			f=new Field
+			{
+				Name="__InLayout",
+				Type="bool",
+				InitialValue="false",
+				PrefixDocs="For internal use only!"
+			};
+			Fields.Add(f);
+			f=new Field
+			{
+				Name="__Writer",
+				Type="TextWriter",
+				PrefixDocs="For internal use only!"
+			};
+			Fields.Add(f);
+			f=new Field
+			{
+				Name="__RenderDirectly",
+				InitialValue=RenderDirectly.ToString().ToLower(),
+				Type="bool",
+				PrefixDocs="For internal use only!"
+			};
+			Fields.Add(f);
 
-	bool __InLayout=false; //internally used to prevent recursive loops in RenderView()
-	///<summary>
-	///Renders the view and returns the rendered view as a string (optionally also outputting it to current HttpResponse)
-	///</summary>
-	public override string RenderView(){
-		__Output=new StringBuilder();
-		if(Layout==null){
-			BuildOutput();
-			return __Output.ToString();
-		}
-		if(__InLayout){
-			//If we get here, then the layout is currently trying to render itself(and we are being rendered as a partial/sub view)
-			__InLayout=false;
-			BuildOutput();
-			return __Output.ToString();
-		}else{
-			//otherwise, we are here and someone called RenderView on us(and we have a layout to render first)
-			__InLayout=true;
-			return Layout.RenderView(); 
-		}
-		//This should recurse no more than 2 times
-		//Basically, this will go to hell if there is ever more than 1 partial view with a Layout set. 
-	}
-	TextWriter __Writer;
-	bool __RenderDirectly="+RenderDirectly.ToString().ToLower()+@";
-	///<summary>
-	///Indicates if this View is set to be rendered directly to the HttpResponse
-	///</summary>
-	public override bool RenderedDirectly{
-		get{
-			return __RenderDirectly;
-		}
-	}
-	private void __Init(TextWriter writer){
-		__Writer=writer;
-	");
-	if(Layout!=null){
-		output.Append("Layout=new "+Layout+"();\n");
-		output.Append("Layout."+LayoutField+"=this;\n");
-	}
+			var p=new Property
+        	{
+				Name="Layout",
+				GetMethod="get;",
+				SetMethod="set;",
+				PrefixDocs="This is the layout of the given view (master page)",
+				Accessibility="public",
+				Type=Layout ?? "IBarelyView"
+			};
+			Properties.Add(p);
+			p=new Property
+			{
+				Name="RenderedDirectly",
+				Accessibility="public override",
+				Type="bool",
+				GetMethod="get{ return __RenderDirectly; }",
+				SetMethod=null,
+				PrefixDocs="Indicates if this view is set to be rendered directly to the appropriate stream"
 
-	output.Append(@"
-	}
-	public "+Name+@"(){
-		if(__RenderDirectly){
-			__Init("+DefaultWriter+@");
-		}else{
-			__Init(null);
+			};
+			Properties.Add(p);
+			if(!HasFlash)
+			{
+				p=new Property();
+				p.Accessibility="public override";
+				p.Name="Flash";
+				p.Type="string";
+				p.GetMethod="get{return Layout.Flash;}";
+				p.SetMethod="set{Layout.Flash=value;}";
+				p.PrefixDocs=@"The ""Flash"" notification text(passes through to the layout";
+				Properties.Add(p);
+			}
+
+			var m=new Method();
+			m.Name="BuildOutput";
+			m.Body=viewbody;
+			Methods.Add(m);
+			m=new Method();
+			m.Name="__Init";
+			m.Params.Add(new MethodParam{Name="writer", Type="TextWriter"});
+			m.PrefixDocs="internal use only";
+			m.Body="__Writer=writer;";
+			if(Layout!=null)
+			{
+				m.Body+="Layout=new "+Layout+"(); "+"Layout."+LayoutField+"=this;";
+			}
+			//constructors
+			Methods.Add(m);
+			m=new Method();
+			m.Accessibility="public";
+			m.Name=Name;
+			m.ReturnType="";
+			m.Body="if(__RenderDirectly){ __Init("+DefaultWriter+"); }else{ __Init(null); }";
+			m.PrefixDocs="Initialize with default options";
+			Methods.Add(m);
+			m=new Method();
+			m.Accessibility="public";
+			m.Name=Name;
+			m.Params.Add(new MethodParam{Name="UseHttpResponse", Type="bool"});
+			m.ReturnType="";
+			m.Body="if(UseHttpResponse){ __RenderDirectly=true; __Init("+DefaultWriter+");}else{ __Init(null);}";
+			m.PrefixDocs="Initialize a view to either directly render or not and use the default TextWriter";
+			Methods.Add(m);
+			m=new Method();
+			m.Accessibility="public";
+			m.Name=Name;
+			m.ReturnType="";
+			m.Params.Add(new MethodParam{Name="writer", Type="TextWriter"});
+			m.Body="__Init(writer);";
+			m.PrefixDocs="Initialize a view with the chosen TextWriter";
+			Methods.Add(m);
+			//Write methods
+			m=new Method();
+			m.Name="__Write";
+			m.Accessibility="protected virtual";
+			m.Params.Add(new MethodParam{Name="s", Type="string"});
+			m.Body="if(__Writer!=null){ __Writer.Write(s); } __Output.Append(s);";
+			m.PrefixDocs="Writes a string to the output (or adds it to the output if direct rendering)";
+			Methods.Add(m);
+			m=new Method();
+			m.Name="__Write";
+			m.Accessibility="protected virtual";
+			m.Params.Add(new MethodParam{Name="v", Type="IBarelyView"});
+			m.Body="string s=v.RenderView(); __Output.Append(s)";
+			m.PrefixDocs="Renders the view and adds it to the output";
+			Methods.Add(m);
 		}
-	}
-	public "+Name+@"(bool UseHttpResponse){
-		if(UseHttpResponse){
-			__RenderDirectly=true;
-			__Init("+DefaultWriter+@");
-		}else{
-			__Init(null);
-		}
-	}
-	public "+Name+@"(TextWriter writer){
-		__Init(writer);
-	}
-	protected virtual void __Write(string s){
-		if(__Writer!=null){
-			__Writer.Write(s);
-		}
-		__Output.Append(s);
-	}
-	protected virtual void __Write(IBarelyView v){
-		string s=v.RenderView();
-		if(!v.RenderedDirectly){
-			//__Write(s);
-		}
-		__Output.Append(s);
-	}
-	}
-	} //for namespace
-	");
-			return output.ToString();
-		
-		}
+
 		string Escape(char c){
 			if(c=='\"'){
 				return "\"\"";
@@ -518,29 +542,37 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 	}
 
 
+
 	//shove this all into one file so we don't force implementers to hand combine this or copy over more than 2 files
 	public class ClassGenerator : CodeElement
 	{
-		public List<Property> Properties
+		virtual public List<Property> Properties
 		{
 			get;
 			private set;
 		}
-		public List<Method> Methods
+		virtual public List<Method> Methods
 		{
 			get;
 			private set;
 		}
-		public List<Field> Fields
+		virtual public List<Field> Fields
 		{
 			get;
 			private set;
 		}
-		public string Namespace
+		virtual public string Namespace
 		{
 			get;set;
 		}
-
+		virtual public string OtherCode
+		{
+			get;set;
+		}
+		public virtual string BaseClass
+		{
+			get;set;
+		}
 		public ClassGenerator()
 		{
 			Properties=new List<Property>();
@@ -568,6 +600,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			{
 				sb.AppendLine(f.ToString());
 			}
+			sb.AppendLine(OtherCode);
 			sb.AppendLine(GetTab(1)+"}");
 			sb.AppendLine("}");
 			return sb.ToString();
@@ -587,10 +620,17 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			get;
 			set;
 		}
-		public string PrefixDocs
+		string prefixdocs;
+		virtual public string PrefixDocs
 		{
-			get;
-			set;
+			get
+			{
+				return prefixdocs;
+			}
+			set
+			{
+				prefixdocs=GetTab(2)+"///<summary>\n"+GetTab(2)+"///"+value+"\n"+GetTab(2)+"///</summary>";
+			}
 		}
 		public override string ToString ()
 		{
@@ -611,8 +651,12 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			PrefixDocs="";
 		}
 	}
-	public class Property : Field
+	public class Property : CodeElement
 	{
+		public string Type
+		{
+			get;set;
+		}
 		public string GetMethod
 		{
 			get;
@@ -627,8 +671,14 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		{
 			string tmp=GetTab(2)+PrefixDocs+"\n";
 			tmp+=GetTab(2)+CodeElement.Tab+Accessibility+" "+Type+" "+Name+"{\n";
-			tmp+=GetTab(2)+GetMethod+"\n";
-			tmp+=GetTab(2)+GetMethod+"\n";
+			if(GetMethod!=null)
+			{
+				tmp+=GetTab(2)+GetMethod+"\n";
+			}
+			if(SetMethod!=null)
+			{
+				tmp+=GetTab(2)+SetMethod+"\n";
+			}
 			tmp+=GetTab(2)+"}\n";
 			return tmp;
 		}
@@ -645,10 +695,21 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			get;
 			set;
 		}
+		public string InitialValue
+		{
+			get;
+			set;
+		}
 		public override string ToString ()
 		{
 			string tmp=GetTab(2)+PrefixDocs+"\n";
-			tmp+=GetTab(2)+Accessibility+" " +Type+" " +Name+";";
+			tmp+=GetTab(2)+Accessibility+" " +Type+" " +Name;
+			if(InitialValue!=null)
+			{
+				tmp+="="+InitialValue+";";
+			}else{
+				tmp+=";";
+			}
 			return tmp;
 		}
 	}

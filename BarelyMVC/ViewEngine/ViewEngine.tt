@@ -98,7 +98,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			name=name.Substring(0,name.LastIndexOf(filter.Substring(1,filter.Length-1)));
 			name=name.Replace(" ","_");
 			var gen=new ViewGenerator(file,name,Namespace,DefaultRenderDirectly, DefaultDetectNulls, DefaultWriterReference);
-			WriteLine(gen.Generate());
+			gen.Generate();
+			WriteLine(gen.ToString());
 		}
 	}
 #>
