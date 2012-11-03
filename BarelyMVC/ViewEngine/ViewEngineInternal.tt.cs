@@ -525,9 +525,35 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			m.Name="__Write";
 			m.Accessibility="protected virtual";
 			m.Params.Add(new MethodParam{Name="v", Type="IBarelyView"});
-			m.Body="string s=v.RenderView(); __Output.Append(s)";
+			m.Body="string s=v.RenderView(); __Output.Append(s);";
 			m.PrefixDocs="Renders the view and adds it to the output";
 			Methods.Add(m);
+			//RenderView
+			m=new Method();
+			m.Accessibility="public override";
+			m.ReturnType="string";
+			m.Name="RenderView";
+			m.Body=
+@"__Output=new StringBuilder();
+if(Layout==null){
+        BuildOutput();
+        return __Output.ToString();
+}
+if(__InLayout){
+        //If we get here, then the layout is currently trying to render itself(and we are being rendered as a partial/sub view)
+        __InLayout=false;
+        BuildOutput();
+        return __Output.ToString();
+}else{
+        //otherwise, we are here and someone called RenderView on us(and we have a layout to render first)
+        __InLayout=true;
+        return Layout.RenderView(); 
+}
+//This should recurse no more than 2 times
+//Basically, this will go to hell if there is ever more than 1 partial view with a Layout set.";
+			m.PrefixDocs="Renders the view to a string and to the chosen TextWriter string if directly rendered";
+			Methods.Add(m);
+                
 		}
 
 		string Escape(char c){
@@ -586,7 +612,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			sb.Append("namespace "+Namespace);
 			sb.AppendLine("{");
 			sb.AppendLine(PrefixDocs);
-			sb.AppendLine(GetTab(1)+Accessibility+" class "+Name);
+			sb.AppendLine(GetTab(1)+Accessibility+" class "+Name+": "+BaseClass);
 			sb.AppendLine(GetTab(1)+"{");
 			foreach(var p in Properties)
 			{
@@ -750,9 +776,13 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 					tmp+=", ";
 				}
 			}
-			tmp+="\n"+GetTab(2)+"{";
+			if(Params.Count==0)
+			{
+				tmp+=")";
+			}
+			tmp+="\n"+GetTab(2)+"{\n";
 			tmp+=Body;
-			tmp+=GetTab(2)+"}";
+			tmp+="\n"+GetTab(2)+"}";
 			return tmp;
 		}
 	}
