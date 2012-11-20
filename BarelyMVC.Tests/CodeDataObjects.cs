@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using Earlz.BarelyMVC.ViewEngine.Internal;
+using System.Text.RegularExpressions;
 
 namespace BarelyMVC.Tests
 {
@@ -17,9 +18,9 @@ namespace BarelyMVC.Tests
 			p.SetMethod="set{foo}";
 			p.Name="Foo";
 			p.Type="Bar";
-
-			//Assert.AreEqual(p.ToString(),
-			//                Property.GetTab(2)+"public Bar Foo"+Property.GetTab(2)+"{
+			var regex=new Regex(@"[^\w{};]", RegexOptions.Multiline);
+			//compare everything with most characters stripped out (the beginning summary is for XML documentation)
+			Assert.AreEqual(regex.Replace(p.ToString(), ""), "summarysummarypublicBarFoo{get{foo}set{foo}}"); 
 		}
 	}
 }

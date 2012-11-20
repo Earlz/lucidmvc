@@ -59,8 +59,12 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		}
 
 		string input;
+		public string Input
+		{
+			get{return input;}
+			set{input=value;}
+		}
 		bool RenderDirectly=false;
-		//string BaseClass=DefaultBaseClass;
 		/// <summary>
 		/// This should be set in the T4 template
 		/// </summary>
@@ -77,17 +81,22 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		string DefaultWriter="";
 		public ViewGenerator(string file,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter){
 			var f=File.OpenText(file);
-			input=f.ReadToEnd();
+			string text=f.ReadToEnd();
+			Init (text, name, namespace_, renderdirectly, detectnulls, defaultwriter);
+		}
+		public ViewGenerator(string name, string namespace_, bool renderdirectly, bool detectnulls, string defaultwriter)
+		{
+			Init (null, name, namespace_, renderdirectly, detectnulls, defaultwriter);
+		}
+		void Init(string text,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter){
+			input=text;
 			Name=name;
 			Namespace=namespace_;
 			RenderDirectly=renderdirectly;
 			DetectNulls=detectnulls;
 			DefaultWriter=defaultwriter;
-			
 		}
-		
-		
-		
+
 		int DoVariables (int start)
 		{
 			int end=input.Substring(start+1).IndexOf("@}");
@@ -103,7 +112,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			int i;
 			for(i=0;i<words.Count-2;i+=3){
 				var p=new Property();
-				p.Accessibility="public";
+				p.Accessibility="virtual public";
 				p.Name=words[i];
 				if(p.Name=="private" || p.Name=="protected" || p.Name=="public"){
 					i++;
@@ -125,7 +134,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 				}
 				if(p.Name=="Flash"){
 					HasFlash=true;
-					if(p.Type.ToLower()!="string" && p.Accessibility!="public"){
+					if(p.Type.ToLower()!="string" && !p.Accessibility.Contains("public")){
 						throw new ApplicationException("Flash variable must be a public string");
 					}
 				}else{
@@ -151,45 +160,22 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 				code=p.Name;
 			}
 			view.AppendLine(@"{
-				object v;
+				object __v;
 				");
 			if(DetectNulls){
 				view.AppendLine(@"
 				try{
-					v="+code+@";
+					__v="+code+@";
 				}catch(NullReferenceException){
-					v=null;
+					__v=null;
 				}
 				");
 			}else{
 				view.AppendLine(@"
-					v="+code+@";
+					__v="+code+@";
 				");
 			}
-				view.AppendLine(@"
-				if(v!=null){
-					var e=v as System.Collections.IEnumerable;
-					if (e!=null)
-					{
-						foreach(var item in e){ 
-							var view=item as Earlz.BarelyMVC.ViewEngine.IBarelyView;
-							if(view!=null){
-								__Write(view);
-							}else{
-								__Write(item.ToString());
-							}
-						}
-					}else{
-						var view=v as Earlz.BarelyMVC.ViewEngine.IBarelyView;
-						if(view!=null){
-							__Write(view);
-						}else{
-							__Write(v.ToString());
-						}
-					}
-					
-				}}");
-			
+			view.AppendLine("__OutputVariable(__v);");
 			return end+=3;
 		}
 		
@@ -553,7 +539,40 @@ if(__InLayout){
 //Basically, this will go to hell if there is ever more than 1 partial view with a Layout set.";
 			m.PrefixDocs="Renders the view to a string and to the chosen TextWriter string if directly rendered";
 			Methods.Add(m);
-                
+
+
+			m=new Method();
+			m.Accessibility="protected virtual";
+			m.ReturnType="void";
+			m.Name="__OutputVariable";
+			m.Params.Add(new MethodParam{Name="v", Type="object"});
+			m.Body=@"
+			{
+				if(v!=null)
+				{
+					var e=v as System.Collections.IEnumerable;
+					if (e!=null)
+					{
+						foreach(var item in e){ 
+							var view=item as Earlz.BarelyMVC.ViewEngine.IBarelyView;
+							if(view!=null){
+								__Write(view);
+							}else{
+								__Write(item.ToString());
+							}
+						}
+					}else{
+						var view=v as Earlz.BarelyMVC.ViewEngine.IBarelyView;
+						if(view!=null){
+							__Write(view);
+						}else{
+							__Write(v.ToString());
+						}
+					}
+				}		
+			}";
+			Methods.Add(m);
+
 		}
 
 		string Escape(char c){

@@ -46,5 +46,6 @@
   <ItemGroup>
     <Compile Include="SimplePatternTest.cs" />
     <Compile Include="CodeDataObjects.cs" />
+    <Compile Include="ViewGenerationTests.cs" />
   </ItemGroup>
 </Project>
