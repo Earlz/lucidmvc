@@ -59,17 +59,18 @@ namespace Earlz.BarelyMVC
 	{
 		List<Route> Routes=new List<Route>();
 
+
 		/// <summary>
 		/// Adds a route to the router
 		/// </summary>
 		public void AddRoute(string id,HttpMethod method, string pattern, HandlerInvoker handler)
 		{
-			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=handler, ID=id};
+			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=handler, ID=id, Method=method};
 			Routes.Add(r);
 		}
 		public void AddRoute(string id,HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
 		{
-			var r=new Route{Pattern=pattern, ID=id, Invoker=handler};
+			var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method};
 			Routes.Add(r);
 		}
 		

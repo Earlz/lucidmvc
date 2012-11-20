@@ -80,6 +80,14 @@ namespace Earlz.BarelyMVC
 			}
 			router.AddRoute(id, method, pattern, handler);
 		}
+		static public void AddRoute(string pattern, HandlerInvoker handler)
+		{
+			if(router==null)
+			{
+				router=new Router();
+			}
+			router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
+		}
 		/// <summary>
 		/// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"
 		/// </summary>

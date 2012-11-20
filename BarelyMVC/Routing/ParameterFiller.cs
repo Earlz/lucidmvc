@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Earlz.BarelyMVC
 {
-	interface IParameterConverter
+	public interface IParameterConverter
 	{
 		/// <summary>
 		/// Converts string(or set of strings) to a different type
