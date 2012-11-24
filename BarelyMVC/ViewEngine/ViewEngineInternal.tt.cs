@@ -234,6 +234,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 ");
             }
             view.AppendLine("__OutputVariable(__v);");
+			view.AppendLine("}");
             return end+=3;
         }
         
