@@ -202,6 +202,50 @@ namespace Earlz.BarelyMVC.Authentication
                 HttpContext.Current.Items["fscauth_currentuser"]=value;
             }
         }
+		/// <summary>
+		/// Returns true if a user is "probably" logged in. This is true when a valid cookie is found.
+		/// DO NOT USE THIS TO SAFE-GUARD ANYTHING IMPORTANT! This is only intended to be used in things such as views
+		/// where you'd want to display a link to a control panel or some such.
+		/// The purpose of this is that this will not try to look up the user in the database, making it so that
+		/// you can display aesthetic items such as profile or administration links on non-authenticated pages which don't hide anything important
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if probably logged in; otherwise, <c>false</c>.
+		/// </value>
+		public static bool ProbablyLoggedIn
+		{
+			get
+			{
+				return false;
+			}
+		}
+		/// <summary>
+		/// Returns the name of the person "probably" logged in
+		/// DO NOT USE THIS TO SAFE-GUARD ANYTHING IMPORTANT! This is only intended to be used in things such as views
+		/// where you'd want to display a link to a control panel or some such.
+		/// The purpose of this is that this will not try to look up the user in the database, so that
+		/// you can display aesthetic items such as profile or administration links on non-authenticated pages which don't hide anything important
+		/// </summary>
+		/// <value>
+		/// The name of the probable user.
+		/// </value>
+		public static string ProbableUserName
+		{
+			get
+			{
+				if(HttpContext.Current.Items.Contains("fscauth_probableusername"))
+				{
+					return (string)HttpContext.Current.Items["fscauth_probableusername"];
+				}else
+				{
+					return ProbableUserName=ProbablyLoggedInName();
+				}
+			}
+			private set
+			{
+				HttpContext.Current.Items["fscauth_probableusername"]=value;
+			}
+		}
         /// <summary>
         /// Will not allow the request to continue if the user is not in the specified group.
         /// </summary>
@@ -319,6 +363,41 @@ namespace Earlz.BarelyMVC.Authentication
         public static bool IsAuthenticated(){
             return CurrentUser!=null;
         }
+		/// <summary>
+		/// Will lookup who is "probably" looked in without hitting the database. 
+		/// This is not secure and should not guard anything important
+		/// </summary>
+		/// <returns>
+		/// The logged in name.
+		/// </returns>
+		static string ProbablyLoggedInName()
+		{
+			string username=null;
+			string authHeader=HttpContext.Current.Request.Headers["Authorization"];
+			if(Config.HttpRealm!=null && string.IsNullOrEmpty(authHeader))
+			{
+                string userNameAndPassword = Encoding.Default.GetString(Convert.FromBase64String(authHeader.Substring(6)));
+                string[] parts = userNameAndPassword.Split(':');
+                return parts[0];
+			}
+			var cookie=HttpContext.Current.Request.Cookies[Config.SiteName+"_login"];
+			if(cookie==null)
+			{
+				return null;
+			}
+            DateTime expires=ConvertFromUnixTimestamp(long.Parse(cookie["expire"]));
+            if(expires<DateTime.Now){
+                ForceCookieExpiration();
+                return null;
+            }
+			if(string.IsNullOrEmpty(cookie["secret"]))
+			{
+				return null;
+			}
+			return cookie["name"];
+		}
+
+
         /// <summary>
         /// Will initialize CurrentUser. This should be called at the beginning of the request.
         /// This will check for a login cookie and check that it is valid. It will then assign CurrentUser.
