@@ -74,6 +74,9 @@ namespace Earlz.BarelyMVC
             var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method};
             Routes.Add(r);
         }
+		/// <summary>
+		/// Adds a route to the router which requires authentication
+		/// </summary>
 		public void AddSecureRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
 		{
 			var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method, Secure=true};

@@ -105,6 +105,63 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             }
             string block=input.Substring(start+1,end);
             block=block.Trim();
+			var lines=block.Replace("\r"," ").Replace("\n"," ").Split(new char[]{';'}, StringSplitOptions.RemoveEmptyEntries);
+			foreach(var l in lines)
+			{
+				var line=l.Trim();
+				var p=new Property();
+				if(line[0]=='{')
+				{
+					//found documentation
+					int enddoc=line.IndexOf("}");
+					p.PrefixDocs=line.Substring(1, enddoc-1).Trim();
+					line=line.Substring(enddoc+1).Trim();
+				}
+				var words=line.Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);
+				int asword=Array.IndexOf(words,"as");
+				if(asword==-1)
+				{
+					throw new ApplicationException("`as` expected but not found");
+				}
+				int accessword2=asword-3; //for things like `public virtual`
+				int accessword=asword-2;
+				int nameword=asword-1;
+				if(accessword2>-1)
+				{
+					p.Accessibility=words[accessword2].Trim();
+				}
+				else
+				{
+					p.Accessibility="";
+				}
+				if(accessword>-1)
+				{
+					p.Accessibility+=" "+words[accessword].Trim();
+				}
+				else
+				{
+					p.Accessibility="public";
+				}
+				if(nameword<0)
+				{
+					throw new ApplicationException("Expected a name before `as` but none found");
+				}
+				p.Name=words[nameword].Trim();
+
+				p.Type=line.Substring(line.IndexOf(" as ")+4).Trim();
+				if(p.Name=="Flash")
+				{
+					HasFlash=true;
+					if(p.Type.ToLower()!="string" && !p.Accessibility.Contains("public"))
+					{
+						throw new ApplicationException("Flash variable must be a public string");
+					}
+				}
+				else
+				{
+					Properties.Add(p);
+				}
+			}/*
             List<string> words=new List<string>(block.Split(new char[]{' ','\t','\n','\r'},StringSplitOptions.RemoveEmptyEntries));
             while(words.Contains("")){
                 words.Remove("");
@@ -140,7 +197,8 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 }else{
                     Properties.Add(p);
                 }
-            }        
+            }       
+            */
             return end+=3; //+=2 for @} ending
         }
         int WriteVariable(int start){

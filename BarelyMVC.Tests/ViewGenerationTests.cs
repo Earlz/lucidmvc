@@ -16,6 +16,13 @@ namespace BarelyMVC.Tests
 @"{@
 foo as bar;
 list as List<T>;
+
+virtual protected biz as
+baz;
+
+{test doc}
+meh as that;
+
 @}
 Hello there {=foo=}
 ";
@@ -23,7 +30,9 @@ Hello there {=foo=}
             gen.Input=view;
             gen.BaseClass="defaultbase";
             gen.Generate();
-            Assert.IsTrue(gen.Properties.Any(x=>x.Name=="foo" && x.Accessibility.Contains("public") && x.Accessibility.Contains("virtual") && x.Type=="bar"));
+            Assert.IsTrue(gen.Properties.Any(x=>x.Name=="foo" && x.Accessibility.Contains("public") && x.Type=="bar"));
+			Assert.IsTrue(gen.Properties.Any(x=>x.Name=="biz" && x.Accessibility.Contains("protected") && x.Accessibility.Contains("virtual") && x.Type=="baz"));
+			Assert.IsTrue(gen.Properties.Any(x=>x.Name=="meh" && x.PrefixDocs.Contains("test doc")));
             Assert.AreEqual(gen.Properties.Count(x=>x.Name=="foo"), 1); //ensure not greater than 1
             Assert.IsTrue(gen.Properties.Any(x=>x.Name=="list" && x.Type=="List<T>"));
 
