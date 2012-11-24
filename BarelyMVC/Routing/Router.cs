@@ -81,13 +81,12 @@ namespace Earlz.BarelyMVC
 		}
 		public void AddSecureRoute(string id, HttpMethod method, string pattern, HandlerInvoker invoker)
 		{
-			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=HandlerInvoker, ID=id, Method=method, Secure=true};
+			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=invoker, ID=id, Method=method, Secure=true};
 			Routes.Add(r);
 		}
         
         void DoHandler (Route r,HttpContext c,ParameterDictionary p)
         {
-            //HttpHandler h=r.Handler(p);
             HttpHandler.RouteRequest=r;
             HttpHandler.Method=ConvertMethod(c.Request.HttpMethod);
             HttpHandler.RawRouteParams=p;
