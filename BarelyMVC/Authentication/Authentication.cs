@@ -203,7 +203,7 @@ namespace Earlz.BarelyMVC.Authentication
             }
         }
 		/// <summary>
-		/// Returns true if a user is "probably" logged in. This is true when a valid cookie is found.
+		/// Returns true if a user is "probably" logged in. This is true when a valid cookie or HttpAuthentication is used(but not verified)
 		/// DO NOT USE THIS TO SAFE-GUARD ANYTHING IMPORTANT! This is only intended to be used in things such as views
 		/// where you'd want to display a link to a control panel or some such.
 		/// The purpose of this is that this will not try to look up the user in the database, making it so that
@@ -220,7 +220,7 @@ namespace Earlz.BarelyMVC.Authentication
 			}
 		}
 		/// <summary>
-		/// Returns the name of the person "probably" logged in
+		/// Returns the name of the person "probably" logged in. This is true when a valid cookie or HttpAuthentication is used(but not verified)
 		/// DO NOT USE THIS TO SAFE-GUARD ANYTHING IMPORTANT! This is only intended to be used in things such as views
 		/// where you'd want to display a link to a control panel or some such.
 		/// The purpose of this is that this will not try to look up the user in the database, so that

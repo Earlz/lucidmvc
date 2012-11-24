@@ -47,7 +47,15 @@ namespace Earlz.BarelyMVC
         {
             NonAlphaNumeric=new Regex(@"[^a-zA-Z0-9]\ ", RegexOptions.Compiled);
         }
-        public static Router Router{get{return Router;}}
+        public static Router Router{
+			get{
+				if(router==null)
+				{
+					router=new Router();
+				}
+				return router;
+			}
+		}
         static Router router;
         /// <summary>
         /// Handles the current HttpRequest and calls the appropriate HttpHandler
@@ -65,28 +73,26 @@ namespace Earlz.BarelyMVC
         /// Adds a route to the router
         /// </summary>
         static public void AddRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
-            /**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
-             * "collection modified" exception from .Net. **/
-            if(router==null){
-                router=new Router();
-            }
             router.AddRoute(id,method,pattern,handler);
         }
         static public void AddRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
         {
-            if(router==null)
-            {
-                router=new Router();
-            }
             router.AddRoute(id, method, pattern, handler);
         }
         static public void AddRoute(string pattern, HandlerInvoker handler)
         {
-            if(router==null)
-            {
-                router=new Router();
-            }
             router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
+        }
+		static public void AddSecureRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
+		{
+			router.AddSecureRoute(id, method, pattern, handler);
+		}
+        static public void AddSecureRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
+            router.AddSecureRoute(id,method,pattern,handler);
+        }
+        static public void AddSecureRoute(string pattern, HandlerInvoker handler)
+        {
+            router.AddSecureRoute(pattern, HttpMethod.Get, pattern, handler);
         }
         /// <summary>
         /// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"

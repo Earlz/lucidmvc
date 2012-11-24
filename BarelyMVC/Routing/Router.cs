@@ -37,6 +37,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Earlz.BarelyMVC.ViewEngine;
 using System.Linq;
+using Earlz.BarelyMVC.Authentication;
 
 namespace Earlz.BarelyMVC
 {
@@ -73,6 +74,16 @@ namespace Earlz.BarelyMVC
             var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method};
             Routes.Add(r);
         }
+		public void AddSecureRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
+		{
+			var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method, Secure=true};
+			Routes.Add(r);
+		}
+		public void AddSecureRoute(string id, HttpMethod method, string pattern, HandlerInvoker invoker)
+		{
+			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=HandlerInvoker, ID=id, Method=method, Secure=true};
+			Routes.Add(r);
+		}
         
         void DoHandler (Route r,HttpContext c,ParameterDictionary p)
         {
@@ -94,6 +105,10 @@ namespace Earlz.BarelyMVC
                     if(r.Method == HttpMethod.Any || m==r.Method || 
                        (r.Method==HttpMethod.Get && m==HttpMethod.Head))
                     {
+						if(r.Secure)
+						{
+							FSCAuth.RequiresLogin();
+						}
                         DoHandler(r, c, r.Pattern.Params);
                         return true;
                     }
@@ -143,10 +158,8 @@ namespace Earlz.BarelyMVC
         public HandlerInvoker Invoker;  
         public HttpMethod Method;
         public string ID;
+		public bool Secure;
     }
-    
-    
-    
 }
 
 
