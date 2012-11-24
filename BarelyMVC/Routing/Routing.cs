@@ -34,95 +34,95 @@ using System.Text.RegularExpressions;
 namespace Earlz.BarelyMVC
 {
 
-	/**A static helper class for use inside of Global.asax(usually)**/
-	public static class Routing
-	{
-		static public int SlugMaxWords=7;
-		static public int SlugMaxChars=70;
-		/// <summary>
-		/// Will match everything that isn't alphanumeric, dash, or space
-		/// </summary>
-		static Regex NonAlphaNumeric;
-		static Routing()
-		{
-			NonAlphaNumeric=new Regex(@"[^a-zA-Z0-9]\ ", RegexOptions.Compiled);
-		}
-		public static Router Router{get{return Router;}}
-		static Router router;
-		/// <summary>
-		/// Handles the current HttpRequest and calls the appropriate HttpHandler
-		/// </summary>
-		static public void DoRequest(HttpContext c,HttpApplication app){
-			c.Response.ContentType="text/html"; //default
-			if(c.Request.Url.AbsolutePath.Substring(0,Math.Min(c.Request.Url.AbsolutePath.Length,8))=="/static/"){
-				return; //let it just serve the static files
-			}
-			if(router.DoRoute(c)){
-				app.CompleteRequest();
-			}
-		}
-		/// <summary>
-		/// Adds a route to the router
-		/// </summary>
-		static public void AddRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
-			/**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
-			 * "collection modified" exception from .Net. **/
-			if(router==null){
-				router=new Router();
-			}
-			router.AddRoute(id,method,pattern,handler);
-		}
-		static public void AddRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
-		{
-			if(router==null)
-			{
-				router=new Router();
-			}
-			router.AddRoute(id, method, pattern, handler);
-		}
-		static public void AddRoute(string pattern, HandlerInvoker handler)
-		{
-			if(router==null)
-			{
-				router=new Router();
-			}
-			router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
-		}
-		/// <summary>
-		/// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"
-		/// </summary>
-		static public string Slugify(string text)
-		{
-			string tmp=NonAlphaNumeric.Replace(text," ").Replace(" ","-").ToLower();
-			//remove insignificant duplicate `-` characters
-			tmp=string.Join("-", tmp.Split(new string[]{"-"}, StringSplitOptions.RemoveEmptyEntries));
-			if(tmp.Length>0 && tmp[tmp.Length-1]=='-')
-			{
-				tmp=tmp.Substring(0,tmp.Length-1); //remove trailing - if needed
-			}
-			if(tmp.Length>0 && tmp[0]=='-')
-			{
-				tmp=tmp.Substring(1); //skip ahead one
-			}
-			int wordcount=0;
-			if(tmp.Length>SlugMaxChars)
-			{
-				tmp=tmp.Substring(0,SlugMaxChars);
-			}
-			for(int i=0;i<tmp.Length;i++)
-			{
-				if(tmp[i]=='-')
-				{
-					wordcount++;
-					if(wordcount>SlugMaxWords)
-					{
-						tmp=tmp.Substring(0,i);
-						break;
-					}
-				}
-			}
-			return tmp;
-		}
-	}
+    /**A static helper class for use inside of Global.asax(usually)**/
+    public static class Routing
+    {
+        static public int SlugMaxWords=7;
+        static public int SlugMaxChars=70;
+        /// <summary>
+        /// Will match everything that isn't alphanumeric, dash, or space
+        /// </summary>
+        static Regex NonAlphaNumeric;
+        static Routing()
+        {
+            NonAlphaNumeric=new Regex(@"[^a-zA-Z0-9]\ ", RegexOptions.Compiled);
+        }
+        public static Router Router{get{return Router;}}
+        static Router router;
+        /// <summary>
+        /// Handles the current HttpRequest and calls the appropriate HttpHandler
+        /// </summary>
+        static public void DoRequest(HttpContext c,HttpApplication app){
+            c.Response.ContentType="text/html"; //default
+            if(c.Request.Url.AbsolutePath.Substring(0,Math.Min(c.Request.Url.AbsolutePath.Length,8))=="/static/"){
+                return; //let it just serve the static files
+            }
+            if(router.DoRoute(c)){
+                app.CompleteRequest();
+            }
+        }
+        /// <summary>
+        /// Adds a route to the router
+        /// </summary>
+        static public void AddRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
+            /**TODO: This needs to be smart enough so that routes can not be added while routes are being parsed, else get a 
+             * "collection modified" exception from .Net. **/
+            if(router==null){
+                router=new Router();
+            }
+            router.AddRoute(id,method,pattern,handler);
+        }
+        static public void AddRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
+        {
+            if(router==null)
+            {
+                router=new Router();
+            }
+            router.AddRoute(id, method, pattern, handler);
+        }
+        static public void AddRoute(string pattern, HandlerInvoker handler)
+        {
+            if(router==null)
+            {
+                router=new Router();
+            }
+            router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
+        }
+        /// <summary>
+        /// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"
+        /// </summary>
+        static public string Slugify(string text)
+        {
+            string tmp=NonAlphaNumeric.Replace(text," ").Replace(" ","-").ToLower();
+            //remove insignificant duplicate `-` characters
+            tmp=string.Join("-", tmp.Split(new string[]{"-"}, StringSplitOptions.RemoveEmptyEntries));
+            if(tmp.Length>0 && tmp[tmp.Length-1]=='-')
+            {
+                tmp=tmp.Substring(0,tmp.Length-1); //remove trailing - if needed
+            }
+            if(tmp.Length>0 && tmp[0]=='-')
+            {
+                tmp=tmp.Substring(1); //skip ahead one
+            }
+            int wordcount=0;
+            if(tmp.Length>SlugMaxChars)
+            {
+                tmp=tmp.Substring(0,SlugMaxChars);
+            }
+            for(int i=0;i<tmp.Length;i++)
+            {
+                if(tmp[i]=='-')
+                {
+                    wordcount++;
+                    if(wordcount>SlugMaxWords)
+                    {
+                        tmp=tmp.Substring(0,i);
+                        break;
+                    }
+                }
+            }
+            return tmp;
+        }
+    }
 }
 

@@ -42,9 +42,9 @@ namespace Earlz.BarelyMVC.Authentication
         {
             Name = name;
         }
-		/// <summary>
-		///The name of the Group 
-		/// </summary>
+        /// <summary>
+        ///The name of the Group 
+        /// </summary>
         public virtual string Name{get;set;}
     }
 }

@@ -28,14 +28,14 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 namespace Earlz.BarelyMVC.Authentication
 {
-	/// <summary>
-	/// thrown when trying to create a new user and the username is already in use(if applicable)
-	/// </summary>
-	public class UserExistsException : ApplicationException
-	{
-		public UserExistsException ()
-		{
-		}
-	}
+    /// <summary>
+    /// thrown when trying to create a new user and the username is already in use(if applicable)
+    /// </summary>
+    public class UserExistsException : ApplicationException
+    {
+        public UserExistsException ()
+        {
+        }
+    }
 }
 

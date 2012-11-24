@@ -40,254 +40,254 @@ using System.Linq;
 
 namespace Earlz.BarelyMVC
 {
-	public enum GroupMatchType
-	{
-		Integer,
-		Float,
-		HexString,
-		AlphaNumeric
-	}
+    public enum GroupMatchType
+    {
+        Integer,
+        Float,
+        HexString,
+        AlphaNumeric
+    }
 
-	public class SimplePattern : IPatternMatcher
-	{
-		//.Where("var","pattern")
+    public class SimplePattern : IPatternMatcher
+    {
+        //.Where("var","pattern")
 
-		public SimplePattern Where(string variable, string regexPattern)
-		{
-			Groups.Single(x=>x.ParamName==variable).MatchType=new Regex(regexPattern,RegexOptions.Compiled);
-			return this;
-		}
+        public SimplePattern Where(string variable, string regexPattern)
+        {
+            Groups.Single(x=>x.ParamName==variable).MatchType=new Regex(regexPattern,RegexOptions.Compiled);
+            return this;
+        }
 
-		public SimplePattern Where(string variable, GroupMatchType matchtype)
-		{
-			switch(matchtype)
-			{
-			case GroupMatchType.AlphaNumeric:
-				return Where(variable, "^[0-9a-zA-Z]+$");
-			case GroupMatchType.Float:
-				return Where(variable, @"^[-+]?[0-9]*\.?[0-9]+$");
-			case GroupMatchType.Integer:
-				return Where(variable, "^[-+]?[0-9]*$");
-			case GroupMatchType.HexString:
-				return Where(variable, "^[0-9A-Fa-f]+$");
-			default:
-				throw new NotSupportedException("That match type isn't supported");
-			}
-		}
+        public SimplePattern Where(string variable, GroupMatchType matchtype)
+        {
+            switch(matchtype)
+            {
+            case GroupMatchType.AlphaNumeric:
+                return Where(variable, "^[0-9a-zA-Z]+$");
+            case GroupMatchType.Float:
+                return Where(variable, @"^[-+]?[0-9]*\.?[0-9]+$");
+            case GroupMatchType.Integer:
+                return Where(variable, "^[-+]?[0-9]*$");
+            case GroupMatchType.HexString:
+                return Where(variable, "^[0-9A-Fa-f]+$");
+            default:
+                throw new NotSupportedException("That match type isn't supported");
+            }
+        }
 
-		static List<Group> GetGroup(string pattern)
-		{
-			return HttpContext.Current.Cache.Get(pattern) as List<Group>;
-		}
-		static void SetGroup(string pattern, List<Group> groups)
-		{
-			HttpContext.Current.Cache.Add(pattern, groups, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
-		}
-		private string Pattern;
-		private List<Group> Groups;
-		
-		private class Group {
-			public string ParamName;
-			public string Text;
-			public bool IsParam=false;
-			public List<string> ValidMatches=new List<string>();
-			public bool MatchAll=true;
-			public bool Optional=false;
-			public char End;
-			public Regex MatchType=null;
-		}
-		
-		public SimplePattern (string pattern)
-		{
-			Pattern = pattern;
-			UpdateGroups();
-		}
-		
+        static List<Group> GetGroup(string pattern)
+        {
+            return HttpContext.Current.Cache.Get(pattern) as List<Group>;
+        }
+        static void SetGroup(string pattern, List<Group> groups)
+        {
+            HttpContext.Current.Cache.Add(pattern, groups, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
+        }
+        private string Pattern;
+        private List<Group> Groups;
+        
+        private class Group {
+            public string ParamName;
+            public string Text;
+            public bool IsParam=false;
+            public List<string> ValidMatches=new List<string>();
+            public bool MatchAll=true;
+            public bool Optional=false;
+            public char End;
+            public Regex MatchType=null;
+        }
+        
+        public SimplePattern (string pattern)
+        {
+            Pattern = pattern;
+            UpdateGroups();
+        }
+        
 
 
-		public ParameterDictionary Params{get;private set;}
-		/**This method returns true(and populates Params) if the input string matches the Pattern string. **/
-		public bool IsMatch (string input)
-		{
-			Params=new ParameterDictionary();
-			string s=input;
-			if(Groups.Count==0){
-				throw new ApplicationException("Groups.Count==0 matches all. This shouldn't happen");
-			}
-			foreach(var g in Groups){
-				if(!g.IsParam){
-					if(g.Text.Length>=s.Length){
-						if(Groups[Groups.Count-1]==g){
-							return g.Text==s; //to check for exact matches(but only for the last group)
-						}else{
-							if(g.Optional){
-								return true;
-							}else{
-								return false;
-							}
-						}
-					}
-					string tmp=CutString(s,0,g.Text.Length);
-					if(g.Text==tmp){
-						s=s.Substring(g.Text.Length);
-					}else{
-						return false;
-					}
-				}else{
-					int end;
-					if(g.End=='\0'){
-						end=s.Length;
-					}else{
-						end=s.IndexOf(g.End);
-						if(end==-1){
-							return false;
-						}
-					}
-					if(g.MatchAll){
-						if(s.Substring(0,end)==""){
-							return false;
-						}
-						int slash=s.IndexOf('/');
-						if(slash==-1 || g.Optional){
-							if(g.MatchType!=null)
-							{
-								if(!g.MatchType.IsMatch(s.Substring(0,end)))
-								{
-									return false;
-								}
-							}
-							//Params.Add(g.ParamName, new List<string>());
-							//Params[g.ParamName]=s.Substring(0,end);
-							Params.Add(g.ParamName, s.Substring(0,end));
-							s=""; //doesn't matter. 
-						}else{
-							if(g.MatchType!=null)
-							{
-								if(!g.MatchType.IsMatch(s.Substring(0,slash)))
-								{
-									return false;
-								}
+        public ParameterDictionary Params{get;private set;}
+        /**This method returns true(and populates Params) if the input string matches the Pattern string. **/
+        public bool IsMatch (string input)
+        {
+            Params=new ParameterDictionary();
+            string s=input;
+            if(Groups.Count==0){
+                throw new ApplicationException("Groups.Count==0 matches all. This shouldn't happen");
+            }
+            foreach(var g in Groups){
+                if(!g.IsParam){
+                    if(g.Text.Length>=s.Length){
+                        if(Groups[Groups.Count-1]==g){
+                            return g.Text==s; //to check for exact matches(but only for the last group)
+                        }else{
+                            if(g.Optional){
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        }
+                    }
+                    string tmp=CutString(s,0,g.Text.Length);
+                    if(g.Text==tmp){
+                        s=s.Substring(g.Text.Length);
+                    }else{
+                        return false;
+                    }
+                }else{
+                    int end;
+                    if(g.End=='\0'){
+                        end=s.Length;
+                    }else{
+                        end=s.IndexOf(g.End);
+                        if(end==-1){
+                            return false;
+                        }
+                    }
+                    if(g.MatchAll){
+                        if(s.Substring(0,end)==""){
+                            return false;
+                        }
+                        int slash=s.IndexOf('/');
+                        if(slash==-1 || g.Optional){
+                            if(g.MatchType!=null)
+                            {
+                                if(!g.MatchType.IsMatch(s.Substring(0,end)))
+                                {
+                                    return false;
+                                }
+                            }
+                            //Params.Add(g.ParamName, new List<string>());
+                            //Params[g.ParamName]=s.Substring(0,end);
+                            Params.Add(g.ParamName, s.Substring(0,end));
+                            s=""; //doesn't matter. 
+                        }else{
+                            if(g.MatchType!=null)
+                            {
+                                if(!g.MatchType.IsMatch(s.Substring(0,slash)))
+                                {
+                                    return false;
+                                }
 
-							}
+                            }
 
-							Params.Add(g.ParamName,s.Substring(0,slash));
-							s=s.Substring(slash); //doesn't matter. 
-								
-						}
-					}else{
-						string t=s.Substring(0,end);
-						bool matched=false;
-						foreach(var match in g.ValidMatches){
-							if(match==t){
-								matched=true;
-								//break;
-							}
-						}
-						if(matched==false){
-							return false;
-						}
-						if(g.MatchType!=null)
-						{
-							if(!g.MatchType.IsMatch(t))
-							{
-								return false;
-							}
-						}
-						Params.Add(g.ParamName,t);
-						s=s.Substring(end);
-					}
-				}
-				
-				
-			}
-			if(s.Length!=0){
-				return false;
-			}else{
-				return true;
-			}
-		}
-		/** This will parse the Pattern string one group at a time. **/
-		int ParseParam (int start, ref Group g)
-		{
-			start++;
-			
-			int end=Pattern.Substring(start).IndexOf('}')+start;
-			if(end+1>=Pattern.Length-1){
-				g.End='\0';
-			}else{
-				g.End=Pattern[end+1];
-			}
-			string p=CutString(Pattern,start,end);
-			g.Text=p;
-			int tmp=p.IndexOf('[');
-			if(tmp==-1){ //not found. Just trim it up and get the paramname
-				p=p.Trim();
-				if(p=="*"){
-					g.Optional=true; //meh. Still add it as a match-all group for the hell of it
-				}
-				g.MatchAll=true;
-			}else{
-				//return end;
-				g.MatchAll=false;
-				string l=CutString(p,tmp+1,p.IndexOf(']'));
-				l=l.Replace(" ","");
-				p=p.Substring(0,p.IndexOf("=")).Trim();
-				int count=0;
-				while(true){
-					if(l.Length==0){
-						break;
-					}
-					int endm=l.IndexOf(',');
-					if(endm==-1){
-						endm=l.Length;
-						g.ValidMatches.Add(l);
-						break;
-					}
-					g.ValidMatches.Add(l.Remove(endm));
-					l=l.Substring(endm+1);
-					count++;
-					if(count>100){
-						throw new ApplicationException("inifinite loop detected");
-					}
-				}
-			}
-			
-			g.ParamName=p;
-			return end;
-		}
-		/**Little helper method to cut a string from start to end point. Just shorter than typing .Remove(end).Substring(start) **/
-		private string CutString(string s,int start,int end){
-			return s.Remove(end).Substring(start);
-		}
-		/** This will update all of the "groups" or parameter names/values for the pattern string. 
-		 * Automatically done upon the update of Pattern */
-		private void UpdateGroups ()
-		{
-			List<Group> groups = new List<Group> ();
-			Group g=new Group();
-			for(int i=0;i<Pattern.Length;i++){
-				if(Pattern[i]=='{'){
-					if(g!=null)
-						groups.Add(g);
-					g=new Group();
-					g.IsParam=true;
-					i=ParseParam(i,ref g);
-					groups.Add(g);
-					g=null;
-				}else if(g==null){
-					g=new Group();
-					g.IsParam=false;
-					g.Text+=Pattern[i];
-				}else{
-					g.Text+=Pattern[i];
-				}
-			}
-			if(g!=null){
-				groups.Add(g);
-			}
-			Groups=groups;
-		}
-	}
+                            Params.Add(g.ParamName,s.Substring(0,slash));
+                            s=s.Substring(slash); //doesn't matter. 
+                                
+                        }
+                    }else{
+                        string t=s.Substring(0,end);
+                        bool matched=false;
+                        foreach(var match in g.ValidMatches){
+                            if(match==t){
+                                matched=true;
+                                //break;
+                            }
+                        }
+                        if(matched==false){
+                            return false;
+                        }
+                        if(g.MatchType!=null)
+                        {
+                            if(!g.MatchType.IsMatch(t))
+                            {
+                                return false;
+                            }
+                        }
+                        Params.Add(g.ParamName,t);
+                        s=s.Substring(end);
+                    }
+                }
+                
+                
+            }
+            if(s.Length!=0){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        /** This will parse the Pattern string one group at a time. **/
+        int ParseParam (int start, ref Group g)
+        {
+            start++;
+            
+            int end=Pattern.Substring(start).IndexOf('}')+start;
+            if(end+1>=Pattern.Length-1){
+                g.End='\0';
+            }else{
+                g.End=Pattern[end+1];
+            }
+            string p=CutString(Pattern,start,end);
+            g.Text=p;
+            int tmp=p.IndexOf('[');
+            if(tmp==-1){ //not found. Just trim it up and get the paramname
+                p=p.Trim();
+                if(p=="*"){
+                    g.Optional=true; //meh. Still add it as a match-all group for the hell of it
+                }
+                g.MatchAll=true;
+            }else{
+                //return end;
+                g.MatchAll=false;
+                string l=CutString(p,tmp+1,p.IndexOf(']'));
+                l=l.Replace(" ","");
+                p=p.Substring(0,p.IndexOf("=")).Trim();
+                int count=0;
+                while(true){
+                    if(l.Length==0){
+                        break;
+                    }
+                    int endm=l.IndexOf(',');
+                    if(endm==-1){
+                        endm=l.Length;
+                        g.ValidMatches.Add(l);
+                        break;
+                    }
+                    g.ValidMatches.Add(l.Remove(endm));
+                    l=l.Substring(endm+1);
+                    count++;
+                    if(count>100){
+                        throw new ApplicationException("inifinite loop detected");
+                    }
+                }
+            }
+            
+            g.ParamName=p;
+            return end;
+        }
+        /**Little helper method to cut a string from start to end point. Just shorter than typing .Remove(end).Substring(start) **/
+        private string CutString(string s,int start,int end){
+            return s.Remove(end).Substring(start);
+        }
+        /** This will update all of the "groups" or parameter names/values for the pattern string. 
+         * Automatically done upon the update of Pattern */
+        private void UpdateGroups ()
+        {
+            List<Group> groups = new List<Group> ();
+            Group g=new Group();
+            for(int i=0;i<Pattern.Length;i++){
+                if(Pattern[i]=='{'){
+                    if(g!=null)
+                        groups.Add(g);
+                    g=new Group();
+                    g.IsParam=true;
+                    i=ParseParam(i,ref g);
+                    groups.Add(g);
+                    g=null;
+                }else if(g==null){
+                    g=new Group();
+                    g.IsParam=false;
+                    g.Text+=Pattern[i];
+                }else{
+                    g.Text+=Pattern[i];
+                }
+            }
+            if(g!=null){
+                groups.Add(g);
+            }
+            Groups=groups;
+        }
+    }
 }
 
 

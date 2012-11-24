@@ -31,20 +31,20 @@ using System.Web;
 using Earlz.BarelyMVC.ViewEngine;
 namespace Earlz.BarelyMVC
 {
-	public class TextHandler : BareHttpHandler
-	{
-		string Text;
-		public TextHandler (string text)
-		{
-			Text=text;
-		}
-		public override IBarelyView Get ()
-		{
-			Response.ContentType="text/plain";
-			return new WrapperView(Text);
-		}
-		
-		
-	}
+    public class TextHandler : BareHttpHandler
+    {
+        string Text;
+        public TextHandler (string text)
+        {
+            Text=text;
+        }
+        public override IBarelyView Get ()
+        {
+            Response.ContentType="text/plain";
+            return new WrapperView(Text);
+        }
+        
+        
+    }
 }
 

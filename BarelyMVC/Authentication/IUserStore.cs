@@ -28,51 +28,51 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 namespace Earlz.BarelyMVC.Authentication
 {
-	/// <summary>
-	/// The minimalistic interface from Authentication to the underlying database(or other storage medium). 
-	/// Note, as a best practice, I recommend the classes implementing this interface to be a singleton.
-	/// </summary>
-	public interface IUserStore
-	{
-		/* Note these are not all the features that should probably be implemented for a typical website.
-		 * Most sites will need other features here such as GetUserByID. But these are the only features that Authentication cares about */
-		
-		/// <summary>
+    /// <summary>
+    /// The minimalistic interface from Authentication to the underlying database(or other storage medium). 
+    /// Note, as a best practice, I recommend the classes implementing this interface to be a singleton.
+    /// </summary>
+    public interface IUserStore
+    {
+        /* Note these are not all the features that should probably be implemented for a typical website.
+         * Most sites will need other features here such as GetUserByID. But these are the only features that Authentication cares about */
+        
+        /// <summary>
         /// Gets a UserData object by only the username.
         /// Usernames must be unique
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns>The UserData object associated with username, if not found then null.</returns>
-		UserData GetUserByName(string name);
-		/// <summary>
-		/// Updates the specified UserData, searching by UniqueID only. (in some cases, only UniqueID will be populated)
-		/// </summary>
-		/// <param name="user">The UserData object</param>
-		/// <returns></returns>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>The UserData object associated with username, if not found then null.</returns>
+        UserData GetUserByName(string name);
+        /// <summary>
+        /// Updates the specified UserData, searching by UniqueID only. (in some cases, only UniqueID will be populated)
+        /// </summary>
+        /// <param name="user">The UserData object</param>
+        /// <returns></returns>
         /// <remarks>
         /// This is intended to search by UniqueID. UniqueID can never change.
         /// This function is used by Authentication.AddUser, so it must be implemented to add a user account. 
         /// </remarks>
-		bool UpdateUserByID(UserData user);
+        bool UpdateUserByID(UserData user);
 
-		/// <summary>
+        /// <summary>
         /// Adds a new user, populating the UniqueID of user in the process.
-		/// </summary>
-		/// <param name="user">The UserData object. This should have at least Username populated. </param>
-		/// <returns>true if successful in adding it.</returns>
-		/// <exception cref="UserExistsException">Thrown if the username is already taken </exception>
-		bool AddUser(UserData user);
-		
-		/// <summary>
-		/// Deletes a user by UniqueID. This is optional. FSCAuth does not use this function at all internally.
-		/// </summary>
-		/// <param name="user">
-		/// User to delete
-		/// </param>
-		/// <returns>
-		/// true if deletion was successful
-		/// </returns>
-		bool DeleteUserByID(UserData user);
-	}
+        /// </summary>
+        /// <param name="user">The UserData object. This should have at least Username populated. </param>
+        /// <returns>true if successful in adding it.</returns>
+        /// <exception cref="UserExistsException">Thrown if the username is already taken </exception>
+        bool AddUser(UserData user);
+        
+        /// <summary>
+        /// Deletes a user by UniqueID. This is optional. FSCAuth does not use this function at all internally.
+        /// </summary>
+        /// <param name="user">
+        /// User to delete
+        /// </param>
+        /// <returns>
+        /// true if deletion was successful
+        /// </returns>
+        bool DeleteUserByID(UserData user);
+    }
 }
 

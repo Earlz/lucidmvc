@@ -31,64 +31,64 @@ using System.Security.Cryptography;
 using System.Web;
 namespace Earlz.BarelyMVC.Authentication
 {
-	public class HashWithSalt
-	{
-		/// <summary>
-		/// the hashed output
-		/// </summary>
-		public string Text;
-		/// <summary>
-		/// The salt used for hashing
-		/// </summary>
-		public string Salt;
-	}
-	
-	static public class HashHelper
-	{
-		/// <summary>
-		/// decodes a URL base64 string to byte array
-		/// </summary>
-		static public byte[] ToBytes(string v)
-		{
-			return HttpServerUtility.UrlTokenDecode(v);
-			
+    public class HashWithSalt
+    {
+        /// <summary>
+        /// the hashed output
+        /// </summary>
+        public string Text;
+        /// <summary>
+        /// The salt used for hashing
+        /// </summary>
+        public string Salt;
+    }
+    
+    static public class HashHelper
+    {
+        /// <summary>
+        /// decodes a URL base64 string to byte array
+        /// </summary>
+        static public byte[] ToBytes(string v)
+        {
+            return HttpServerUtility.UrlTokenDecode(v);
+            
 
-		}
-		/// <summary>
-		/// Converts a byte array to a URL base64 string
-		/// </summary>
-		static public string FromBytes(byte[] v)
-		{
-			return HttpServerUtility.UrlTokenEncode(v);
-		}
-		/// <summary>
-		/// Converts a string to byte array(using UTF8)
-		/// </summary>
-		static public byte[] ToRawBytes(string v)
-		{
-			return Encoding.UTF8.GetBytes(v);
-		}
-		/// <summary>
-		/// Converts a byte array to a string(using UTF8)
-		/// </summary>
-		static public string FromRawBytes(byte[] v)
-		{
-			return BitConverter.ToString(v);
-		}
-		/// <summary>
-		/// Generates a new random salt of specified length using RNGCryptoServiceProvider
-		/// </summary>
-		public static string GetSalt(int length)
-		{
-			//Create and populate random byte array
-			byte[] randomArray = new byte[length];
-			string randomString;
-			//Create random salt and convert to string
-			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-			rng.GetBytes(randomArray);
-			randomString = Convert.ToBase64String(randomArray);
-			return randomString.Substring(0,Math.Min(randomString.Length,length)); //cut to specified length
-		}
-	}
+        }
+        /// <summary>
+        /// Converts a byte array to a URL base64 string
+        /// </summary>
+        static public string FromBytes(byte[] v)
+        {
+            return HttpServerUtility.UrlTokenEncode(v);
+        }
+        /// <summary>
+        /// Converts a string to byte array(using UTF8)
+        /// </summary>
+        static public byte[] ToRawBytes(string v)
+        {
+            return Encoding.UTF8.GetBytes(v);
+        }
+        /// <summary>
+        /// Converts a byte array to a string(using UTF8)
+        /// </summary>
+        static public string FromRawBytes(byte[] v)
+        {
+            return BitConverter.ToString(v);
+        }
+        /// <summary>
+        /// Generates a new random salt of specified length using RNGCryptoServiceProvider
+        /// </summary>
+        public static string GetSalt(int length)
+        {
+            //Create and populate random byte array
+            byte[] randomArray = new byte[length];
+            string randomString;
+            //Create random salt and convert to string
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(randomArray);
+            randomString = Convert.ToBase64String(randomArray);
+            return randomString.Substring(0,Math.Min(randomString.Length,length)); //cut to specified length
+        }
+    }
 }
 
