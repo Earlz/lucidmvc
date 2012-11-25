@@ -64,8 +64,18 @@ namespace BarelyMVC.Tests
             Assert.IsTrue(x.IsMatch("/meh/123456"));
             Assert.IsTrue(x.IsMatch("/meh/-12345"));
             Assert.IsFalse(x.IsMatch("/meh/194jfjkd"));
-
         }
+		[Test]
+		public void ShortcutTest()
+		{
+			SimplePattern.AddShortcut("foo", "/biz/{baz}");
+			var x=new SimplePattern("/meh/{!foo!}");
+			Assert.IsTrue(x.IsMatch("/meh/biz/foo"));
+			Assert.AreEqual("foo", x.Params["baz"]);
+			Assert.IsFalse(x.IsMatch("/meh/foo"));
+
+
+		}
     }
 }
 

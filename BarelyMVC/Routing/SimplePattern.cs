@@ -50,8 +50,18 @@ namespace Earlz.BarelyMVC
 
     public class SimplePattern : IPatternMatcher
     {
+		static Dictionary<string, string> Shortcuts=new Dictionary<string, string>();
+		/// <summary>
+		/// Adds a pattern shortcut. This can make it so instead of constantly having to duplicate routes, you can instead make shortcuts
+		/// Example: 
+		/// /foo/{!shortcut!} becomes /foo/bar/biz/{baz}
+		/// when a shortcut named `shortcut` is created with value "/bar/biz/{bar}"
+		/// </summary>
+		public static void AddShortcut(string name, string text)
+		{
+			Shortcuts.Add(name, text);
+		}
         //.Where("var","pattern")
-
         public SimplePattern Where(string variable, string regexPattern)
         {
             Groups.Single(x=>x.ParamName==variable).MatchType=new Regex(regexPattern,RegexOptions.Compiled);
@@ -100,6 +110,10 @@ namespace Earlz.BarelyMVC
         public SimplePattern (string pattern)
         {
             Pattern = pattern;
+			foreach(var item in Shortcuts)
+			{
+				Pattern=Pattern.Replace("/{!"+item.Key+"!}", item.Value);
+			}
             UpdateGroups();
         }
         
