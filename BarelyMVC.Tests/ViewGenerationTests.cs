@@ -52,6 +52,17 @@ Hello there {=foo=}
                 }
             ));
         }
+		[Test]
+		public void NoSpacingBetweenDeclarations()
+		{
+			string view="{@ foo as bar @}{@ meh as biz @}";
+			var gen=new ViewGenerator("test", "test", false, false, "defaultwriter");
+			gen.BaseClass="defaultbase";
+			gen.Input=view;
+			gen.Generate();
+			Assert.IsTrue(gen.Properties.Any(x=>x.Name=="foo"));
+			Assert.IsTrue(gen.Properties.Any(x=>x.Name=="meh"));
+		}
 
     }
 }

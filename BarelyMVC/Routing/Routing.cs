@@ -65,7 +65,7 @@ namespace Earlz.BarelyMVC
             if(c.Request.Url.AbsolutePath.Substring(0,Math.Min(c.Request.Url.AbsolutePath.Length,8))=="/static/"){
                 return; //let it just serve the static files
             }
-            if(router.DoRoute(c)){
+            if(Router.DoRoute(c)){
                 app.CompleteRequest();
             }
         }
@@ -73,29 +73,29 @@ namespace Earlz.BarelyMVC
         /// Adds a route to the router
         /// </summary>
         static public void AddRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
-            router.AddRoute(id,method,pattern,handler);
+            Router.AddRoute(id,method,pattern,handler);
         }
         static public void AddRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
         {
-            router.AddRoute(id, method, pattern, handler);
+            Router.AddRoute(id, method, pattern, handler);
         }
         static public void AddRoute(string pattern, HandlerInvoker handler)
         {
-            router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
+            Router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
         }
 		/// <summary>
 		/// Adds a route to the router which will require authentication before attempting to execute your handler
 		/// </summary>
 		static public void AddSecureRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
 		{
-			router.AddSecureRoute(id, method, pattern, handler);
+			Router.AddSecureRoute(id, method, pattern, handler);
 		}
         static public void AddSecureRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
-            router.AddSecureRoute(id,method,pattern,handler);
+            Router.AddSecureRoute(id,method,pattern,handler);
         }
         static public void AddSecureRoute(string pattern, HandlerInvoker handler)
         {
-            router.AddSecureRoute(pattern, HttpMethod.Get, pattern, handler);
+            Router.AddSecureRoute(pattern, HttpMethod.Get, pattern, handler);
         }
         /// <summary>
         /// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"

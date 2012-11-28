@@ -160,7 +160,7 @@ namespace Earlz.BarelyMVC
                 }
                 return; //don't bother if we don't find a match
             }
-            p.Caller(Target, ConvertValue(Values[p.MappedName],p.PropertyType, p.Default, p.Converter));
+            p.Caller(Target, ConvertValue(p.MappedName, p.PropertyType, p.Default, p.Converter));
 
             /*if(converter!=null)
                 {
@@ -168,16 +168,16 @@ namespace Earlz.BarelyMVC
                 }*/
             //p.SetValue(Target, ConvertValue(val, p.PropertyType, defaultval), null);
         }
-        object ConvertValue(string fromval, Type totype, object defaultval, IParameterConverter converter)
+        object ConvertValue(string key, Type totype, object defaultval, IParameterConverter converter)
         {
             try
             {
                 object tmp;
                 if(converter==null)
                 {
-                    tmp=Convert.ChangeType(fromval, totype);
+                    tmp=Convert.ChangeType(Values[key], totype);
                 }else{
-                    tmp=converter.Convert(fromval, Values);
+                    tmp=converter.Convert(key, Values);
                 }
                 if(tmp==null)
                 {
@@ -185,7 +185,7 @@ namespace Earlz.BarelyMVC
                 }
                 return tmp;
             }
-            catch
+            catch(Exception e)
             {
                 return defaultval;
             }

@@ -6,7 +6,7 @@ namespace Earlz.BarelyMVC.Converters
     {
         public object Convert(string key, ParameterDictionary d)
         {
-            if((d[key] ?? "").ToLower()=="yes")
+            if(d.ContainsKey(key))
             {
                 return true;
             }else{
