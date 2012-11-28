@@ -44,7 +44,7 @@ namespace Earlz.BarelyMVC
             Url=url;
             Permanent=permanent;
         }
-        public override Earlz.BarelyMVC.ViewEngine.IBarelyView Get()
+        public Earlz.BarelyMVC.ViewEngine.IBarelyView Get()
         {
             if(Permanent)
             {

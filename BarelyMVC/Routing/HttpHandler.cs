@@ -61,30 +61,6 @@ namespace Earlz.BarelyMVC
         public HttpHandler ()
         {
         }
-        /// <summary>
-        /// Handles HTTP GET requests
-        /// </summary>
-        public virtual IBarelyView Get(){
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Handles HTTP POST requests
-        /// </summary>
-        public virtual IBarelyView Post(){
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Handles HTTP PUT requests
-        /// </summary>
-        public virtual IBarelyView Put(){
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Handles HTTP DELETE requests
-        /// </summary>
-        public virtual IBarelyView Delete(){
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Mostly an internal thing. Used to calculate content length for HEAD requests(does not include views that are "returned" to the router)
@@ -110,10 +86,11 @@ namespace Earlz.BarelyMVC
         /// This is enough for most cases. Only override if you expect to obey the standard behavior of GET, but with no content. 
         /// The returned view is "rendered", but not sent to the Response stream. It is only rendered to get content-length
         /// </summary>
-        public virtual IBarelyView Head(){
+		/// TODO fix this somehow?
+        /*public virtual IBarelyView Head(){
             CurrentWriter=null; //force 
             return Get();
-        }
+        }*/
         /**Writes to the output stream**/
         public void Write(string s){
             ContentLength+=s.Length;

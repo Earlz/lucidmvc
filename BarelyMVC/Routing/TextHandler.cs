@@ -38,7 +38,7 @@ namespace Earlz.BarelyMVC
         {
             Text=text;
         }
-        public override IBarelyView Get ()
+        public IBarelyView Get()
         {
             Response.ContentType="text/plain";
             return new WrapperView(Text);
