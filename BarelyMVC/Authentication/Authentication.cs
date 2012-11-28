@@ -216,7 +216,7 @@ namespace Earlz.BarelyMVC.Authentication
 		{
 			get
 			{
-				return false;
+				return ProbableUserName!=null;
 			}
 		}
 		/// <summary>
