@@ -100,6 +100,7 @@ namespace Earlz.BarelyMVC
         /// Handles the current request
         /// </summary>
         public bool DoRoute(HttpContext c){
+			bool foundwrongmethod=false;
             foreach(var r in Routes){
                 if(r.Pattern.IsMatch(c.Request.Url.AbsolutePath))
                 {
@@ -107,15 +108,23 @@ namespace Earlz.BarelyMVC
                     if(r.Method == HttpMethod.Any || m==r.Method || 
                        (r.Method==HttpMethod.Get && m==HttpMethod.Head))
                     {
+
 						if(r.Secure)
 						{
 							FSCAuth.RequiresLogin();
 						}
                         DoHandler(r, c, r.Pattern.Params);
                         return true;
-                    }
+                    }else
+					{
+						foundwrongmethod=true;
+					}
                 }
             }
+			if(foundwrongmethod)
+			{
+				throw new HttpException(405, "Method not allowed");;
+			}
             return false;
         }
 
@@ -132,7 +141,7 @@ namespace Earlz.BarelyMVC
                 case "HEAD":
                     return HttpMethod.Head;
                 default:
-                    throw new ApplicationException("Cannot convert method name to a method type.");
+					throw new HttpException(405, "Method not allowed");
             }
         }
         void CallMethod(HandlerInvoker invoker){

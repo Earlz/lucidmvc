@@ -73,9 +73,8 @@ namespace BarelyMVC.Tests
 			Assert.IsTrue(x.IsMatch("/meh/biz/foo"));
 			Assert.AreEqual("foo", x.Params["baz"]);
 			Assert.IsFalse(x.IsMatch("/meh/foo"));
-
-
 		}
+
     }
 }
 
