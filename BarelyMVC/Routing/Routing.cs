@@ -43,9 +43,15 @@ namespace Earlz.BarelyMVC
         /// Will match everything that isn't alphanumeric, dash, or space
         /// </summary>
         static Regex NonAlphaNumeric;
+		/// <summary>
+		/// This is considered a "just-in-case" type thing. After the slug is created, this will run to find
+		/// any possibly unexpected output. This is to prevent redirect scams and generally unsafe things (like breaking HTML and other fun stuff)
+		/// </summary>
+		static Regex SafetyStrip;
         static Routing()
         {
             NonAlphaNumeric=new Regex(@"[^a-zA-Z0-9]\ ", RegexOptions.Compiled);
+			SafetyStrip=new Regex(@"[^a-zA-Z0-9\-]", RegexOptions.Compiled);
         }
         public static Router Router{
 			get{
@@ -102,7 +108,7 @@ namespace Earlz.BarelyMVC
         /// </summary>
         static public string Slugify(string text)
         {
-            string tmp=NonAlphaNumeric.Replace(text," ").Replace(" ","-").ToLower();
+			string tmp=NonAlphaNumeric.Replace(text," ").Replace(" ","-").ToLower();
             //remove insignificant duplicate `-` characters
             tmp=string.Join("-", tmp.Split(new string[]{"-"}, StringSplitOptions.RemoveEmptyEntries));
             if(tmp.Length>0 && tmp[tmp.Length-1]=='-')
@@ -130,7 +136,7 @@ namespace Earlz.BarelyMVC
                     }
                 }
             }
-            return tmp;
+            return SafetyStrip.Replace(tmp, "");
         }
     }
 }
