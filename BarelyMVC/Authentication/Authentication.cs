@@ -348,6 +348,7 @@ namespace Earlz.BarelyMVC.Authentication
                 }
             }
         }
+
         /// <summary>
         /// Will not allow the request to continue if no one is authenticated
         /// </summary>
@@ -675,6 +676,7 @@ namespace Earlz.BarelyMVC.Authentication
             }
             c.Response.Close();
             HttpContext.Current.ApplicationInstance.CompleteRequest(); //stop code execution(and prevent overwriting headers)
+			throw new StopExecutionException();
         }
         
         static void ForceCookieExpiration(){

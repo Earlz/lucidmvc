@@ -52,6 +52,7 @@ namespace Earlz.BarelyMVC
                 Response.Status = "301 Moved Permanently";
                 Response.AddHeader("Location",Url);
                 Context.ApplicationInstance.CompleteRequest();
+				throw new StopExecutionException();
             }
             else
             {

@@ -33,7 +33,9 @@ using System.Text.RegularExpressions;
 
 namespace Earlz.BarelyMVC
 {
-
+	public class StopExecutionException : Exception
+	{
+	}
     /**A static helper class for use inside of Global.asax(usually)**/
     public static class Routing
     {
@@ -73,6 +75,7 @@ namespace Earlz.BarelyMVC
             }
             if(Router.DoRoute(c)){
                 app.CompleteRequest();
+				throw new StopExecutionException();
             }
         }
         /// <summary>
