@@ -601,7 +601,7 @@ if(__InLayout){
 
 
             m=new Method();
-            m.Accessibility="protected virtual";
+            m.Accessibility="protected";
             m.ReturnType="void";
             m.Name="__OutputVariable";
             m.Params.Add(new MethodParam{Name="v", Type="object"});
@@ -677,18 +677,30 @@ if(__InLayout){
         {
             get;set;
         }
+		public virtual List<ClassGenerator> NestedClasses
+		{
+			get;private set;
+		}
         public ClassGenerator()
         {
             Properties=new List<Property>();
             Methods=new List<Method>();
             Fields=new List<Field>();
+			NestedClasses=new List<ClassGenerator>();
             Accessibility="";
         }
-        public override string ToString ()
+		public override string ToString ()
+		{
+			return ToString(true);
+		}
+        public string ToString (bool includenamespace)
         {
             StringBuilder sb=new StringBuilder();
-            sb.Append("namespace "+Namespace);
-            sb.AppendLine("{");
+			if(includenamespace)
+			{
+            	sb.Append("namespace "+Namespace);
+            	sb.AppendLine("{");
+			}
             sb.AppendLine(PrefixDocs);
             sb.AppendLine(GetTab(1)+Accessibility+" class "+Name+": "+BaseClass);
             sb.AppendLine(GetTab(1)+"{");
@@ -704,9 +716,16 @@ if(__InLayout){
             {
                 sb.AppendLine(f.ToString());
             }
+			foreach(var c in NestedClasses)
+			{
+				sb.AppendLine(c.ToString(false));
+			}
             sb.AppendLine(OtherCode);
             sb.AppendLine(GetTab(1)+"}");
-            sb.AppendLine("}");
+			if(includenamespace)
+			{
+            	sb.AppendLine("}");
+			}
             return sb.ToString();
         }
 
