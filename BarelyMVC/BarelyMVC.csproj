@@ -61,6 +61,7 @@
     <Compile Include="Routing\ParameterFiller.cs" />
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="ViewEngine\ViewEngineInternal.tt.cs" />
+    <Compile Include="ExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

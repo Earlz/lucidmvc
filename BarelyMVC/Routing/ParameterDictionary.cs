@@ -37,7 +37,7 @@ namespace Earlz.BarelyMVC
 {
     /// <summary>
     /// This is just a simple "specialized" dictionary. 
-    /// The reason it's values are of IList is because with Form values(and elsewhere), it is completely acceptable for their to be duplicate keys
+    /// The reason it's values are of IList is because with Form values(and elsewhere), it is completely acceptable for there to be duplicate keys
     /// Note if you use ParameterFiller with this containing duplicate keys, behavior can be undefined. Use a Converter for consistent and guaranteed behavior
     /// </summary>
     public class ParameterDictionary : Dictionary<string, IList<string>>
@@ -72,7 +72,7 @@ namespace Earlz.BarelyMVC
             base[key]=values;
         }
     }
-    public static class Extensions
+    public static class ExtensionMethods
     {
         public static ParameterDictionary ToParameters(this NameValueCollection c)
         {

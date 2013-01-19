@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Configuration;
 using System.Web.Security;
 using System.Security;
+using Earlz.BarelyMVC.Extensions;
 
 namespace Earlz.BarelyMVC.Authentication
 {
@@ -675,8 +676,7 @@ namespace Earlz.BarelyMVC.Authentication
                 c.Server.Transfer(Config.AuthPage);
             }
             c.Response.Close();
-            HttpContext.Current.ApplicationInstance.CompleteRequest(); //stop code execution(and prevent overwriting headers)
-			throw new StopExecutionException();
+			HttpContext.Current.ApplicationInstance.KillIt();
         }
         
         static void ForceCookieExpiration(){

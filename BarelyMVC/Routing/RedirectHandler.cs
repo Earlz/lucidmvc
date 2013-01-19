@@ -27,6 +27,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
+using Earlz.BarelyMVC.Extensions;
 
 namespace Earlz.BarelyMVC
 {
@@ -51,8 +52,7 @@ namespace Earlz.BarelyMVC
                 //no support for 301s built into ASP.Net
                 Response.Status = "301 Moved Permanently";
                 Response.AddHeader("Location",Url);
-                Context.ApplicationInstance.CompleteRequest();
-				throw new StopExecutionException();
+				Context.ApplicationInstance.KillIt();
             }
             else
             {
