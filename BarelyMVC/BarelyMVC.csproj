@@ -63,6 +63,7 @@
     <Compile Include="ViewEngine\ViewEngineInternal.tt.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IServerContext.cs" />
+    <Compile Include="AspNetServerContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

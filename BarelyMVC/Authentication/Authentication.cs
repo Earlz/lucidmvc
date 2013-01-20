@@ -51,6 +51,7 @@ namespace Earlz.BarelyMVC.Authentication
             Config.UniqueHash=GetUniqueHash();
             Config.HashIterations=1;
             Config.SaltLength=16;
+			Config.Server=new AspNetServerContext(); //use ASP.Net by default(ie, almost always)
             try
             {
                 SupportsUnmanagedCrypto=true;
@@ -151,6 +152,14 @@ namespace Earlz.BarelyMVC.Authentication
             /// The default is 1. If storing more secretive information, you may wish to increase this. Note that too high of a number may make your website slow
             /// </summary>
             public static int HashIterations{get;set;}
+
+			/// <summary>
+			/// The ServerContext to use(this should usually only be changed when unit testing and mocking
+			/// </summary>
+			/// <value>
+			/// The server.
+			/// </value>
+			public static IServerContext Server{get;set;}
         }
         
         
@@ -168,18 +177,11 @@ namespace Earlz.BarelyMVC.Authentication
             get
             {
                 var u=CurrentUser; //Doing this internally causes a side effect that Authenticate runs if it hasn't already
-                if (HttpContext.Current.Items.Contains("fscauth_formlogin"))
-                {
-                    return (bool)HttpContext.Current.Items["fscauth_formlogin"]; //use HttpContext.Current as a little place to persist static data for this request
-                }
-                else
-                {
-                    return false;
-                }
+				return (bool?)Config.Server.GetItem("fscauth_formlogin") ?? false;
             }
             private set
             {
-                HttpContext.Current.Items["fscauth_formlogin"] = value;
+                Config.Server.SetItem("fscauth_formlogin", value);
             }
         }
 
@@ -189,8 +191,9 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         public static UserData CurrentUser{
             get{
-                if(HttpContext.Current.Items.Contains("fscauth_currentuser")){
-                    return HttpContext.Current.Items["fscauth_currentuser"] as UserData; //use HttpContext.Current as a little place to persist static data for this request
+				UserData user=null;
+                if((user=Config.Server.GetItem("fscauth_currentuser") as UserData)!=null){
+					return user;
                 }else{
                     if(Authenticate()==false){
                         CurrentUser=null; //a bit confusing doing all this here. Avoid infinite recursion
@@ -200,7 +203,7 @@ namespace Earlz.BarelyMVC.Authentication
                 
             }
             private set{
-                HttpContext.Current.Items["fscauth_currentuser"]=value;
+                Config.Server.SetItem("fscauth_currentuser",value);
             }
         }
 		/// <summary>
@@ -234,9 +237,10 @@ namespace Earlz.BarelyMVC.Authentication
 		{
 			get
 			{
-				if(HttpContext.Current.Items.Contains("fscauth_probableusername"))
+				string name=null;
+				if((name=Config.Server.GetItem("fscauth_probableusername") as string) != null)
 				{
-					return (string)HttpContext.Current.Items["fscauth_probableusername"];
+					return name;
 				}else
 				{
 					return ProbableUserName=ProbablyLoggedInName();
@@ -244,7 +248,7 @@ namespace Earlz.BarelyMVC.Authentication
 			}
 			private set
 			{
-				HttpContext.Current.Items["fscauth_probableusername"]=value;
+				Config.Server.SetItem("fscauth_probableusername", value);
 			}
 		}
         /// <summary>
@@ -345,7 +349,7 @@ namespace Earlz.BarelyMVC.Authentication
                 }
                 else
                 {
-                    HttpContext.Current.Response.Redirect(Config.LoginPage); //this will cause an exception, but the redirect will work fine
+                    Config.Server.Redirect(Config.LoginPage); //this will cause an exception, but the redirect will work fine
                 }
             }
         }
@@ -375,14 +379,14 @@ namespace Earlz.BarelyMVC.Authentication
 		static string ProbablyLoggedInName()
 		{
 			string username=null;
-			string authHeader=HttpContext.Current.Request.Headers["Authorization"];
+			string authHeader=Config.Server.GetHeader("Authorization");
 			if(Config.HttpRealm!=null && string.IsNullOrEmpty(authHeader))
 			{
                 string userNameAndPassword = Encoding.Default.GetString(Convert.FromBase64String(authHeader.Substring(6)));
                 string[] parts = userNameAndPassword.Split(':');
                 return parts[0];
 			}
-			var cookie=HttpContext.Current.Request.Cookies[Config.SiteName+"_login"];
+			var cookie=Config.Server.GetCookie(Config.SiteName+"_login");
 			if(cookie==null)
 			{
 				return null;
@@ -407,7 +411,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>True if there is a current user. False if there is not a current user logged in.</returns>
         /// <exception cref="ArgumentException">Throws if UniqueHash is not complete </exception>
         static bool Authenticate(){
-            HttpContext.Current.Response.Buffer=true;
+            //HttpContext.Current.Response.Buffer=true; //needed?
             if(Config.UniqueHash==null){
                 throw new ArgumentException("You MUST fill in UniqueHash before using the AuthenticationModule!");
             }
@@ -415,7 +419,7 @@ namespace Earlz.BarelyMVC.Authentication
             string hash;
             string password;
             UserData user;
-            string authHeader = HttpContext.Current.Request.Headers["Authorization"];
+            string authHeader = Config.Server.GetHeader("Authorization");
             if(Config.HttpRealm!=null && !string.IsNullOrEmpty(authHeader)){ //try HTTP basic auth
                 string userNameAndPassword = Encoding.Default.GetString(Convert.FromBase64String(authHeader.Substring(6)));
                 string[] parts = userNameAndPassword.Split(':');
@@ -434,7 +438,7 @@ namespace Earlz.BarelyMVC.Authentication
                 }
             }
             //try forms/cookie auth
-            HttpCookie cookie=HttpContext.Current.Request.Cookies[Config.SiteName+"_login"];
+            HttpCookie cookie=Config.Server.GetCookie(Config.SiteName+"_login");
             if(cookie==null){
                 return false;
             }
@@ -511,7 +515,7 @@ namespace Earlz.BarelyMVC.Authentication
             {
                 throw new NotSupportedException("Can not log out a user logged in using HTTP Basic Authentication");
             }
-            var c=HttpContext.Current.Request.Cookies[Config.SiteName+"_login"];
+            var c=Config.Server.GetCookie(Config.SiteName+"_login");
             if(c!=null){
                 ForceCookieExpiration();
             }
@@ -606,7 +610,7 @@ namespace Earlz.BarelyMVC.Authentication
             c.Values["name"] = user.Username;
             c.Values["secret"] = ComputeLoginHash(user.PasswordHash,user.Salt, expires.Value);
             c.Values["expire"] = ConvertToUnixTimestamp(expires.Value).ToString();
-            HttpContext.Current.Response.Cookies.Add(c);
+            Config.Server.AddCookie(c);
             CurrentUser = user;
         }
 
@@ -614,13 +618,13 @@ namespace Earlz.BarelyMVC.Authentication
             StringBuilder sb=new StringBuilder();
             sb.Append(passwordhash);
             if(Config.CookieUseIP){
-                sb.Append(HttpContext.Current.Request.UserHostAddress);
+                sb.Append(Config.Server.UserIP);
             }
             if(Config.CookieUseBase){
-                sb.Append(HttpContext.Current.Request.MapPath("/"));
+                sb.Append(Config.Server.MapPath("/"));
             }
             if(Config.CookieUseBrowserInfo){
-                sb.Append(HttpContext.Current.Request.UserAgent);
+                sb.Append(Config.Server.UserAgent);
             }
             sb.Append(ConvertToUnixTimestamp(expires).ToString());
             sb.Append(Config.UniqueHash);
@@ -662,21 +666,20 @@ namespace Earlz.BarelyMVC.Authentication
             return v;
         }
         static void SendHttp401(){ //this will directly write the error, rather than throwing an exception. 
-            var c=HttpContext.Current;
-            c.Response.Status="401 Not Authenticated";
+            var c=Config.Server;
+            c.HttpStatus="401 Not Authenticated";
             if(Config.HttpRealm!=null){
-                c.Response.AddHeader("WWW-Authenticate","Basic Realm=\""+Config.HttpRealm+"\"");
+                c.AddHeader("WWW-Authenticate", "Basic Realm=\""+Config.HttpRealm+"\"");
             }
             try
             {
-                c.Server.Transfer(CustomErrorsFixer.GetCustomError("401")); //output the 401 page
+                c.Transfer(CustomErrorsFixer.GetCustomError("401")); //output the 401 page
             }
             catch(SecurityException) //running under medium trust
             {
-                c.Server.Transfer(Config.AuthPage);
+                c.Transfer(Config.AuthPage);
             }
-            c.Response.Close();
-			HttpContext.Current.ApplicationInstance.KillIt();
+			c.KillIt();
         }
         
         static void ForceCookieExpiration(){

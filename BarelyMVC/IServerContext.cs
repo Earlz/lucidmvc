@@ -13,8 +13,12 @@ namespace Earlz.BarelyMVC
 		string MapPath(string path);
 		string UserIP{get;}
 		string GetHeader(string name);
+		void AddHeader(string name, string value);
+		void Transfer(string url);
 		void Redirect(string url);
-		IDictionary<string, object> Items{get;}
+		object GetItem(string name);
+		object SetItem(string name, object value);
+		string HttpStatus{get;set;}
 	}
 }
 
