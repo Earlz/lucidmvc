@@ -1,5 +1,6 @@
 syntax: glob
 */bin/*
 *.userprefs
-/test-results/*
+test-results/*
+*.orig
 
