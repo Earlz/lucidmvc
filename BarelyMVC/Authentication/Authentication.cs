@@ -48,10 +48,12 @@ namespace Earlz.BarelyMVC.Authentication
     {
         public delegate HashWithSalt HashInvoker(string plain, string salt);
         static FSCAuth(){
-            Config.UniqueHash=GetUniqueHash();
+            if(Config.UniqueHash==null) //must do a null check because references to Config can be done before this static constructor executes
+			{
+				Config.UniqueHash=GetUniqueHash();
+			}
             Config.HashIterations=1;
             Config.SaltLength=16;
-			Config.Server=new AspNetServerContext(); //use ASP.Net by default(ie, almost always)
             try
             {
                 SupportsUnmanagedCrypto=true;
@@ -83,6 +85,10 @@ namespace Earlz.BarelyMVC.Authentication
         }
         static public class Config
         {
+			static Config()
+			{
+				Config.Server=new AspNetServerContext(); //use ASP.Net by default(ie, almost always)
+			}
             /// <summary>
             /// Authentication page. Only required when running in Medium trust. 
             /// This is the page you want to be served as the 401 auth required page.
@@ -154,7 +160,8 @@ namespace Earlz.BarelyMVC.Authentication
             public static int HashIterations{get;set;}
 
 			/// <summary>
-			/// The ServerContext to use(this should usually only be changed when unit testing and mocking
+			/// The ServerContext to use
+			/// (this should usually only be changed when unit testing and mocking.. unless you're feeling very risque and think this will work elsewhere)
 			/// </summary>
 			/// <value>
 			/// The server.
@@ -185,7 +192,6 @@ namespace Earlz.BarelyMVC.Authentication
             }
         }
 
-
         /// <summary>
         /// The current user logged in for the HTTP request. If there is not a user logged in, this will be null.
         /// </summary>
@@ -198,7 +204,7 @@ namespace Earlz.BarelyMVC.Authentication
                     if(Authenticate()==false){
                         CurrentUser=null; //a bit confusing doing all this here. Avoid infinite recursion
                     }
-                    return CurrentUser;
+					return Config.Server.GetItem("fscauth_currentuser") as UserData; //code duplication, but the alternative is recursive properties. Ick! 
                 }
                 
             }

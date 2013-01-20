@@ -51,5 +51,6 @@
     <Compile Include="CodeDataObjects.cs" />
     <Compile Include="ViewGenerationTests.cs" />
     <Compile Include="SlugifyTest.cs" />
+    <Compile Include="FSCAuthTests.cs" />
   </ItemGroup>
 </Project>
