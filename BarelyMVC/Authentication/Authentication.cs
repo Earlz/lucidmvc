@@ -536,6 +536,10 @@ namespace Earlz.BarelyMVC.Authentication
             if(!UserStore.AddUser(user)){
                 return false;
             }
+			if(user.UniqueID==null)
+			{
+				throw new ApplicationException("The UniqueID of the UserData must be filled in by the UserStore");
+			}
             user.Salt=null;
             user.PasswordHash=ComputePasswordHash(user,password);
             if(!UserStore.UpdateUserByID(user)){

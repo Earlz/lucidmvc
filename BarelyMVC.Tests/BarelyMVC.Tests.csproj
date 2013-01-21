@@ -52,5 +52,9 @@
     <Compile Include="ViewGenerationTests.cs" />
     <Compile Include="SlugifyTest.cs" />
     <Compile Include="FSCAuthTests.cs" />
+    <Compile Include="utilities\SimpleUserStore.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="utilities\" />
   </ItemGroup>
 </Project>
