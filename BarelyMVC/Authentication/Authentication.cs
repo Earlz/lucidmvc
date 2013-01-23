@@ -356,6 +356,7 @@ namespace Earlz.BarelyMVC.Authentication
                 else
                 {
                     Config.Server.Redirect(Config.LoginPage); //this will cause an exception, but the redirect will work fine
+					Config.Server.KillIt();
                 }
             }
         }

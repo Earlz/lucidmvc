@@ -53,6 +53,7 @@
     <Compile Include="SlugifyTest.cs" />
     <Compile Include="FSCAuthTests.cs" />
     <Compile Include="utilities\SimpleUserStore.cs" />
+    <Compile Include="utilities\ServerMockingExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />

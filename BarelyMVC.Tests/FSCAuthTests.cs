@@ -5,12 +5,15 @@ using Moq;
 using Earlz.BarelyMVC;
 using System.Web;
 using System.Collections.Generic;
+using BarelyMVC.Tests.Extensions.ServerMocking;
 
 namespace BarelyMVC.Tests
 {
+	[Category("FSCAuth")]
 	[TestFixture]
 	public class FSCAuthTests
 	{
+		Mock<IServerContext> mock=null;
 		[SetUp]
 		public void SetUp()
 		{
@@ -19,28 +22,24 @@ namespace BarelyMVC.Tests
 			FSCAuth.Config.SiteName="test";
 			FSCAuth.Config.Server=null; //must be mocked
 			FSCAuth.UserStore=new SimpleUserStore();
-			FSCAuth.AddUser(new UserData(){Username="user", Groups=new List<GroupData>(){new GroupData("foobar")}}, "pass");
+			FSCAuth.AddUser(new UserData(){Username="user", Groups=new List<GroupData>(){new GroupData("admin")}}, "pass");
+			mock=new Mock<IServerContext>();
+			FSCAuth.Config.Server=mock.Object;
 		}
 		[Test]
 		public void RequiresLogin_should_redirect_when_not_logged_in()
 		{
-			var mock=new Mock<IServerContext>();
-			FSCAuth.Config.Server=mock.Object;
-			mock.Setup(x=>x.GetHeader("Authorization")).Returns<string>(null);
-			mock.Setup(x=>x.GetItem("fscauth_currentuser")).Returns<UserData>(null);
-			mock.Setup(x=>x.GetCookie(FSCAuth.Config.SiteName+"_login")).Returns<string>(null);
-
+			mock.IsNotLoggedIn();
 
 			FSCAuth.RequiresLogin();
-
 			mock.Verify(x=>x.Redirect("/login"), "Should redirect to login page");
+			mock.HasBeenKilled();
 		}
 		[Test]
 		public void Login_should_work_when_given_proper_credentials()
 		{
-			var mock=new Mock<IServerContext>();
-			FSCAuth.Config.Server=mock.Object;
 			FSCAuth.Login("user", "pass", false);
+			mock.HasLoggedIn();
 			mock.Verify(x=>x.AddCookie(
 				It.Is<HttpCookie>(c=>
                      c.Name==FSCAuth.Config.SiteName+"_login" &&
@@ -51,17 +50,11 @@ namespace BarelyMVC.Tests
 		[Test]
 		public void RequiresLogin_should_pass_through_when_authorized()
 		{
-			var mock=new Mock<IServerContext>();
-			FSCAuth.Config.Server=mock.Object;
-			HttpCookie logincookie=null;
-			mock.Setup(x=>x.AddCookie(
-				It.Is<HttpCookie>(c=>true) //don't care about the parameter specification
-			)).Callback<HttpCookie>(cookie=>logincookie=cookie);
+			mock.IsUsingItems().WillCaptureLoginCookie();
 			FSCAuth.Login("user", "pass", false);
-			Assert.NotNull(logincookie);
-
-			mock.Setup(x=>x.GetCookie(FSCAuth.Config.SiteName+"_login")).Returns(logincookie).Verifiable();
-			mock.Setup(x=>x.KillIt()).Throws(new ApplicationException("KillIt should not be called as this indicates that the login did not succeed"));
+			mock.RemoveLoginItem(); //we're testing that cookies work
+			mock.Setup(x=>x.GetCookie(FSCAuth.Config.SiteName+"_login")).Returns(mock.GetCapturedLoginCookie()).Verifiable();
+			mock.WillNotBeKilled();
 			FSCAuth.RequiresLogin();
 			mock.Verify();
 		}
