@@ -57,5 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />
+    <Folder Include="integration_stories\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="integration_stories\about.txt" />
   </ItemGroup>
 </Project>

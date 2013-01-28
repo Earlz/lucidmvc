@@ -58,6 +58,21 @@ namespace BarelyMVC.Tests
 			FSCAuth.RequiresLogin();
 			mock.Verify();
 		}
+		[Test]
+		public void RequiresInGroup_should_redirect()
+		{
+			mock.IsUsingItems();
+			FSCAuth.Login("user", "pass", false);
+			try
+			{
+			FSCAuth.RequiresInGroup("foo");
+			}catch(HttpException e)
+			{
+				Assert.AreEqual(403, e.GetHttpCode());
+				return;
+			}
+			Assert.Fail("Should not reach here. No exception thrown");
+		}
 	}
 }
 

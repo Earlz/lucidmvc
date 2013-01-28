@@ -44,7 +44,6 @@ namespace Earlz.BarelyMVC
     {
         public static TextWriter CurrentWriter{
             get{
-                var f=File.Open("ViewEngineInternal.tt.cs",FileMode.Open);
                 if(HttpContext.Current.Items.Contains("BarelyMVC_Writer")){
                     return (TextWriter)HttpContext.Current.Items["BarelyMVC_Writer"];
                 }else{
