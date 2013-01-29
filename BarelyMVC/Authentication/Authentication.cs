@@ -621,7 +621,7 @@ namespace Earlz.BarelyMVC.Authentication
             c.Values["name"] = user.Username;
             c.Values["secret"] = ComputeLoginHash(user.PasswordHash,user.Salt, expires.Value);
             c.Values["expire"] = ConvertToUnixTimestamp(expires.Value).ToString();
-            Config.Server.AddCookie(c);
+            Config.Server.SetCookie(c);
             CurrentUser = user;
         }
 
@@ -680,7 +680,7 @@ namespace Earlz.BarelyMVC.Authentication
             var c=Config.Server;
             c.HttpStatus="401 Not Authenticated";
             if(Config.HttpRealm!=null){
-                c.AddHeader("WWW-Authenticate", "Basic Realm=\""+Config.HttpRealm+"\"");
+                c.SetHeader("WWW-Authenticate", "Basic Realm=\""+Config.HttpRealm+"\"");
             }
             try
             {

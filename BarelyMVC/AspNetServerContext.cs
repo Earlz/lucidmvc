@@ -2,6 +2,7 @@ using System;
 using System.Web;
 using System.Collections.Generic;
 using Earlz.BarelyMVC.Extensions;
+using System.IO;
 
 namespace Earlz.BarelyMVC
 {
@@ -36,7 +37,7 @@ namespace Earlz.BarelyMVC
 			return Current.Request.Cookies[name];
 		}
 
-		public void AddCookie (HttpCookie cookie)
+		public void SetCookie (HttpCookie cookie)
 		{
 			Current.Response.SetCookie(cookie);
 		}
@@ -56,7 +57,7 @@ namespace Earlz.BarelyMVC
 			return Current.Request.Headers[name];
 		}
 
-		public void AddHeader (string name, string value)
+		public void SetHeader (string name, string value)
 		{
 			Current.Response.AddHeader(name, value);
 		}
@@ -91,6 +92,13 @@ namespace Earlz.BarelyMVC
 			}
 			set {
 				Current.Response.Status=value;
+			}
+		}
+		public TextWriter Writer
+		{
+			get
+			{
+				return HttpContext.Current.Response.Output;
 			}
 		}
 

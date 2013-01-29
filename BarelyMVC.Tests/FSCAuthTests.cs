@@ -40,7 +40,7 @@ namespace BarelyMVC.Tests
 		{
 			FSCAuth.Login("user", "pass", false);
 			mock.HasLoggedIn();
-			mock.Verify(x=>x.AddCookie(
+			mock.Verify(x=>x.SetCookie(
 				It.Is<HttpCookie>(c=>
                      c.Name==FSCAuth.Config.SiteName+"_login" &&
 			         c.Values["secret"].Length>0

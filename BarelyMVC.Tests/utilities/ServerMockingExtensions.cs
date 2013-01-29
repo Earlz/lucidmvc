@@ -27,7 +27,7 @@ namespace BarelyMVC.Tests.Extensions.ServerMocking
 		}
 		public static Mock<IServerContext> HasLoggedIn(this Mock<IServerContext> mock)
 		{
-			mock.Verify(x=>x.AddCookie(
+			mock.Verify(x=>x.SetCookie(
 				It.Is<HttpCookie>(c=>
                      c.Name==FSCAuth.Config.SiteName+"_login" &&
 			         c.Values["secret"].Length>0
@@ -54,7 +54,7 @@ namespace BarelyMVC.Tests.Extensions.ServerMocking
 		public static Mock<IServerContext> WillCaptureLoginCookie(this Mock<IServerContext> mock)
 		{
 			LoginCookie=null;
-			mock.Setup(x=>x.AddCookie(
+			mock.Setup(x=>x.SetCookie(
 				It.Is<HttpCookie>(c=>true) //don't care about the parameter specification
 			)).Callback<HttpCookie>(c=>LoginCookie=c);
 			return mock;
