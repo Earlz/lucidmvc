@@ -64,6 +64,13 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IServerContext.cs" />
     <Compile Include="AspNetServerContext.cs" />
+    <Compile Include="Caching\ICacheMechanism.cs" />
+    <Compile Include="Caching\ASPCacheMechanism.cs" />
+    <Compile Include="Caching\ICacheDictionary.cs" />
+    <Compile Include="Caching\UntrackedCacheDictionary.cs" />
+    <Compile Include="Caching\TrackedCacheDictionary.cs" />
+    <Compile Include="Caching\CacheBase.cs" />
+    <Compile Include="Caching\CacheInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -78,5 +85,6 @@
     <Folder Include="Authentication\" />
     <Folder Include="ViewEngine\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Caching\" />
   </ItemGroup>
 </Project>

@@ -58,6 +58,7 @@
   <ItemGroup>
     <Folder Include="utilities\" />
     <Folder Include="integration_stories\" />
+    <Folder Include="Caching\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="integration_stories\about.txt" />
