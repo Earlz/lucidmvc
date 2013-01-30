@@ -1,6 +1,6 @@
 using System;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.BarelyMVC.Caching
 {
 	/// <summary>
 	/// Priority of the cache item
@@ -20,32 +20,50 @@ namespace Earlz.BarelyMVC
 	/// </summary>
 	public class CacheInfo
 	{
-		/// <summary>
-		/// The name of the property to be generated
-		/// </summary>
-		public string Name;
-		/// <summary>
-		/// The type returned from the cache object's property. This should be null if KeyType is not null (it'll use CacheDictionary)
-		/// Note: This should only be used from T4
-		/// </summary>
-		public string Type;
-		/// <summary>
-		/// The key type of the cached dictionary. Leave null to just generate a normal property and not a dictionary
-		/// Note: To be used only from T4
-		/// </summary>
-		public string KeyType=null;
+		public CacheInfo(CachePriority priority=CachePriority.Default, TimeSpan? absolute=null, TimeSpan? sliding=null, ICacheMechanism cacheoverride=null)
+		{
+			AbsoluteExpirationFromNow=absolute;
+			SlidingExpiration=sliding;
+			Priority=priority;
+			CacheOverride=cacheoverride;
+		}
+		//provide a second overload so that people uninterested in priority don't have to specify CachePriorty.Default
+		public CacheInfo(TimeSpan? absolute=null, TimeSpan? sliding=null, CachePriority priority=CachePriority.Default) 
+		{
+			AbsoluteExpirationFromNow=absolute;
+			SlidingExpiration=sliding;
+			Priority=priority;
+		}
 		/// <summary>
 		/// Will add this timespan to DateTime.Now (upon cache creation) to get an absolute expiration value
 		/// </summary>
-		public TimeSpan? AbsoluteExpirationFromNow;
-		public TimeSpan? SlidingExpiration;
+		public TimeSpan? AbsoluteExpirationFromNow
+		{
+			get;
+			private set;
+		}
 		/// <summary>
-		/// The value type of the cached dictionary. 
-		/// Note: To be used only from T4
+		/// A sliding expiration so that each time the item is accessed, it's expiration gets pushed by this value
 		/// </summary>
-		public string ValueType;
-		public CachePriority Priority=CachePriority.Default;
-		public string DictionaryType="UntrackedCacheDictionary";
+		public TimeSpan? SlidingExpiration
+		{
+			get;
+			private set;
+		}
+		public CachePriority Priority
+		{
+			get;
+			private set;
+		}
+		/// <summary>
+		/// This cache mechanism should be used instead of the default(or null to use default)
+		/// This should only be filled in if you are doing some crazy awesome caching algorithms to segregate them conditionally
+		/// </summary>
+		public ICacheMechanism CacheOverride
+		{
+			get;
+			private set;
+		}
 	}
 }
 

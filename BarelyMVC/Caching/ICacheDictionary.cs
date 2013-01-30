@@ -5,7 +5,6 @@ namespace Earlz.BarelyMVC.Caching
 	//StoreToCache will handle removal, replacement, and addition to the cache
 	public delegate object StoreToCache(string key, object value, CacheInfo info);
 	public delegate object GetFromCache(string key);
-
 	public interface ICacheDictionary<K,V>
 	{
 		/// <summary>

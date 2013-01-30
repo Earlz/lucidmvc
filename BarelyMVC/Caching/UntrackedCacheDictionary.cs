@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace Earlz.BarelyMVC.Caching
 {
@@ -14,8 +15,12 @@ namespace Earlz.BarelyMVC.Caching
 		GetFromCache GetFrom;
 		string BaseKey;
 		CustomToString customToString;
+
+		int Initialized=0;
+
 		public void Setup(string basekey, StoreToCache store, GetFromCache get, CustomToString custom=null)
 		{
+			Interlocked.CompareExchange(ref Initialized, 1, 0);
 			BaseKey=basekey;
 			StoreTo=store;
 			GetFrom=get;
