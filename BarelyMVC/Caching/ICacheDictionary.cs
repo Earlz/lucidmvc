@@ -3,8 +3,6 @@ using System;
 namespace Earlz.BarelyMVC.Caching
 {
 	//StoreToCache will handle removal, replacement, and addition to the cache
-	public delegate object StoreToCache(string key, object value, CacheInfo info);
-	public delegate object GetFromCache(string key);
 	public interface ICacheDictionary<K,V>
 	{
 		/// <summary>
@@ -35,7 +33,10 @@ namespace Earlz.BarelyMVC.Caching
 			set;
 		}
 		void Remove(K key);
-		void Set(K key, V value, CacheInfo info);
+		void Set(K key, V value, CacheInfo info=null);
+		/// <summary>
+		/// Clear the cache. Dictionaries which do not support this should throw NotSupportedException
+		/// </summary>
 		void Clear();
 
 	}

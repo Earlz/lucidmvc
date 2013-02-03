@@ -32,10 +32,9 @@ namespace BarelyMVC.Tests
 			{
 				CacheInfo trash=null;
 				Cache.TryRemove(key, out obj);
-				CacheInfo.TryRemove(key, out trash); 
+				return;
 			}
 
-			CacheInfo[key]=info;
 			Cache[key]=obj;
 		}
 		public void Reset()

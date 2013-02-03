@@ -21,7 +21,7 @@ namespace Earlz.BarelyMVC.Caching
 		{
 			return HttpRuntime.Cache[key];
 		}
-		public void Set (string key, object obj, CacheInfo info)
+		public void Set (string key, object obj, CacheInfo info=null)
 		{
 			if(obj==null)
 			{

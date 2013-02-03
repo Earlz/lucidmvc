@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using Earlz.BarelyMVC.Caching;
 
-namespace Earlz.BarelyMVC.Caching.Experimental
+namespace Earlz.BarelyMVC.Unstable.Caching
 {
 
 	/// <summary>
@@ -13,7 +14,7 @@ namespace Earlz.BarelyMVC.Caching.Experimental
 	/// </summary>
 	public class TrackingCacheDictionary<K,V> : ICacheDictionary<K,V>
 	{
-		public void Set (K key, V value, CacheInfo info)
+		public void Set (K key, V value, CacheInfo info=null)
 		{
 			if(value==null)
 			{

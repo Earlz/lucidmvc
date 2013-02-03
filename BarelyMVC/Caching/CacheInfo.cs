@@ -20,7 +20,7 @@ namespace Earlz.BarelyMVC.Caching
 	/// </summary>
 	public class CacheInfo
 	{
-		public CacheInfo(CachePriority priority=CachePriority.Default, TimeSpan? absolute=null, TimeSpan? sliding=null)
+		public CacheInfo(CachePriority priority, TimeSpan? absolute=null, TimeSpan? sliding=null)
 		{
 			AbsoluteExpirationFromNow=absolute;
 			SlidingExpiration=sliding;

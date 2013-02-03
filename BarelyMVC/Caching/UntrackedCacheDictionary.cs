@@ -34,7 +34,7 @@ namespace Earlz.BarelyMVC.Caching
 		{
 			Set(key, default(V), CacheInfo);
 		}
-		public void Set (K key, V value, CacheInfo info)
+		public void Set (K key, V value, CacheInfo info=null)
 		{
 			Cacher.Set(BaseKey+ConvertToString(key), value, info);
 		}
