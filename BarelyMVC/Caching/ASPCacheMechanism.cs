@@ -1,20 +1,31 @@
 using System;
 using System.Web;
 using System.Web.Caching;
+using System.Collections.Generic;
 
 namespace Earlz.BarelyMVC.Caching
 {
 	public class ASPCacheMechanism : ICacheMechanism
 	{
+		public ASPCacheMechanism()
+		{
+			KeyInfo=new Dictionary<string, CacheInfo>();
+		}
+		public IDictionary<string, CacheInfo> KeyInfo {
+			get;
+			private set;
+		}
+
+
 		public object Get (string key)
 		{
 			return HttpRuntime.Cache[key];
 		}
-		public object Set (string key, object obj, CacheInfo info)
+		public void Set (string key, object obj, CacheInfo info)
 		{
 			if(obj==null)
 			{
-				return HttpRuntime.Cache.Remove(key);
+				HttpRuntime.Cache.Remove(key);
 			}
 			DateTime absolute=Cache.NoAbsoluteExpiration;
 			if(info.AbsoluteExpirationFromNow!=null)
@@ -23,7 +34,6 @@ namespace Earlz.BarelyMVC.Caching
 				absolute.Add(info.AbsoluteExpirationFromNow.Value);
 			}
 			HttpRuntime.Cache.Insert(key, obj, null, absolute, info.SlidingExpiration ?? Cache.NoSlidingExpiration, ConvertPriority(info.Priority), null);
-			return obj;
 		}
 		public CacheItemPriority ConvertPriority(CachePriority p)
 		{

@@ -13,15 +13,15 @@ namespace Earlz.BarelyMVC.Caching.Experimental
 	/// </summary>
 	public class TrackingCacheDictionary<K,V> : ICacheDictionary<K,V>
 	{
-		public V Set (K key, V value, CacheInfo info)
+		public void Set (K key, V value, CacheInfo info)
 		{
 			if(value==null)
 			{
-				return Remove(key);
+				Remove(key);
 			}
 			else
 			{
-				return Add (key, value, info);
+				Add (key, value, info);
 			}
 		}
 
@@ -33,8 +33,6 @@ namespace Earlz.BarelyMVC.Caching.Experimental
 
 		ConcurrentDictionary<K, string> RealKeys=new ConcurrentDictionary<K, string>();
 		string BaseKey;
-		StoreToCache StoreTo;
-		GetFromCache GetFrom;
 		/// <summary>
 		/// This returns the amount of keys we are tracking within this CacheDictionary.
 		/// Note: This does not necessarily indicate how many items are actually still in the cache! 
@@ -49,42 +47,29 @@ namespace Earlz.BarelyMVC.Caching.Experimental
 				return RealKeys.Count;
 			}
 		}
-		public void Setup(string basekey, StoreToCache store, GetFromCache get)
+		public void Setup(string basekey, ICacheMechanism cacher)
 		{
+			Cacher=cacher;
 			BaseKey=basekey;
-			StoreTo=store;
-			GetFrom=get;
 		}
-
-		V Add (K key, V value, CacheInfo info)
+		public ICacheMechanism Cacher
+		{
+			get;
+			private set;
+		}
+		void Add (K key, V value, CacheInfo info)
 		{
 			string realkey=RealKeys.GetOrAdd(key, (s) => GenerateKey(key));
 			lock(realkey)
 			{
-				object res=StoreTo(realkey, value, info);
-				if(res!=null && res is V)
-				{
-					return (V)res;
-				}
-				else
-				{
-					return default(V);
-				}
+				Cacher.Set(realkey, value, info);
 			}
 		}
-		public V Remove (K key)
+		public void Remove (K key)
 		{
-			var res=StoreTo(GetKey(key), null, CacheInfo);
+			Cacher.Set(GetKey(key), null, CacheInfo);
 			string trash=null;
 			RealKeys.TryRemove(key, out trash);
-			if(res!=null && res is V)
-			{
-				return (V)res;
-			}
-			else
-			{
-				return default(V);
-			}
 		}
 		static long CurrentKey=0;
 		string GenerateKey(K key)
@@ -110,7 +95,7 @@ namespace Earlz.BarelyMVC.Caching.Experimental
 				}
 				lock(realkey)
 				{
-					object tmp=GetFrom(realkey);
+					object tmp=Cacher.Get(realkey);
 					if(tmp!=null && tmp is V)
 					{
 						return (V)tmp;
@@ -134,7 +119,7 @@ namespace Earlz.BarelyMVC.Caching.Experimental
 				var realkey=GetKey(key);
 				if(realkey!=null) //ConcurrentDictionary's enumator represents a snapshot, so while iterating, the key may no longer exist
 				{
-					StoreTo(GetKey(key), null, CacheInfo);
+					Cacher.Set(GetKey(key), null, CacheInfo);
 				}
 			}
 			RealKeys.Clear();

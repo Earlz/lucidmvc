@@ -69,8 +69,8 @@
     <Compile Include="Caching\ICacheDictionary.cs" />
     <Compile Include="Caching\UntrackedCacheDictionary.cs" />
     <Compile Include="Caching\TrackedCacheDictionary.cs" />
-    <Compile Include="Caching\CacheBase.cs" />
     <Compile Include="Caching\CacheInfo.cs" />
+    <Compile Include="Caching\CacheExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -11,40 +11,32 @@ namespace Earlz.BarelyMVC.Caching
 	public class UntrackedCacheDictionary<K,V> : ICacheDictionary<K,V>
 	{
 		public delegate string CustomToString(K key);
-		StoreToCache StoreTo;
-		GetFromCache GetFrom;
 		string BaseKey;
 		CustomToString customToString;
 
-		int Initialized=0;
 
-		public void Setup(string basekey, StoreToCache store, GetFromCache get, CustomToString custom=null)
+		public void Setup(string basekey, ICacheMechanism cacher, CustomToString custom=null)
 		{
-			Interlocked.CompareExchange(ref Initialized, 1, 0);
+			Cacher=cacher;
 			BaseKey=basekey;
-			StoreTo=store;
-			GetFrom=get;
 			customToString=custom;
 		}
-		public void Setup(string basekey, StoreToCache store, GetFromCache get)
+		public void Setup(string basekey, ICacheMechanism cacher)
 		{
-			Setup(basekey, store, get);
+			Setup(basekey, cacher, null);
 		}
-		public V Remove (K key)
+		public ICacheMechanism Cacher
 		{
-			return Set(key, default(V), CacheInfo);
+			get;
+			private set;
 		}
-		public V Set (K key, V value, CacheInfo info)
+		public void Remove (K key)
 		{
-			object tmp=StoreTo(BaseKey+ConvertToString(key), value, info);
-			if(tmp!=null && tmp is V)
-			{
-				return (V) tmp;
-			}
-			else
-			{
-				return default(V);
-			}
+			Set(key, default(V), CacheInfo);
+		}
+		public void Set (K key, V value, CacheInfo info)
+		{
+			Cacher.Set(BaseKey+ConvertToString(key), value, info);
 		}
 		public void Clear ()
 		{
@@ -58,7 +50,7 @@ namespace Earlz.BarelyMVC.Caching
 		public V this [K key] {
 			get 
 			{
-				object tmp=GetFrom(BaseKey+ConvertToString(key));
+				object tmp=Cacher.Get(BaseKey+ConvertToString(key));
 				if(tmp!=null && tmp is V)
 				{
 					return (V) tmp;

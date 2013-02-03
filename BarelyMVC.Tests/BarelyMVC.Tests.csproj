@@ -54,6 +54,8 @@
     <Compile Include="FSCAuthTests.cs" />
     <Compile Include="utilities\SimpleUserStore.cs" />
     <Compile Include="utilities\ServerMockingExtensions.cs" />
+    <Compile Include="Caching\MockCacheMechanism.cs" />
+    <Compile Include="Caching\CacheTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />

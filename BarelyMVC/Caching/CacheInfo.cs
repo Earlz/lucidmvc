@@ -20,12 +20,11 @@ namespace Earlz.BarelyMVC.Caching
 	/// </summary>
 	public class CacheInfo
 	{
-		public CacheInfo(CachePriority priority=CachePriority.Default, TimeSpan? absolute=null, TimeSpan? sliding=null, ICacheMechanism cacheoverride=null)
+		public CacheInfo(CachePriority priority=CachePriority.Default, TimeSpan? absolute=null, TimeSpan? sliding=null)
 		{
 			AbsoluteExpirationFromNow=absolute;
 			SlidingExpiration=sliding;
 			Priority=priority;
-			CacheOverride=cacheoverride;
 		}
 		//provide a second overload so that people uninterested in priority don't have to specify CachePriorty.Default
 		public CacheInfo(TimeSpan? absolute=null, TimeSpan? sliding=null, CachePriority priority=CachePriority.Default) 
@@ -55,7 +54,7 @@ namespace Earlz.BarelyMVC.Caching
 			get;
 			private set;
 		}
-		/// <summary>
+		/*/// <summary>
 		/// This cache mechanism should be used instead of the default(or null to use default)
 		/// This should only be filled in if you are doing some crazy awesome caching algorithms to segregate them conditionally
 		/// </summary>
@@ -64,6 +63,7 @@ namespace Earlz.BarelyMVC.Caching
 			get;
 			private set;
 		}
+		*/
 	}
 }
 

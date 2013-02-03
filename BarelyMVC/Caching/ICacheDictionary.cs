@@ -10,7 +10,11 @@ namespace Earlz.BarelyMVC.Caching
 		/// <summary>
 		/// Can't enfore a constructor, so we use this to do the inital setup of the dictionary
 		/// </summary>
-		void Setup(string basekey, StoreToCache store, GetFromCache get);
+		void Setup(string basekey, ICacheMechanism cacher);
+		ICacheMechanism Cacher
+		{
+			get;
+		}
 		/// <summary>
 		/// The CacheObject to be used by default(by the indexer)
 		/// </summary>
@@ -30,8 +34,8 @@ namespace Earlz.BarelyMVC.Caching
 			get;
 			set;
 		}
-		V Remove(K key);
-		V Set(K key, V value, CacheInfo info);
+		void Remove(K key);
+		void Set(K key, V value, CacheInfo info);
 		void Clear();
 
 	}
