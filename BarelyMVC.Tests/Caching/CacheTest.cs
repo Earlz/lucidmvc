@@ -61,7 +61,7 @@ namespace BarelyMVC.Tests
 			}
 		}
 		[ThreadStatic]
-		static string LockForTest="foo"; //TODO make it so this isn't necessary (smarting clearing of the cache within tests)
+		static object LockForTest=new object(); //TODO make it so this isn't necessary (smarting clearing of the cache within tests)
 		[Test]
 		public void DictionaryOperations()
 		{
