@@ -132,7 +132,7 @@ var defaults=new ViewConfiguration
             var gen=new ViewGenerator(file,name,defaults);
             gen.Generate();
             WriteLine(gen.ToString());
-            if(gen.GeneratedInterface!=null)
+            if(gen.GeneratedInterface!=null && gen.AutoInterfaces)
             {
             	WriteLine("/*AutoInterface for "+localname+"*/");
             	WriteLine(gen.GeneratedInterface.ToString());

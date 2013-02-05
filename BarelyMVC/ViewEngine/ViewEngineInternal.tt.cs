@@ -657,18 +657,11 @@ if(__InLayout){
                 }        
             }";
             Methods.Add(m);
-			if(AutoInterfaces)
-			{
-				GeneratedInterface.Accessibility=Accessibility;
-				GeneratedInterface.PrefixDocs=PrefixDocs;
-				GeneratedInterface.Namespace=Namespace;
-				GeneratedInterface.Name="I"+Name;
-				GeneratedInterface.BaseClass="IBarelyView";
-			}
-			else
-			{
-				GeneratedInterface=null;
-			}
+			GeneratedInterface.Accessibility=Accessibility;
+			GeneratedInterface.PrefixDocs=PrefixDocs;
+			GeneratedInterface.Namespace=Namespace;
+			GeneratedInterface.Name="I"+Name;
+			GeneratedInterface.BaseClass="IBarelyView";
         }
 
         string Escape(char c){
