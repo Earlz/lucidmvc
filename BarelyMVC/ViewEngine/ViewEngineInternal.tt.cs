@@ -38,6 +38,50 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
     using System.IO;
 #endif
 
+	public class ViewConfiguration
+	{
+		/// <summary>
+		/// Controls whether an interface as well as an implementing class will be generated
+		/// This can be overrridden 
+		/// </summary>
+		public bool AutoInterfaces=false;
+		/// <summary>
+		/// The default namespace to use for the generated view class
+		/// this can be overridden
+		/// </summary>
+		public string DefaultNamespace="Earlz.BarelyMVC.MyViews";
+		/// <summary>
+		/// Controls whether the view is rendered directly to the DefaultWriter or if it is first built-up into a string
+		/// Performance comparisons between the two have not been conclusive thus far
+		/// This can be overridden
+		/// </summary>
+		public bool RenderDirectly=false;
+		/// <summary>
+		/// Will generate special code around `{= =}` blocks to catch null references and return empty string instead of throwing an exception
+		/// This can have a significant performance impact for views with heavy loops
+		/// This can be overridden
+		/// </summary>
+		public bool DetectChainedNulls=false;
+		/// <summary>
+		/// The default writer instance to use. This must point to a static TextWriter field
+		/// </summary>
+		public string DefaultWriter="Earlz.BarelyMVC.HttpHandler.CurrentWriter";
+		/// <summary>
+		/// The  base class for the generated view class. This can include interfaces by using commas
+		/// Example: `MyBase, IFoo, IBar` 
+		/// This can be overridden
+		/// </summary>
+		public string BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy";
+		/// <summary>
+		/// Mark the generated view as a partial class
+		/// </summary>
+		public bool UsePartials=false;
+		/// <summary>
+		/// Mark the generated view as being internal rather than public
+		/// </summary>
+		public bool UseInternal=false;
+	}
+
 
     public class ViewGenerator : ClassGenerator
     {
@@ -76,19 +120,28 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 base.BaseClass = value;
             }
         }
+		public InterfaceGenerator GeneratedInterface
+		{
+			get;
+			private set;
+		}
         public static string DefaultBaseClass=null;
         public bool DetectNulls=true;
+		public bool AutoInterfaces;
         string DefaultWriter="";
-        public ViewGenerator(string file,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter){
+        public ViewGenerator(string file,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter, bool autointerfaces){
             var f=File.OpenText(file);
             string text=f.ReadToEnd();
-            Init (text, name, namespace_, renderdirectly, detectnulls, defaultwriter);
+            Init (text, name, namespace_, renderdirectly, detectnulls, defaultwriter, autointerfaces);
         }
-        public ViewGenerator(string name, string namespace_, bool renderdirectly, bool detectnulls, string defaultwriter)
+        public ViewGenerator(string name, string namespace_, bool renderdirectly, bool detectnulls, string defaultwriter, bool autointerfaces)
         {
-            Init (null, name, namespace_, renderdirectly, detectnulls, defaultwriter);
+            Init (null, name, namespace_, renderdirectly, detectnulls, defaultwriter, autointerfaces);
         }
-        void Init(string text,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter){
+        void Init(string text,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter, bool autointerfaces)
+		{
+			GeneratedInterface=new InterfaceGenerator();
+			AutoInterfaces=autointerfaces;
             input=text;
             Name=name;
             Namespace=namespace_;
@@ -693,7 +746,7 @@ if(__InLayout){
 		{
 			return ToString(true);
 		}
-        public string ToString (bool includenamespace)
+        public virtual string ToString (bool includenamespace)
         {
             StringBuilder sb=new StringBuilder();
 			if(includenamespace)
@@ -728,8 +781,50 @@ if(__InLayout){
 			}
             return sb.ToString();
         }
-
     }
+	public class InterfaceGenerator : ClassGenerator
+	{
+		public override string ToString ()
+		{
+			return ToString(true);
+		}
+
+        public override string ToString (bool includenamespace)
+        {
+            StringBuilder sb=new StringBuilder();
+			if(includenamespace)
+			{
+            	sb.Append("namespace "+Namespace);
+            	sb.AppendLine("{");
+			}
+            sb.AppendLine(PrefixDocs);
+            sb.AppendLine(GetTab(1)+Accessibility+" interface "+Name+": "+BaseClass);
+            sb.AppendLine(GetTab(1)+"{");
+            foreach(var p in Properties)
+            {
+                sb.AppendLine(p.ToString());
+            }
+            foreach(var m in Methods)
+            {
+                sb.AppendLine(m.ToString());
+            }
+            foreach(var f in Fields)
+            {
+				throw new NotSupportedException("Fields are not supported on interfaces");
+            }
+			foreach(var c in NestedClasses)
+			{
+				throw new NotSupportedException("Nested classes are not supported on interfaces");
+			}
+            sb.AppendLine(OtherCode);
+            sb.AppendLine(GetTab(1)+"}");
+			if(includenamespace)
+			{
+            	sb.AppendLine("}");
+			}
+            return sb.ToString();
+        }
+	}
     abstract public class CodeElement
     {
         public const string Tab="    ";

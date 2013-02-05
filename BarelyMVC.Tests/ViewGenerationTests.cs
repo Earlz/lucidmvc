@@ -26,7 +26,7 @@ meh as that;
 @}
 Hello there {=foo=}
 ";
-            var gen=new ViewGenerator("test", "test",false, false, "defaultwriter");
+            var gen=new ViewGenerator("test", "test",false, false, "defaultwriter", false);
             gen.Input=view;
             gen.BaseClass="defaultbase";
             gen.Generate();
@@ -41,7 +41,7 @@ Hello there {=foo=}
         public void EnsureFlashPassthrough()
         {
             string view=" foo bar!";
-            var gen=new ViewGenerator("test", "test", false, false, "defaultwriteR");
+            var gen=new ViewGenerator("test", "test", false, false, "defaultwriteR", false);
             gen.BaseClass="defaultbase";
             gen.Input=view;
             gen.Generate();
@@ -56,7 +56,7 @@ Hello there {=foo=}
 		public void NoSpacingBetweenDeclarations()
 		{
 			string view="{@ foo as bar @}{@ meh as biz @}";
-			var gen=new ViewGenerator("test", "test", false, false, "defaultwriter");
+			var gen=new ViewGenerator("test", "test", false, false, "defaultwriter", false);
 			gen.BaseClass="defaultbase";
 			gen.Input=view;
 			gen.Generate();
