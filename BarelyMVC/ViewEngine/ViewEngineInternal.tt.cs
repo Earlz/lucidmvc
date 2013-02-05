@@ -73,11 +73,13 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		/// </summary>
 		public string BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy";
 		/// <summary>
-		/// Mark the generated view as a partial class
+		/// Mark the generated view as a partial class 
+		/// not implemented
 		/// </summary>
 		public bool UsePartials=false;
 		/// <summary>
 		/// Mark the generated view as being internal rather than public
+		/// not implemented
 		/// </summary>
 		public bool UseInternal=false;
 	}
@@ -102,11 +104,10 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             }
         }
 
-        string input;
         public string Input
         {
-            get{return input;}
-            set{input=value;}
+			get;
+			set;
         }
         bool RenderDirectly=false;
         /// <summary>
@@ -129,34 +130,34 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
         public bool DetectNulls=true;
 		public bool AutoInterfaces;
         string DefaultWriter="";
-        public ViewGenerator(string file,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter, bool autointerfaces){
+        public ViewGenerator(string file,string name, ViewConfiguration config){
             var f=File.OpenText(file);
             string text=f.ReadToEnd();
-            Init (text, name, namespace_, renderdirectly, detectnulls, defaultwriter, autointerfaces);
+            Init (text, name, config);
         }
-        public ViewGenerator(string name, string namespace_, bool renderdirectly, bool detectnulls, string defaultwriter, bool autointerfaces)
+        public ViewGenerator(string name, ViewConfiguration config)
         {
-            Init (null, name, namespace_, renderdirectly, detectnulls, defaultwriter, autointerfaces);
+            Init (null, name, config);
         }
-        void Init(string text,string name,string namespace_,bool renderdirectly,bool detectnulls,string defaultwriter, bool autointerfaces)
+        void Init(string text,string name,ViewConfiguration config)
 		{
 			GeneratedInterface=new InterfaceGenerator();
-			AutoInterfaces=autointerfaces;
-            input=text;
+			AutoInterfaces=config.AutoInterfaces;
+            Input=text;
             Name=name;
-            Namespace=namespace_;
-            RenderDirectly=renderdirectly;
-            DetectNulls=detectnulls;
-            DefaultWriter=defaultwriter;
+            Namespace=config.DefaultNamespace;
+            RenderDirectly=config.RenderDirectly;
+            DetectNulls=config.DetectChainedNulls;
+            DefaultWriter=config.DefaultWriter;
         }
 
         int DoVariables (int start)
         {
-            int end=input.Substring(start+1).IndexOf("@}");
+            int end=Input.Substring(start+1).IndexOf("@}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of variable block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             block=block.Trim();
 			var lines=block.Replace("\r"," ").Replace("\n"," ").Split(new char[]{';'}, StringSplitOptions.RemoveEmptyEntries);
 			foreach(var l in lines)
@@ -212,54 +213,18 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 				}
 				else
 				{
+					GeneratedInterface.Properties.Add(p);
 					Properties.Add(p);
 				}
-			}/*
-            List<string> words=new List<string>(block.Split(new char[]{' ','\t','\n','\r'},StringSplitOptions.RemoveEmptyEntries));
-            while(words.Contains("")){
-                words.Remove("");
-            }
-            int i;
-            for(i=0;i<words.Count-2;i+=3){
-                var p=new Property();
-                p.Accessibility="virtual public";
-                p.Name=words[i];
-                if(p.Name=="private" || p.Name=="protected" || p.Name=="public"){
-                    i++;
-                    p.Accessibility=p.Name;
-                    p.Name=words[i];
-                }
-                if(words[i+1]!="as"){
-                    throw new ApplicationException("'as' expected. Found: "+words[i+1]);
-                }
-                p.Type=words[i+2];
-                
-                if(p.Type[p.Type.Length-1]!=';' && (i<words.Count-3 || words[i+3]!=";")){
-                    throw new ApplicationException("';' expected. Found: "+words[i+3]);
-                }
-                if(i<words.Count-3 && words[i+3]==";"){
-                    i++;
-                }else{
-                    p.Type=p.Type.Substring(0,p.Type.Length-1);
-                }
-                if(p.Name=="Flash"){
-                    HasFlash=true;
-                    if(p.Type.ToLower()!="string" && !p.Accessibility.Contains("public")){
-                        throw new ApplicationException("Flash variable must be a public string");
-                    }
-                }else{
-                    Properties.Add(p);
-                }
-            }       
-            */
+			}
             return end+=3; //+=2 for @} ending
         }
         int WriteVariable(int start){
-            int end=input.Substring(start+1).IndexOf("=}");
+            int end=Input.Substring(start+1).IndexOf("=}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of output block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             block=block.Trim();
             
             var p=Properties.Find(x=>x.Name==block);
@@ -292,11 +257,11 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
         }
         
         int WriteRawOutput(int start){
-            int end=input.Substring(start+1).IndexOf("-}");
+            int end=Input.Substring(start+1).IndexOf("-}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of code output block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             block=block.Trim();
             
             view.AppendLine(@"
@@ -306,31 +271,31 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
         }
         
         int WriteCode(int start){
-            int end=input.Substring(start+1).IndexOf("#}");
+            int end=Input.Substring(start+1).IndexOf("#}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of code block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             block=block.Trim();
             view.AppendLine(block);
             return end+=3;
         }
         int WriteExternalCode(int start){
-            int end=input.Substring(start+1).IndexOf("+}");
+            int end=Input.Substring(start+1).IndexOf("+}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of external code block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             block=block.Trim();
             external.AppendLine(block);
             return end+=3;
         }
         int WriteHelper(int start){
-            int end=input.Substring(start+1).IndexOf("?}");
+            int end=Input.Substring(start+1).IndexOf("?}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of helper block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             block.Trim();
             int stop=block.IndexOfAny(new char[]{' ','='});
             string classname;
@@ -348,11 +313,11 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             return end+=3;
         }
         int ParseKeyword(int start){
-            int end=input.Substring(start+1).IndexOf("!}");
+            int end=Input.Substring(start+1).IndexOf("!}");
             if(end==-1){
                 throw new ApplicationException("Could not find end of keyword block");
             }
-            string block=input.Substring(start+1,end);
+            string block=Input.Substring(start+1,end);
             
             int stop=block.IndexOfAny(new char[]{' ','='});
             string keyword;
@@ -413,6 +378,12 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 break;
                 case "do_not_detect_nulls":
                     DetectNulls=false;
+				break;
+				case "make_interface":
+				AutoInterfaces=true;
+				break;
+				case "do_not_make_interface":
+					AutoInterfaces=false;
                 break;
                 default:
                     throw new ApplicationException("Unknown keyword used");
@@ -448,45 +419,45 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
         string GenerateViewBody(){
             char last='\0';
             view.Append("__Write(@\"");
-            for(int i=0;i<input.Length;i++){
-                if(last=='{' && input[i]=='@'){
+            for(int i=0;i<Input.Length;i++){
+                if(last=='{' && Input[i]=='@'){
                     view.AppendLine("\");");
                     i+=DoVariables(i);
                     view.Append("__Write(@\"");
-                }else if (last=='{' && input[i]=='='){
+                }else if (last=='{' && Input[i]=='='){
                     view.AppendLine("\");");
                     i+=WriteVariable(i);
                     view.Append("__Write(@\"");
-                }else if (last=='{' && input[i]=='#'){
+                }else if (last=='{' && Input[i]=='#'){
                     view.AppendLine("\");");
                     i+=WriteCode(i);
                     view.Append("__Write(@\"");
-                }else if(last=='{' && input[i]=='+'){
+                }else if(last=='{' && Input[i]=='+'){
                     i+=WriteExternalCode(i);
-                }else if (last=='{' && input[i]=='!'){
+                }else if (last=='{' && Input[i]=='!'){
                     view.AppendLine("\");");
                     i+=ParseKeyword(i);
                     view.Append("__Write(@\"");
-                }else if(last=='{' && input[i]=='-'){
+                }else if(last=='{' && Input[i]=='-'){
                     view.AppendLine("\");");
                     i+=WriteRawOutput(i);
                     view.Append("__Write(@\"");
-                }else if(last=='{' && input[i]=='?'){
+                }else if(last=='{' && Input[i]=='?'){
                     view.AppendLine("\");");
                     i+=WriteHelper(i);
                     view.Append("__Write(@\"");
-                }else if(last=='\\' && input[i]=='{'){
-                    view.Append(Escape(input[i]));
+                }else if(last=='\\' && Input[i]=='{'){
+                    view.Append(Escape(Input[i]));
                     last='\0';
                     continue;
                 }else{
                     view.Append(Escape(last));
-                    if(i==input.Length-1){
-                        view.Append(Escape(input[i]));
+                    if(i==Input.Length-1){
+                        view.Append(Escape(Input[i]));
                     }
                 }
-                if(i<input.Length){
-                    last=input[i];
+                if(i<Input.Length){
+                    last=Input[i];
                 }
             }
             view.AppendLine("\");");
@@ -550,6 +521,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 Type=Layout ?? "IBarelyView"
             };
             Properties.Add(p);
+			GeneratedInterface.Properties.Add(p.CloneForInterface());
             p=new Property
             {
                 Name="RenderedDirectly",
@@ -571,6 +543,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 p.SetMethod="set{Layout.Flash=value;}";
                 p.PrefixDocs=@"The ""Flash"" notification text(passes through to the layout";
                 Properties.Add(p);
+				GeneratedInterface.Properties.Add(p.CloneForInterface());
             }
 
             var m=new Method();
@@ -684,7 +657,18 @@ if(__InLayout){
                 }        
             }";
             Methods.Add(m);
-
+			if(AutoInterfaces)
+			{
+				GeneratedInterface.Accessibility=Accessibility;
+				GeneratedInterface.PrefixDocs=PrefixDocs;
+				GeneratedInterface.Namespace=Namespace;
+				GeneratedInterface.Name="I"+Name;
+				GeneratedInterface.BaseClass="IBarelyView";
+			}
+			else
+			{
+				GeneratedInterface=null;
+			}
         }
 
         string Escape(char c){
@@ -905,6 +889,31 @@ if(__InLayout){
             GetMethod="get;";
             SetMethod="set;";
         }
+		public Property CloneForInterface()
+		{
+			//Yes this is a hack. No there isn't a better foreseeable way around it
+			var p=new Property();
+			p.Accessibility="";
+			if(GetMethod.StartsWith("get"))
+			{
+				p.GetMethod="get;";
+			}
+			else
+			{
+				p.GetMethod="";
+			}
+			if(SetMethod.StartsWith("set"))
+			{
+				p.SetMethod="set;";
+			}else
+			{
+				p.SetMethod="";
+			}
+			p.Name=Name;
+			p.SetMethod=SetMethod;
+			p.Type=Type;
+			return p;
+		}
     }
     public class Field : CodeElement
     {

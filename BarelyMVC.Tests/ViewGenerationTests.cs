@@ -9,6 +9,22 @@ namespace BarelyMVC.Tests
     [TestFixture]
     public class ViewGenerationTests
     {
+		ViewConfiguration Config;
+		[TestFixtureSetUp]
+		public void SetUp()
+		{
+			Config=new ViewConfiguration
+			{
+					AutoInterfaces=false,
+					DefaultNamespace="Earlz.BarelyMVC.MyViews",
+					RenderDirectly=false,
+					DetectChainedNulls=false,
+					DefaultWriter="Earlz.BarelyMVC.HttpHandler.CurrentWriter",
+					BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy",
+					UsePartials=false,
+					UseInternal=false,
+			};
+		}
         [Test]
         public void EnsureVariablesCreated()
         {
@@ -26,7 +42,7 @@ meh as that;
 @}
 Hello there {=foo=}
 ";
-            var gen=new ViewGenerator("test", "test",false, false, "defaultwriter", false);
+            var gen=new ViewGenerator("test", Config);
             gen.Input=view;
             gen.BaseClass="defaultbase";
             gen.Generate();
@@ -41,7 +57,7 @@ Hello there {=foo=}
         public void EnsureFlashPassthrough()
         {
             string view=" foo bar!";
-            var gen=new ViewGenerator("test", "test", false, false, "defaultwriteR", false);
+            var gen=new ViewGenerator("test",  Config);
             gen.BaseClass="defaultbase";
             gen.Input=view;
             gen.Generate();
@@ -56,7 +72,7 @@ Hello there {=foo=}
 		public void NoSpacingBetweenDeclarations()
 		{
 			string view="{@ foo as bar @}{@ meh as biz @}";
-			var gen=new ViewGenerator("test", "test", false, false, "defaultwriter", false);
+			var gen=new ViewGenerator("test", Config);
 			gen.BaseClass="defaultbase";
 			gen.Input=view;
 			gen.Generate();
