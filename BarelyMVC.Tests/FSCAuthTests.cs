@@ -73,6 +73,11 @@ namespace BarelyMVC.Tests
 			}
 			Assert.Fail("Should not reach here. No exception thrown");
 		}
+		[Test]
+		public void TestTemp()
+		{
+			Assert.False(true, "blah blah testing CI");
+		}
 	}
 }
 
