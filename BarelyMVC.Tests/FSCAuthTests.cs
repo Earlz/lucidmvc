@@ -76,7 +76,7 @@ namespace BarelyMVC.Tests
 		[Test]
 		public void TestTemp()
 		{
-			Assert.False(true, "blah blah testing CI");
+			Assert.IsFalse(true, "blah blah testing CI");
 		}
 	}
 }
