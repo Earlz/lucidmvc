@@ -2,6 +2,13 @@
 
 BarelyMVC is a simple MVC framework built ontop of vanilla ASP.Net and especially designed for easy integration on Mono/Linux(though it works on .Net/Windows just as well) 
 
+## What's so awesome about it
+1. Clearly see what code will execute
+2. Non-strict MVC compliance. If you need to do something non-MVCish, it won't be as easy but it also won't be some huge hack
+3. Code generating view engine. Automatically writes matching interfaces for your views for easy mocking and supporting trivially multiple formats seemlessly(HTML, JSON, XML, etc)
+
+More awesomeness to come, but I'll only list things here which are "complete" 
+
 ## Design Principles
 
 1. Use as little magic as possible. Everything should be obvious as to how things hook up(ie, few assumptions or "hidden" rules)
