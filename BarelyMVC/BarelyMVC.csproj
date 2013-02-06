@@ -71,6 +71,7 @@
     <Compile Include="Caching\TrackedCacheDictionary.cs" />
     <Compile Include="Caching\CacheInfo.cs" />
     <Compile Include="Caching\CacheExtensions.cs" />
+    <Compile Include="TestingUtilities\MockServerContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -86,5 +87,6 @@
     <Folder Include="ViewEngine\" />
     <Folder Include="Helpers\" />
     <Folder Include="Caching\" />
+    <Folder Include="TestingUtilities\" />
   </ItemGroup>
 </Project>
