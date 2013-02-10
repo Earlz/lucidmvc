@@ -6,12 +6,25 @@ using System.Collections.Concurrent;
 
 namespace Earlz.BarelyMVC.TestingUtilities
 {
+	/*
 	/// <summary>
 	/// This is a mock IServerContext. This is to make unit testing easier on your fingers 
 	/// Get/Set Item/cookie/Header stuff just passes through to dictionaries. Properties include set methods so you can set them manually if needed
 	/// </summary>
 	public class MockServerContext : IServerContext
 	{
+
+		public ParameterDictionary Form {
+			get;
+			set;
+		}
+
+		public Uri RequestUrl {
+			get;
+			set;
+		}
+
+
 		public List<HttpCookie> InputCookies=new List<HttpCookie>();
 		public HttpCookie GetCookie (string name)
 		{
@@ -87,5 +100,6 @@ namespace Earlz.BarelyMVC.TestingUtilities
 		{
 		}
 	}
+	*/
 }
 

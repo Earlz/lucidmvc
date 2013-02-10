@@ -8,6 +8,26 @@ namespace Earlz.BarelyMVC
 {
 	public class AspNetServerContext : IServerContext
 	{
+		ParameterDictionary formcache;
+		public ParameterDictionary Form {
+			get
+			{
+				if(formcache==null)
+				{
+					formcache=Current.Request.Form.ToParameters();
+				}
+				return formcache;
+			}
+		}
+
+		public Uri RequestUrl {
+			get
+			{
+				return Current.Request.Url;
+			}
+		}
+
+
 		public HttpContext Current{
 			get
 			{

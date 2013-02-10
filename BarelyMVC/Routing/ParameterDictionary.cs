@@ -81,7 +81,7 @@ namespace Earlz.BarelyMVC
             {
                 if(key!=null)
                 {
-                    p.Add(key, c[key]);
+                    p.Add(key, c.GetValues(key).ToList()); //use GetValues because it could be more than 1
                 }
             }
             return p;

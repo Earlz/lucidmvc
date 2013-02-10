@@ -70,6 +70,14 @@ namespace Earlz.BarelyMVC
 		/// Gets a TextWriter which can be used to send content back as the response
 		/// </summary>
 		TextWriter Writer{get;}
+		/// <summary>
+		/// Gets a parameter dictionary corresponding to the FORM values passed in by a POST request
+		/// </summary>
+		ParameterDictionary Form{get;}
+		/// <summary>
+		/// Gets the URL of the current request
+		/// </summary>
+		Uri RequestUrl{get;}
 	}
 }
 
