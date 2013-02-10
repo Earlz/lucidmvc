@@ -69,13 +69,13 @@ namespace Earlz.BarelyMVC
         /// <summary>
         /// Handles the current HttpRequest and calls the appropriate HttpHandler
         /// </summary>
-        static public void DoRequest(HttpContext c,HttpApplication app){
-            c.Response.ContentType="text/html"; //default
-            if(c.Request.Url.AbsolutePath.Substring(0,Math.Min(c.Request.Url.AbsolutePath.Length,8))=="/static/"){
+        static public void DoRequest(IServerContext c){
+            c.ContentType="text/html"; //default
+            if(c.RequestUrl.AbsolutePath.Substring(0,Math.Min(c.RequestUrl.AbsolutePath.Length,8))=="/static/"){
                 return; //let it just serve the static files
             }
             if(Router.DoRoute(c)){
-				app.KillIt();
+				c.KillIt();
             }
         }
         /// <summary>

@@ -56,10 +56,12 @@ namespace Earlz.BarelyMVC
 		void Redirect(string url);
 		/// <summary>
 		/// Gets a generic item from a key/value store associated with the current request only
+		/// This is needed because [ThreadStatic] isn't a safe thing to assume will actually "work"
 		/// </summary>
 		object GetItem(string name);
 		/// <summary>
 		/// Sets a generic item to a key/value store associated with the current request only
+		/// This is needed because [ThreadStatic] isn't a safe thing to assume will actually "work"
 		/// </summary>
 		object SetItem(string name, object value);
 		/// <summary>
@@ -78,6 +80,35 @@ namespace Earlz.BarelyMVC
 		/// Gets the URL of the current request
 		/// </summary>
 		Uri RequestUrl{get;}
+		/// <summary>
+		/// The HTTP Content-Type header value to be sent back with the response
+		/// </summary>
+		string ContentType{get;set;}
+		/// <summary>
+		/// The HTTP method for the request
+		/// </summary>
+		string RawHttpMethod{get;}
+	}
+	public static class ServerContextExtensions
+	{
+		public static HttpMethod SaneHttpMethod(this IServerContext c)
+		{
+			string m=c.RawHttpMethod;
+            switch(m.ToUpper()){
+                case "GET":
+                    return HttpMethod.Get;
+                case "PUT":
+                    return HttpMethod.Put;
+                case "POST":
+                    return HttpMethod.Post;
+                case "DELETE":
+                    return HttpMethod.Delete;
+                case "HEAD":
+                    return HttpMethod.Head;
+                default:
+					throw new HttpException(405, "Method not allowed");
+            }
+		}
 	}
 }
 

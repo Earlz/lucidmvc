@@ -8,6 +8,25 @@ namespace Earlz.BarelyMVC
 {
 	public class AspNetServerContext : IServerContext
 	{
+		public string RawHttpMethod {
+			get
+			{
+				return Current.Request.HttpMethod;
+			}
+		}
+
+		public string ContentType {
+			get
+			{
+				return Current.Response.ContentType;
+			}
+			set
+			{
+				Current.Response.ContentType=value;
+			}
+		}
+
+
 		ParameterDictionary formcache;
 		public ParameterDictionary Form {
 			get

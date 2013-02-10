@@ -88,10 +88,10 @@ namespace Earlz.BarelyMVC
 			Routes.Add(r);
 		}
         
-        void DoHandler (Route r,HttpContext c,ParameterDictionary p)
+        void DoHandler (Route r,IServerContext c,ParameterDictionary p)
         {
             HttpHandler.RouteRequest=r;
-            HttpHandler.Method=ConvertMethod(c.Request.HttpMethod);
+            HttpHandler.Method=c.SaneHttpMethod();
             HttpHandler.RawRouteParams=p;
 
             CallMethod(r.Invoker);
@@ -99,12 +99,12 @@ namespace Earlz.BarelyMVC
         /// <summary>
         /// Handles the current request
         /// </summary>
-        public bool DoRoute(HttpContext c){
+        public bool DoRoute(IServerContext c){
 			bool foundwrongmethod=false;
             foreach(var r in Routes){
-                if(r.Pattern.IsMatch(c.Request.Url.AbsolutePath))
+                if(r.Pattern.IsMatch(c.RequestUrl.AbsolutePath))
                 {
-                    var m=ConvertMethod(c.Request.HttpMethod);
+                    var m=c.SaneHttpMethod();
                     if(r.Method == HttpMethod.Any || m==r.Method || 
                        (r.Method==HttpMethod.Get && m==HttpMethod.Head))
                     {
@@ -128,22 +128,6 @@ namespace Earlz.BarelyMVC
             return false;
         }
 
-        HttpMethod ConvertMethod(string m){
-            switch(m.ToUpper()){
-                case "GET":
-                    return HttpMethod.Get;
-                case "PUT":
-                    return HttpMethod.Put;
-                case "POST":
-                    return HttpMethod.Post;
-                case "DELETE":
-                    return HttpMethod.Delete;
-                case "HEAD":
-                    return HttpMethod.Head;
-                default:
-					throw new HttpException(405, "Method not allowed");
-            }
-        }
         void CallMethod(HandlerInvoker invoker){
             IBarelyView view=invoker(HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
             int length=0;
