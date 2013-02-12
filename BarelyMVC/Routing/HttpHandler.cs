@@ -198,4 +198,21 @@ namespace Earlz.BarelyMVC
             }
         }
     }
+	public delegate IBarelyView TestFoo<T>(T handler);
+	public static class Foo
+	{
+		public static void AddRoute<T>(string name, T handler, TestFoo<T> caller)
+		{
+		}
+		class TestHandler : HttpHandler
+		{
+			public IBarelyView FooBar(){return null;}
+		}
+		public static void Test()
+		{
+			Foo.AddRoute("", new TestHandler(), (h)=>h.FooBar());
+		}
+	}
+
+
 }

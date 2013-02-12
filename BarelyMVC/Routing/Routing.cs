@@ -79,34 +79,6 @@ namespace Earlz.BarelyMVC
             }
         }
         /// <summary>
-        /// Adds a route to the router
-        /// </summary>
-        static public void AddRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
-            Router.AddRoute(id,method,pattern,handler);
-        }
-        static public void AddRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
-        {
-            Router.AddRoute(id, method, pattern, handler);
-        }
-        static public void AddRoute(string pattern, HandlerInvoker handler)
-        {
-            Router.AddRoute(pattern, HttpMethod.Get, pattern, handler);
-        }
-		/// <summary>
-		/// Adds a route to the router which will require authentication before attempting to execute your handler
-		/// </summary>
-		static public void AddSecureRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
-		{
-			Router.AddSecureRoute(id, method, pattern, handler);
-		}
-        static public void AddSecureRoute(string id,HttpMethod method,string pattern,HandlerInvoker handler){
-            Router.AddSecureRoute(id,method,pattern,handler);
-        }
-        static public void AddSecureRoute(string pattern, HandlerInvoker handler)
-        {
-            Router.AddSecureRoute(pattern, HttpMethod.Get, pattern, handler);
-        }
-        /// <summary>
         /// Will strip all non-alphanumeric characters and replace all spaces with `-` to make a URL friendly "slug"
         /// </summary>
         static public string Slugify(string text)
