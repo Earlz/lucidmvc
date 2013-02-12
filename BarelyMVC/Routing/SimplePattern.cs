@@ -36,6 +36,7 @@ using System.Web.Caching;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Earlz.BarelyMVC.Caching;
 
 
 namespace Earlz.BarelyMVC
@@ -85,14 +86,6 @@ namespace Earlz.BarelyMVC
             }
         }
 
-        static List<Group> GetGroup(string pattern)
-        {
-            return HttpContext.Current.Cache.Get(pattern) as List<Group>;
-        }
-        static void SetGroup(string pattern, List<Group> groups)
-        {
-            HttpContext.Current.Cache.Add(pattern, groups, null, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, null);
-        }
         private string Pattern;
         private List<Group> Groups;
         

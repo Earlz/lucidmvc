@@ -60,7 +60,6 @@ namespace Earlz.BarelyMVC
     {
         List<Route> Routes=new List<Route>();
 
-
         /// <summary>
         /// Adds a route to the router
         /// </summary>
@@ -94,7 +93,7 @@ namespace Earlz.BarelyMVC
             HttpHandler.Method=c.SaneHttpMethod();
             HttpHandler.RawRouteParams=p;
 
-            CallMethod(r.Invoker);
+            CallMethod(c, r.Invoker);
         }
         /// <summary>
         /// Handles the current request
@@ -128,10 +127,10 @@ namespace Earlz.BarelyMVC
             return false;
         }
 
-        void CallMethod(HandlerInvoker invoker){
+        void CallMethod(IServerContext context, HandlerInvoker invoker){
             IBarelyView view=invoker(HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
             int length=0;
-            var r=HttpContext.Current.Response;
+            var r=context.Writer;
             if(view!=null){
                 //even if "directly-rendered", if ignoring the view, it won't really be rendered
                 var s=view.RenderView();

@@ -42,6 +42,7 @@ namespace Earlz.BarelyMVC
      */
     public abstract class HttpHandler
     {
+
         public static TextWriter CurrentWriter{
             get{
                 if(HttpContext.Current.Items.Contains("BarelyMVC_Writer")){
