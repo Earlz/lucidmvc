@@ -43,6 +43,13 @@ namespace Earlz.BarelyMVC
 			Router.AddRoute(Current);
 			return this;
 		}
+		public IControllerRoute<T> Handles (IPatternMatcher pattern)
+		{
+			Current=new Route();
+			Current.Pattern=pattern;
+			Router.AddRoute(Current);
+			return this;
+		}
 
 		IControllerRoute<T> IControllerRoute<T>.With (ControllerInvoker<T> invoker)
 		{

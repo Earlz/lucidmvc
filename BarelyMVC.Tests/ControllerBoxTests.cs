@@ -65,6 +65,27 @@ namespace BarelyMVC.Tests
 			Assert.IsTrue(r.GetRoutes().Contains(second));
 			Assert.AreEqual(2, r.GetRoutes().Count());
 		}
+		[Test]
+		public void Handles_AcceptsCustomPatterns()
+		{
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			var p=new Mock<IPatternMatcher>();
+			p.Setup(x=>x.IsMatch("/foo")).Returns(true).Verifiable();
+			ctrl.Handles(p.Object);
+			Assert.IsTrue(ctrl.Current.Pattern.IsMatch("/foo"));
+			p.Verify();
+
+		}
+		[Test]
+		public void Handles_StringDefaultsToSimplePattern()
+		{
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			ctrl.Handles("/foo");
+			Assert.IsTrue(ctrl.Current.Pattern is SimplePattern);
+			Assert.IsTrue(ctrl.Current.Pattern.IsMatch("/foo"));
+		}
 	}
 }
 
