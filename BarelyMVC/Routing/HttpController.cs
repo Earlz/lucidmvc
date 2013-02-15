@@ -37,7 +37,7 @@ namespace Earlz.BarelyMVC
     /**The base class used to handle HTTP requests.
      * This class should be derived from for every different handler for HTTP requests.
      */
-    public abstract class HttpHandler
+    public abstract class HttpController
     {
 
         public static TextWriter CurrentWriter{
@@ -55,7 +55,7 @@ namespace Earlz.BarelyMVC
 
 
 
-        public HttpHandler (IServerContext context)
+        public HttpController (IServerContext context)
         {
         }
 

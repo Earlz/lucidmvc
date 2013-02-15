@@ -43,7 +43,6 @@
     <Compile Include="Routing\Router.cs" />
     <Compile Include="Routing\ParameterDictionary.cs" />
     <Compile Include="Routing\TextHandler.cs" />
-    <Compile Include="Routing\HttpHandler.cs" />
     <Compile Include="Authentication\Authentication.cs" />
     <Compile Include="Authentication\CustomErrorsFixer.cs" />
     <Compile Include="Authentication\GroupData.cs" />
@@ -72,6 +71,9 @@
     <Compile Include="Caching\CacheInfo.cs" />
     <Compile Include="Caching\CacheExtensions.cs" />
     <Compile Include="TestingUtilities\MockServerContext.cs" />
+    <Compile Include="Routing\HttpController.cs" />
+    <Compile Include="Routing\ControllerBox.cs" />
+    <Compile Include="Routing\Route.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
