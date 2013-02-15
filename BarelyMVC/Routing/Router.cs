@@ -52,22 +52,23 @@ namespace Earlz.BarelyMVC
         /// </summary>
         Head
     };
-    public delegate IBarelyView HandlerInvoker(ParameterDictionary route, ParameterDictionary form);
+	public delegate IBarelyView HandlerInvoker<T>(T httphandler) where T:HttpHandler;
+	public delegate T HandlerCreator<T>(Router r) where T:HttpHandler;
     
     /**The routing engine of EFramework.
      * This is a simple, but powerful router utilizing simple route pattern matching and lambdas for initializing the HttpHandler for a request.**/
     public class Router
     {
         List<Route> Routes=new List<Route>();
-
         /// <summary>
         /// Adds a route to the router
         /// </summary>
-        public void AddRoute(string id,HttpMethod method, string pattern, HandlerInvoker handler)
+        public void AddRoute<T>(HttpMethod method, string pattern, HandlerCreator<T> creator, HandlerInvoker<T> invoker) where T:HttpHandler
         {
-            var r=new Route{Pattern=new SimplePattern(pattern), Invoker=handler, ID=id, Method=method};
-            Routes.Add(r);
+            //var r=new Route{Pattern=new SimplePattern(pattern), Invoker=handler, ID=id, Method=method};
+            //Routes.Add(r);
         }
+		/*
         public void AddRoute(string id,HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
         {
             var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method};
@@ -86,7 +87,7 @@ namespace Earlz.BarelyMVC
 			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=invoker, ID=id, Method=method, Secure=true};
 			Routes.Add(r);
 		}
-        
+        */
         void DoHandler (Route r,IServerContext c,ParameterDictionary p)
         {
             HttpHandler.RouteRequest=r;
@@ -127,8 +128,9 @@ namespace Earlz.BarelyMVC
             return false;
         }
 
-        void CallMethod(IServerContext context, HandlerInvoker invoker){
-            IBarelyView view=invoker(HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
+        void CallMethod<T>(IServerContext context, HandlerInvoker<T> invoker) where T:HttpHandler 
+		{
+			IBarelyView view=invoker(null);//HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
             int length=0;
             var r=context.Writer;
             if(view!=null){
@@ -149,11 +151,38 @@ namespace Earlz.BarelyMVC
     public class Route
     {
         public IPatternMatcher Pattern;
-        public HandlerInvoker Invoker;  
+        public HandlerInvoker<HttpHandler> Invoker;  
+		public HttpHandler Handler;
         public HttpMethod Method;
-        public string ID;
+        //public string ID;
 		public bool Secure;
     }
+
+	/*example fluent API usage:
+	 * 
+	 * Router.Route("/foo").
+	 * 		IsHandledBy((r) => new MyHandler(r), (h) => h.Foo()).
+	 * 		Accepts(HttpMethod.Get).
+	 * 		AlsoIncludes("/foobar").
+	 * 		AlsoIncludes("/{a}/{b}").
+	 * 		RouteParam("a").MustBe(GroupMatchType.Integer).
+	 * 		RouteParam("a").MustMatch("/someregex/").
+	 * 		RedirectFrom("/foo/oldurl").
+	 * 		IsProtected
+	 * 
+	 * 
+	 * ORRRRR
+	 * (if this is possible!)
+	 * var blog=Router.Controller((r) => new BlogHandler(r));
+	 * blog.Handles("/blog/view/{foo}").With((h) => h.Viewblog());
+	 * blog.Handles("/blog/new").
+	 * 		With((h) => h.New()).
+	 * 		IsProtected().
+	 * 		AlsoIncludes("/new").
+	 * 		Accepts(HttpMethod.Get | HttpMethod.Post);
+	 * 
+	 * */
+
 }
 
 

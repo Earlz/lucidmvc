@@ -31,7 +31,8 @@ using System.Web;
 using Earlz.BarelyMVC.ViewEngine;
 namespace Earlz.BarelyMVC
 {
-    public class TextHandler : BareHttpHandler
+	/*
+    public class TextHandler : HttpHandler
     {
         string Text;
         public TextHandler (string text)
@@ -45,6 +46,6 @@ namespace Earlz.BarelyMVC
         }
         
         
-    }
+    }*/
 }
 

@@ -34,9 +34,6 @@ using Earlz.BarelyMVC.ViewEngine;
 using System.IO;
 namespace Earlz.BarelyMVC
 {
-    public abstract class BareHttpHandler : HttpHandler
-    {
-    }
     /**The base class used to handle HTTP requests.
      * This class should be derived from for every different handler for HTTP requests.
      */
@@ -58,7 +55,7 @@ namespace Earlz.BarelyMVC
 
 
 
-        public HttpHandler ()
+        public HttpHandler (IServerContext context)
         {
         }
 
@@ -180,16 +177,6 @@ namespace Earlz.BarelyMVC
             }
         }
         /// <summary>
-        /// The current RouteID being handled
-        /// </summary>
-        public static string RouteID
-        {
-            get
-            {
-                return RouteRequest.ID;
-            }
-        }
-        /// <summary>
         /// The current user logged in with FSCAuth
         /// </summary>
         public static UserData CurrentUser{
@@ -198,21 +185,34 @@ namespace Earlz.BarelyMVC
             }
         }
     }
-	public delegate IBarelyView TestFoo<T>(T handler);
-	public static class Foo
+	/*
+	public delegate IBarelyView TestFoo<T>(T handler) where T:HttpHandler;
+	public delegate T HandlerFoo<T>() where T:HttpHandler;
+
+	public class Foo
 	{
-		public static void AddRoute<T>(string name, T handler, TestFoo<T> caller)
+		delegate IBarelyView DoShit();
+		public static void AddRoute<T>(string name, HandlerFoo<T> handler, TestFoo<T> caller) where T:HttpHandler
 		{
+			DoShit del=()=>
+			{
+				var h=handler();
+				return caller(h);
+			};
+			tmp.Add(del);
 		}
+		static List<DoShit> tmp;
+		static List<HandlerFoo<HttpHandler>> list;
 		class TestHandler : HttpHandler
 		{
 			public IBarelyView FooBar(){return null;}
 		}
 		public static void Test()
 		{
-			Foo.AddRoute("", new TestHandler(), (h)=>h.FooBar());
+			Foo.AddRoute("", ()=> new TestHandler(), (h)=>h.FooBar());
 		}
 	}
+	*/
 
 
 }

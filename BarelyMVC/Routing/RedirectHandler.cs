@@ -31,7 +31,7 @@ using Earlz.BarelyMVC.Extensions;
 
 namespace Earlz.BarelyMVC
 {
-
+	/*
     public class RedirectHandler : BareHttpHandler
     {
         string Url;
@@ -61,5 +61,6 @@ namespace Earlz.BarelyMVC
             return null;
         }
     }
+    */
 }
 
