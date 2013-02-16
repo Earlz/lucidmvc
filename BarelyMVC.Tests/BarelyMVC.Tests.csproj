@@ -59,6 +59,7 @@
     <Compile Include="RouterTests.cs" />
     <Compile Include="ControllerBoxTests.cs" />
     <Compile Include="utilities\FakePatternMatcher.cs" />
+    <Compile Include="utilities\FakeServerContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />
