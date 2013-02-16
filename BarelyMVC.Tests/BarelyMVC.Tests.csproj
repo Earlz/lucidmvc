@@ -58,6 +58,7 @@
     <Compile Include="Caching\CacheTest.cs" />
     <Compile Include="RouterTests.cs" />
     <Compile Include="ControllerBoxTests.cs" />
+    <Compile Include="utilities\FakePatternMatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />

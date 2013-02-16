@@ -82,6 +82,19 @@ namespace Earlz.BarelyMVC
 			return new ControllerBox<T>(this, creator);
 		}
 
+		public virtual bool Execute(IServerContext context)
+		{
+			foreach(var route in Routes)
+			{
+				if(route.Pattern!=null && route.Pattern.IsMatch(context.RequestUrl.AbsolutePath))
+				{
+					context.Writer.Write(route.Responder(context).RenderView());
+					return true;
+				}
+			}
+			return false;
+		}
+
 
         /// <summary>
         /// Adds a route to the router
