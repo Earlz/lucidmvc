@@ -89,26 +89,5 @@ namespace Earlz.BarelyMVC
 		/// </summary>
 		string RawHttpMethod{get;}
 	}
-	public static class ServerContextExtensions
-	{
-		public static HttpMethod SaneHttpMethod(this IServerContext c)
-		{
-			string m=c.RawHttpMethod;
-            switch(m.ToUpper()){
-                case "GET":
-                    return HttpMethod.Get;
-                case "PUT":
-                    return HttpMethod.Put;
-                case "POST":
-                    return HttpMethod.Post;
-                case "DELETE":
-                    return HttpMethod.Delete;
-                case "HEAD":
-                    return HttpMethod.Head;
-                default:
-					throw new HttpException(405, "Method not allowed");
-            }
-		}
-	}
 }
 

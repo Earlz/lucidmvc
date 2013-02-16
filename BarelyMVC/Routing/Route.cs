@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Earlz.BarelyMVC
 {
@@ -7,7 +8,7 @@ namespace Earlz.BarelyMVC
     {
         public IPatternMatcher Pattern;
 		public ControllerResponse Responder;
-        public HttpMethod AllowedMethods;
+		public IEnumerable<string> AllowedMethods=new string[]{"get"};
 		public string Name;
 		public bool Secure;
     }

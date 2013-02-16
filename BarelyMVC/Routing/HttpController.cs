@@ -143,21 +143,6 @@ namespace Earlz.BarelyMVC
             }
         }
         /// <summary>
-        /// The current HTTP Method
-        /// </summary>
-        public static HttpMethod Method
-        {
-            get
-            {
-                return (HttpMethod) HttpContext.Current.Items["BarelyMVC_RouteMethod"];
-            }
-            internal set
-            {
-                HttpContext.Current.Items["BarelyMVC_RouteMethod"]=value;
-            }
-
-        }
-        /// <summary>
         /// The HTTP Form NameValueCollection. This is populated during POST and PUT requests
         /// </summary>
         public static System.Collections.Specialized.NameValueCollection Form{

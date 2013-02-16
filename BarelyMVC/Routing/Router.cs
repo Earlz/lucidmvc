@@ -42,17 +42,6 @@ using System.Collections.ObjectModel;
 
 namespace Earlz.BarelyMVC
 {
-    public enum HttpMethod{
-        Any,
-        Get,
-        Put,
-        Post,
-        Delete,
-        /// <summary>
-        /// Note you should never need to explicitly support this. If a HEAD request is made and a GET route exists, it will use the GET route
-        /// </summary>
-        Head
-    };
 	public delegate IBarelyView HandlerInvoker<T>(T httphandler) where T:HttpController;
 	public delegate T HandlerCreator<T>(Router r) where T:HttpController;
     
@@ -86,7 +75,8 @@ namespace Earlz.BarelyMVC
 		{
 			foreach(var route in Routes)
 			{
-				if(route.Pattern!=null && route.Pattern.IsMatch(context.RequestUrl.AbsolutePath))
+				if(route.Pattern!=null && route.Pattern.IsMatch(context.RequestUrl.AbsolutePath) &&
+				   route.AllowedMethods.Any(x=>x.ToLower()==context.RawHttpMethod.ToLower()))
 				{
 					context.Writer.Write(route.Responder(context).RenderView());
 					return true;

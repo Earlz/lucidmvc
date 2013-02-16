@@ -53,6 +53,7 @@ namespace BarelyMVC.Tests
 				Assert.AreEqual(c, context.Object);
 				return view;
 			};
+			context.Setup(x=>x.RawHttpMethod).Returns("GET");
 			context.Setup(x=>x.RequestUrl).Returns(new Uri("http://meh.com/foo"));
 			var writer=new StringWriter();
 			context.Setup(x=>x.Writer).Returns(writer);
@@ -71,6 +72,38 @@ namespace BarelyMVC.Tests
 			var context=new Mock<IServerContext>();
 			context.Setup(x=>x.RequestUrl).Returns(new Uri("http://meh.com/foo"));
 			Assert.IsFalse(router.Execute(context.Object));
+		}
+		[Test]
+		public void Execute_RespectsHttpMethodsAllowed()
+		{
+			var router=new Router();
+			router.AddRoute(new Route
+			{
+				Responder=(c) => new WrapperView("foo"),
+				AllowedMethods=new string[]{"POST"},
+				Pattern=new FakePatternMatcher("/foo")
+			});
+			var context=new Mock<IServerContext>();
+			context.Setup(x=>x.RequestUrl).Returns(new Uri("http://meh.com/foo"));
+			context.Setup(x=>x.RawHttpMethod).Returns("GET");
+			context.Setup(x=>x.Writer).Returns(new StringWriter());
+			Assert.IsFalse(router.Execute(context.Object));
+		}
+		public void Execute_RespectsMultipleAllowedHttpMethods()
+		{
+
+			var router=new Router();
+			router.AddRoute(new Route
+			{
+				Responder=(c) => new WrapperView("foo"),
+				AllowedMethods=new string[]{"POST", "meh"},
+				Pattern=new FakePatternMatcher("/foo")
+			});
+			var context=new Mock<IServerContext>();
+			context.Setup(x=>x.RequestUrl).Returns(new Uri("http://meh.com/foo"));
+			context.Setup(x=>x.RawHttpMethod).Returns("meh");
+			context.Setup(x=>x.Writer).Returns(new StringWriter());
+			Assert.IsTrue(router.Execute(context.Object));
 		}
 	}
 }
