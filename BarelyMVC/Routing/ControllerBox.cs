@@ -11,6 +11,7 @@ namespace Earlz.BarelyMVC
 	public interface IControllerRoute<T>
 	{
 		IControllerRoute<T> With(ControllerInvoker<T> invoker);
+		IControllerRoute<T> Allows(string httpmethod);
 	}
 
 
@@ -59,6 +60,11 @@ namespace Earlz.BarelyMVC
 				return invoker(controller);
 			};
 			return this;
+		}
+
+		IControllerRoute<T> IControllerRoute<T>.Allows(string method)
+		{
+			return null;
 		}
 	}
 }

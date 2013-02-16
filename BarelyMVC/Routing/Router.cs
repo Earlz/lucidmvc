@@ -73,10 +73,12 @@ namespace Earlz.BarelyMVC
 
 		public virtual bool Execute(IServerContext context)
 		{
+			var defaultallowed=new string[]{"get"};
 			foreach(var route in Routes)
 			{
+				var allowed=route.AllowedMethods ?? defaultallowed;
 				if(route.Pattern!=null && route.Pattern.IsMatch(context.RequestUrl.AbsolutePath) &&
-				   route.AllowedMethods.Any(x=>x.ToLower()==context.RawHttpMethod.ToLower()))
+				   allowed.Any(x=>x.ToLower()==context.RawHttpMethod.ToLower()))
 				{
 					context.Writer.Write(route.Responder(context).RenderView());
 					return true;

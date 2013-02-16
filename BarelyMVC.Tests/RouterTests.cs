@@ -100,6 +100,24 @@ namespace BarelyMVC.Tests
 			context.RawHttpMethod="meh";
 			Assert.IsTrue(router.Execute(context));
 		}
+		[Test]
+		public void Execute_DefaultsToOnlyGetHttpMethod()
+		{
+			var router=new Router();
+			var r=new Route
+			{
+				AllowedMethods=null,
+				Responder=(c) => new WrapperView("foo"),
+				Pattern=new FakePatternMatcher("/foo")
+			};
+			router.AddRoute(r);
+			var context=new FakeServerContext();
+			context.RequestUrl=new Uri("http://meh.com/foo");
+			context.RawHttpMethod="post";
+			Assert.IsFalse(router.Execute(context));
+			context.RawHttpMethod="get";
+			Assert.IsTrue(router.Execute(context));
+		}
 	}
 }
 
