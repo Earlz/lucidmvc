@@ -4,6 +4,8 @@ using Earlz.BarelyMVC;
 using Earlz.BarelyMVC.ViewEngine;
 using Moq;
 using System.Linq;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace BarelyMVC.Tests
 {
@@ -85,6 +87,53 @@ namespace BarelyMVC.Tests
 			ctrl.Handles("/foo");
 			Assert.IsTrue(ctrl.Current.Pattern is SimplePattern);
 			Assert.IsTrue(ctrl.Current.Pattern.IsMatch("/foo"));
+		}
+		[Test]
+		public void Allows_CreatesAllowedMethods()
+		{
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			ctrl.Handles("/foo").Allows("biz");
+			Assert.IsNotNull(ctrl.Current.AllowedMethods);
+		}
+
+		[Test]
+		public void Allows_AddsMethods()
+		{
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			ctrl.Handles("/foo").Allows("biz").Allows("baz");
+			Assert.IsTrue(ctrl.Current.AllowedMethods.Any(x=>x=="biz"));
+			Assert.IsTrue(ctrl.Current.AllowedMethods.Any(x=>x=="baz"));
+		}
+
+		[Test]
+		public void Allows_DoesNotDuplicate()
+		{
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			ctrl.Handles("/foo").Allows("biz").Allows("biz");
+			Assert.IsTrue(ctrl.Current.AllowedMethods.Any(x=>x=="biz"));
+			Assert.AreEqual(1, ctrl.Current.AllowedMethods.Count());
+		}
+		[Test]
+		public void Allows_ThrowsNotSupportedForBadType()
+		{
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			var tmp=ctrl.Handles("/foo");
+			ctrl.Current.AllowedMethods=new ReadOnlyCollection<string>(new List<string>());
+			bool threw=false;
+			try
+			{
+				tmp.Allows("biz");
+			}
+			catch(NotSupportedException e)
+			{
+				threw=true;
+			}
+			Assert.IsTrue(threw);
+
 		}
 	}
 }

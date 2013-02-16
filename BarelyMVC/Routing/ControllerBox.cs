@@ -1,5 +1,6 @@
 using System;
 using Earlz.BarelyMVC.ViewEngine;
+using System.Collections.Generic;
 
 namespace Earlz.BarelyMVC
 {
@@ -64,7 +65,21 @@ namespace Earlz.BarelyMVC
 
 		IControllerRoute<T> IControllerRoute<T>.Allows(string method)
 		{
-			return null;
+			if(Current.AllowedMethods==null)
+			{
+				Current.AllowedMethods=new List<string>();
+			}
+			var list=Current.AllowedMethods as ICollection<string>;
+
+			if(list==null && list.IsReadOnly)
+			{
+				throw new NotSupportedException("To use ControllerBox.Allows, the exact type of AllowedMethods must implement ICollection<string> and it must not be readonly");
+			}
+			if(!list.Contains(method))
+			{
+				list.Add(method);
+			}
+			return this;
 		}
 	}
 }

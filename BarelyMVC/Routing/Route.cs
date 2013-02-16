@@ -8,7 +8,7 @@ namespace Earlz.BarelyMVC
     {
         public IPatternMatcher Pattern;
 		public ControllerResponse Responder;
-		public IEnumerable<string> AllowedMethods=new string[]{"get"};
+		public IEnumerable<string> AllowedMethods=null;
 		public string Name;
 		public bool Secure;
     }
