@@ -33,17 +33,19 @@ namespace Earlz.BarelyMVC
     public interface IPatternMatcher
     {
         /// <summary>
-        /// Determines rather the given input matches this pattern
+        /// Determines rather the given input matches this pattern and returns a MatchResult
         /// </summary>
-        bool IsMatch(string input);
-
-        /// <summary>
-        /// The list of parameters and values for the last match. Yields null if parameters are not supported
-        /// </summary>
-        ParameterDictionary Params
-        {
-            get;
-        }
+        MatchResult Match(string input);
     }
+	public class MatchResult
+	{
+		public bool IsMatch{get;private set;}
+		public ParameterDictionary Params{get;private set;}
+		public MatchResult(bool ismatch, ParameterDictionary matchparams=null)
+		{
+			Params=matchparams;
+			IsMatch=ismatch;
+		}
+	}
 }
 

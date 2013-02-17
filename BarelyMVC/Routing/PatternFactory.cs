@@ -38,16 +38,9 @@ namespace Earlz.BarelyMVC
         {
             regex=new Regex(pattern,RegexOptions.Compiled);
         }
-        public ParameterDictionary Params
+        public MatchResult Match(string input)
         {
-            get
-            {
-                return null;
-            }
-        }
-        public bool IsMatch(string input)
-        {
-            return regex.IsMatch(input);
+            return new MatchResult(regex.IsMatch(input), null);
         }
     }
     public class PlainPatternMatcher : IPatternMatcher
@@ -57,16 +50,9 @@ namespace Earlz.BarelyMVC
         {
             Pattern=pattern;
         }
-        public bool IsMatch(string input)
+        public MatchResult Match(string input)
         {
-            return Pattern==input;
-        }
-        public ParameterDictionary Params
-        {
-            get
-            {
-                return null;
-            }
+            return new MatchResult(Pattern==input, null);
         }
     }
     

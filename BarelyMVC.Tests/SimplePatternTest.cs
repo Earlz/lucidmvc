@@ -11,68 +11,72 @@ namespace Earlz.BarelyMVC.Tests
         public void RootUrl()
         {
             var x=new SimplePattern("/");
-            Assert.IsTrue(x.IsMatch("/"));
-            Assert.IsFalse(x.IsMatch("/foo/bar"));
-            Assert.IsFalse(x.IsMatch("/123"));
+            Assert.IsTrue(x.Match("/").IsMatch);
+            Assert.IsFalse(x.Match("/foo/bar").IsMatch);
+            Assert.IsFalse(x.Match("/123").IsMatch);
         }
         [Test]
         public void BasicParameters()
         {
             var x=new SimplePattern("/{foo}/{bar}");
-            Assert.IsTrue(x.IsMatch("/biz/baz"));
-            Assert.AreEqual(x.Params["foo"],"biz");
-            Assert.AreEqual(x.Params["bar"],"baz");
-            Assert.IsFalse(x.IsMatch("/foo/bar/biz/baz"));
+			var res=x.Match("/biz/baz");
+            Assert.IsTrue(res.IsMatch);
+            Assert.AreEqual(res.Params["foo"],"biz");
+            Assert.AreEqual(res.Params["bar"],"baz");
+            Assert.IsFalse(x.Match("/foo/bar/biz/baz").IsMatch);
         }
         [Test]
         public void ChoiceParameters()
         {
             var x=new SimplePattern("/{foo=[fizz,buzz,bazz]}/{bar=[a,b,c]}");
-            Assert.IsTrue(x.IsMatch("/fizz/b"));
-            Assert.IsTrue(x.IsMatch("/bazz/c"));
-            Assert.AreEqual(x.Params["foo"],"bazz");
-            Assert.AreEqual(x.Params["bar"],"c");
-            Assert.IsFalse(x.IsMatch("/fizz/c/d"));
-            Assert.IsFalse(x.IsMatch("/meh/blah"));
-            Assert.IsFalse(x.IsMatch("/fizz/meh"));
+            Assert.IsTrue(x.Match("/fizz/b").IsMatch);
+			var res=x.Match("/bazz/c");
+            Assert.IsTrue(res.IsMatch);
+            Assert.AreEqual(res.Params["foo"],"bazz");
+            Assert.AreEqual(res.Params["bar"],"c");
+            Assert.IsFalse(x.Match("/fizz/c/d").IsMatch);
+            Assert.IsFalse(x.Match("/meh/blah").IsMatch);
+            Assert.IsFalse(x.Match("/fizz/meh").IsMatch);
         }
         [Test]
         public void MixedParameters()
         {
             var x=new SimplePattern("/{foo=[fizz,buzz,bazz]}/{bar}/meh");
-            Assert.IsTrue(x.IsMatch("/fizz/foobar/meh"));
-            Assert.IsTrue(x.IsMatch("/bazz/biz/meh"));
-            Assert.AreEqual(x.Params["foo"],"bazz");
-            Assert.AreEqual(x.Params["bar"], "biz");
-            Assert.IsFalse(x.IsMatch("/blah/foo/meh"));
-            Assert.IsFalse(x.IsMatch("/buzz/bar/foo"));
+            Assert.IsTrue(x.Match("/fizz/foobar/meh").IsMatch);
+			var res=x.Match("/bazz/biz/meh");
+            Assert.IsTrue(res.IsMatch);
+            Assert.AreEqual(res.Params["foo"],"bazz");
+            Assert.AreEqual(res.Params["bar"], "biz");
+            Assert.IsFalse(x.Match("/blah/foo/meh").IsMatch);
+            Assert.IsFalse(x.Match("/buzz/bar/foo").IsMatch);
         }
         [Test]
         public void WhereParameters()
         {
             var x=new SimplePattern("/{foo}/{id}").Where("id",GroupMatchType.AlphaNumeric);
-            Assert.IsTrue(x.IsMatch("/meh/fjk2j49a0"));
-            Assert.IsFalse(x.IsMatch("/meh/hjkfd-jhk@$^%jkf"));
+            Assert.IsTrue(x.Match("/meh/fjk2j49a0").IsMatch);
+            Assert.IsFalse(x.Match("/meh/hjkfd-jhk@$^%jkf").IsMatch);
             x.Where("id",GroupMatchType.HexString);
-            Assert.IsTrue(x.IsMatch("/meh/194abdf"));
-            Assert.IsFalse(x.IsMatch("/meh/10a9jkot"));
+            Assert.IsTrue(x.Match("/meh/194abdf").IsMatch);
+            Assert.IsFalse(x.Match("/meh/10a9jkot").IsMatch);
             x.Where("id",GroupMatchType.Float);
-            Assert.IsTrue(x.IsMatch("/meh/102.29"));
-            Assert.IsTrue(x.IsMatch("/meh/-1024.29"));
-            Assert.IsFalse(x.IsMatch("/meh/193jhkf"));
+            Assert.IsTrue(x.Match("/meh/102.29").IsMatch);
+            Assert.IsTrue(x.Match("/meh/-1024.29").IsMatch);
+            Assert.IsFalse(x.Match("/meh/193jhkf").IsMatch);
             x.Where("id",GroupMatchType.Integer);
-            Assert.IsTrue(x.IsMatch("/meh/123456"));
-            Assert.IsTrue(x.IsMatch("/meh/-12345"));
-            Assert.IsFalse(x.IsMatch("/meh/194jfjkd"));
+            Assert.IsTrue(x.Match("/meh/123456").IsMatch);
+            Assert.IsTrue(x.Match("/meh/-12345").IsMatch);
+            Assert.IsFalse(x.Match("/meh/194jfjkd").IsMatch);
         }
 		[Test]
 		public void ShortcutTest()
 		{
 			SimplePattern.AddShortcut("foo", "/biz/{baz}");
 			var x=new SimplePattern("/meh/{!foo!}");
-			Assert.IsTrue(x.IsMatch("/meh/biz/foo"));
-			Assert.AreEqual("foo", x.Params["baz"]);
-			Assert.IsFalse(x.IsMatch("/meh/foo"));
+			var res=x.Match("/meh/biz/foo");
+			Assert.IsTrue(res.IsMatch);
+			Assert.AreEqual("foo", res.Params["baz"]);
+			Assert.IsFalse(x.Match("/meh/foo").IsMatch);
 		}
 
     }

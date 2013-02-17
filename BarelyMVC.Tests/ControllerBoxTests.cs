@@ -62,8 +62,8 @@ namespace Earlz.BarelyMVC.Tests
 			var first=ctrl.Current;
 			ctrl.Handles("/biz");
 			var second=ctrl.Current;
-			Assert.IsTrue(first.Pattern.IsMatch("/foo"));
-			Assert.IsTrue(second.Pattern.IsMatch("/biz"));
+			Assert.IsTrue(first.Pattern.Match("/foo").IsMatch);
+			Assert.IsTrue(second.Pattern.Match("/biz").IsMatch);
 			Assert.IsTrue(r.GetRoutes().Contains(first));
 			Assert.IsTrue(r.GetRoutes().Contains(second));
 			Assert.AreEqual(2, r.GetRoutes().Count());
@@ -74,9 +74,9 @@ namespace Earlz.BarelyMVC.Tests
 			var r=new Router();
 			var ctrl=r.Controller<TestController>(null);
 			var p=new Mock<IPatternMatcher>();
-			p.Setup(x=>x.IsMatch("/foo")).Returns(true).Verifiable();
+			p.Setup(x=>x.Match("/foo")).Returns(new MatchResult(true, null)).Verifiable();
 			ctrl.Handles(p.Object);
-			Assert.IsTrue(ctrl.Current.Pattern.IsMatch("/foo"));
+			Assert.IsTrue(ctrl.Current.Pattern.Match("/foo").IsMatch);
 			p.Verify();
 
 		}
@@ -87,7 +87,7 @@ namespace Earlz.BarelyMVC.Tests
 			var ctrl=r.Controller<TestController>(null);
 			ctrl.Handles("/foo");
 			Assert.IsTrue(ctrl.Current.Pattern is SimplePattern);
-			Assert.IsTrue(ctrl.Current.Pattern.IsMatch("/foo"));
+			Assert.IsTrue(ctrl.Current.Pattern.Match("/foo").IsMatch);
 		}
 		[Test]
 		public void Allows_CreatesAllowedMethods()

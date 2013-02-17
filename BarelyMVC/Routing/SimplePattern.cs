@@ -112,11 +112,10 @@ namespace Earlz.BarelyMVC
         
 
 
-        public ParameterDictionary Params{get;private set;}
         /**This method returns true(and populates Params) if the input string matches the Pattern string. **/
-        public bool IsMatch (string input)
+        public MatchResult Match (string input)
         {
-            Params=new ParameterDictionary();
+            var Params=new ParameterDictionary();
             string s=input;
             if(Groups.Count==0){
                 throw new ApplicationException("Groups.Count==0 matches all. This shouldn't happen");
@@ -125,12 +124,12 @@ namespace Earlz.BarelyMVC
                 if(!g.IsParam){
                     if(g.Text.Length>=s.Length){
                         if(Groups[Groups.Count-1]==g){
-                            return g.Text==s; //to check for exact matches(but only for the last group)
+							return new MatchResult(g.Text==s, Params); //to check for exact matches(but only for the last group)
                         }else{
                             if(g.Optional){
-                                return true;
+                                return new MatchResult(true, Params);
                             }else{
-                                return false;
+                                return new MatchResult(false, Params);
                             }
                         }
                     }
@@ -138,7 +137,7 @@ namespace Earlz.BarelyMVC
                     if(g.Text==tmp){
                         s=s.Substring(g.Text.Length);
                     }else{
-                        return false;
+                        return new MatchResult(false, Params);
                     }
                 }else{
                     int end;
@@ -147,12 +146,12 @@ namespace Earlz.BarelyMVC
                     }else{
                         end=s.IndexOf(g.End);
                         if(end==-1){
-                            return false;
+                            return new MatchResult(false, Params);
                         }
                     }
                     if(g.MatchAll){
                         if(s.Substring(0,end)==""){
-                            return false;
+                            return new MatchResult(false, Params);
                         }
                         int slash=s.IndexOf('/');
                         if(slash==-1 || g.Optional){
@@ -160,7 +159,7 @@ namespace Earlz.BarelyMVC
                             {
                                 if(!g.MatchType.IsMatch(s.Substring(0,end)))
                                 {
-                                    return false;
+                                    return new MatchResult(false, Params);
                                 }
                             }
                             //Params.Add(g.ParamName, new List<string>());
@@ -172,7 +171,7 @@ namespace Earlz.BarelyMVC
                             {
                                 if(!g.MatchType.IsMatch(s.Substring(0,slash)))
                                 {
-                                    return false;
+                                    return new MatchResult(false, Params);
                                 }
 
                             }
@@ -191,13 +190,13 @@ namespace Earlz.BarelyMVC
                             }
                         }
                         if(matched==false){
-                            return false;
+                            return new MatchResult(false, Params);
                         }
                         if(g.MatchType!=null)
                         {
                             if(!g.MatchType.IsMatch(t))
                             {
-                                return false;
+                                return new MatchResult(false, Params);
                             }
                         }
                         Params.Add(g.ParamName,t);
@@ -208,9 +207,9 @@ namespace Earlz.BarelyMVC
                 
             }
             if(s.Length!=0){
-                return false;
+                return new MatchResult(false, Params);
             }else{
-                return true;
+                return new MatchResult(true, Params);
             }
         }
         /** This will parse the Pattern string one group at a time. **/

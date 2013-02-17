@@ -5,20 +5,16 @@ namespace Earlz.BarelyMVC.Tests
 {
 	public class FakePatternMatcher : IPatternMatcher 
 	{
-		public bool IsMatch (string input)
+		public MatchResult Match (string input)
 		{
-			return Pattern==input;
+			return new MatchResult(Pattern==input, Params);
 		}
-
-		public ParameterDictionary Params {
-			get;
-			set;
-		}
-
+		ParameterDictionary Params;
 		public string Pattern;
-		public FakePatternMatcher(string pattern)
+		public FakePatternMatcher(string pattern, ParameterDictionary param=null)
 		{
 			Pattern=pattern;
+			Params=param;
 		}
 	}
 }
