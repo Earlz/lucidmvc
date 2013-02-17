@@ -54,6 +54,7 @@ namespace Earlz.BarelyMVC
 		static Dictionary<string, string> Shortcuts=new Dictionary<string, string>();
 		/// <summary>
 		/// Adds a pattern shortcut. This can make it so instead of constantly having to duplicate routes, you can instead make shortcuts
+		/// This is NOT thread-safe. It should only be used at the initialization of all of your routes
 		/// Example: 
 		/// /foo/{!shortcut!} becomes /foo/bar/biz/{baz}
 		/// when a shortcut named `shortcut` is created with value "/bar/biz/{bar}"
@@ -265,8 +266,7 @@ namespace Earlz.BarelyMVC
         private string CutString(string s,int start,int end){
             return s.Remove(end).Substring(start);
         }
-        /** This will update all of the "groups" or parameter names/values for the pattern string. 
-         * Automatically done upon the update of Pattern */
+        /** This will update all of the "groups" or parameter names/values for the pattern string. */
         private void UpdateGroups ()
         {
             List<Group> groups = new List<Group> ();
