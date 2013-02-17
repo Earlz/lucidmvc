@@ -137,4 +137,4 @@ var defaults=new ViewConfiguration
     }
 #>
 
-<#@ include file="ViewEngineInternal.tt.cs" #>
+<#@ include file="../../BarelyMVC/ViewEngine/ViewEngineInternal.tt.cs" #>	

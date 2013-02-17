@@ -63,10 +63,6 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		/// </summary>
 		public bool DetectChainedNulls=false;
 		/// <summary>
-		/// The default writer instance to use. This must point to a static TextWriter field
-		/// </summary>
-		public string DefaultWriter="Earlz.BarelyMVC.HttpHandler.CurrentWriter";
-		/// <summary>
 		/// The  base class for the generated view class. This can include interfaces by using commas
 		/// Example: `MyBase, IFoo, IBar` 
 		/// This can be overridden
@@ -126,10 +122,9 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			get;
 			private set;
 		}
-        public static string DefaultBaseClass=null;
+        public string DefaultBaseClass=null;
         public bool DetectNulls=true;
 		public bool AutoInterfaces;
-        string DefaultWriter="";
         public ViewGenerator(string file,string name, ViewConfiguration config){
             var f=File.OpenText(file);
             string text=f.ReadToEnd();
@@ -143,12 +138,12 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		{
 			GeneratedInterface=new InterfaceGenerator();
 			AutoInterfaces=config.AutoInterfaces;
+			DefaultBaseClass=config.BaseClass;
             Input=text;
             Name=name;
             Namespace=config.DefaultNamespace;
             RenderDirectly=config.RenderDirectly;
             DetectNulls=config.DetectChainedNulls;
-            DefaultWriter=config.DefaultWriter;
         }
 
         int DoVariables (int start)
@@ -559,32 +554,26 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             {
                 m.Body+="Layout=new "+Layout+"(); "+"Layout."+LayoutField+"=this;";
             }
+
             //constructors
             Methods.Add(m);
             m=new Method();
             m.Accessibility="public";
             m.Name=Name;
             m.ReturnType="";
-            m.Body="if(__RenderDirectly){ __Init("+DefaultWriter+"); }else{ __Init(null); }";
+			m.Body="__Init(new System.IO.StringWriter());";
             m.PrefixDocs="Initialize with default options";
             Methods.Add(m);
             m=new Method();
             m.Accessibility="public";
             m.Name=Name;
-            m.Params.Add(new MethodParam{Name="UseHttpResponse", Type="bool"});
+            m.Params.Add(new MethodParam{Name="outputStream", Type="System.IO.TextWriter"});
             m.ReturnType="";
-            m.Body="if(UseHttpResponse){ __RenderDirectly=true; __Init("+DefaultWriter+");}else{ __Init(null);}";
+            m.Body="__Init(outputStream);";
             m.PrefixDocs="Initialize a view to either directly render or not and use the default TextWriter";
             Methods.Add(m);
-            m=new Method();
-            m.Accessibility="public";
-            m.Name=Name;
-            m.ReturnType="";
-            m.Params.Add(new MethodParam{Name="writer", Type="TextWriter"});
-            m.Body="__Init(writer);";
-            m.PrefixDocs="Initialize a view with the chosen TextWriter";
-            Methods.Add(m);
-            //Write methods
+
+			//Write methods
             m=new Method();
             m.Name="__Write";
             m.Accessibility="protected virtual";

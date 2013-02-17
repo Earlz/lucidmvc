@@ -19,7 +19,6 @@ namespace BarelyMVC.Tests
 					DefaultNamespace="Earlz.BarelyMVC.MyViews",
 					RenderDirectly=false,
 					DetectChainedNulls=false,
-					DefaultWriter="Earlz.BarelyMVC.HttpHandler.CurrentWriter",
 					BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy",
 					UsePartials=false,
 					UseInternal=false,
