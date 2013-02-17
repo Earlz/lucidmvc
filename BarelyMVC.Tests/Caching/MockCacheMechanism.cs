@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using Earlz.BarelyMVC.Caching;
 using System.Collections.Generic;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	public class MockCacheMechanism : ICacheMechanism
 	{

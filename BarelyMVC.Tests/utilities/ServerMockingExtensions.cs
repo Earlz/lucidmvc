@@ -5,7 +5,7 @@ using System.Web;
 using Earlz.BarelyMVC.Authentication;
 using System.Collections.Generic;
 
-namespace BarelyMVC.Tests.Extensions.ServerMocking
+namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
 {
 	/// <summary>
 	/// Server mocking helper extensions

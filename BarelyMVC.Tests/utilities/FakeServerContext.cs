@@ -3,7 +3,7 @@ using Earlz.BarelyMVC;
 using System.Web;
 using System.IO;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	public class FakeServerContext : IServerContext
 	{

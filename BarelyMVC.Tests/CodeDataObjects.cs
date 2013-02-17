@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Earlz.BarelyMVC.ViewEngine.Internal;
 using System.Text.RegularExpressions;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
     [TestFixture]
     public class CodeDataObjects

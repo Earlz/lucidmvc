@@ -5,7 +5,7 @@ using Earlz.BarelyMVC.ViewEngine;
 using Moq;
 using System.IO;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	[TestFixture]
 	public class RouterTests

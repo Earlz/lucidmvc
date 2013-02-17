@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using Earlz.BarelyMVC;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
     [TestFixture]
     public class SimplePatternTest

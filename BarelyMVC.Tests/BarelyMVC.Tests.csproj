@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{47FF3535-5630-4B00-8D0A-5CDDD839310C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>BarelyMVC.Tests</RootNamespace>
+    <RootNamespace>Earlz.BarelyMVC.Tests</RootNamespace>
     <AssemblyName>BarelyMVC.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

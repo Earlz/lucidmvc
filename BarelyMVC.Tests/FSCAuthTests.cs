@@ -5,9 +5,9 @@ using Moq;
 using Earlz.BarelyMVC;
 using System.Web;
 using System.Collections.Generic;
-using BarelyMVC.Tests.Extensions.ServerMocking;
+using Earlz.BarelyMVC.Tests.Extensions.ServerMocking;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	[Category("FSCAuth")]
 	[TestFixture]

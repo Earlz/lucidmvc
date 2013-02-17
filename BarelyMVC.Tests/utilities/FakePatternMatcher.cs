@@ -1,7 +1,7 @@
 using System;
 using Earlz.BarelyMVC;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	public class FakePatternMatcher : IPatternMatcher 
 	{

@@ -14,7 +14,7 @@ using Earlz.BarelyMVC;
         
     
 /*File: TestView */
-namespace Earlz.BarelyMVC.MyViews{
+namespace Earlz.BarelyMVC.TestViews{
         ///<summary>
         ///
         ///</summary>

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System.Threading;
 using Earlz.BarelyMVC.Caching;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	public class CacheTest
 	{

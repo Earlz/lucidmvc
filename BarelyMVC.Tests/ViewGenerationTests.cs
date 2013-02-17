@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Earlz.BarelyMVC.ViewEngine.Internal;
 using NUnit.Framework;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
     [TestFixture]
     public class ViewGenerationTests

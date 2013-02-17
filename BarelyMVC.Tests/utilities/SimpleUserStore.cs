@@ -3,7 +3,7 @@ using Earlz.BarelyMVC.Authentication;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	public class SimpleUserStore : IUserStore
 	{

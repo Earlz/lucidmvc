@@ -7,7 +7,7 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
-namespace BarelyMVC.Tests
+namespace Earlz.BarelyMVC.Tests
 {
 	[TestFixture]
 	public class ControllerBoxTests
