@@ -63,11 +63,13 @@
     <Compile Include="ViewEngineTests\ViewEngineTest.cs">
       <DependentUpon>ViewEngineTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="IntegrationTests\HttpControllerPopulation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />
     <Folder Include="Caching\" />
     <Folder Include="ViewEngineTests\" />
+    <Folder Include="IntegrationTests\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ViewEngineTests\ViewEngineTest.tt">
