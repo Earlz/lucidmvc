@@ -67,7 +67,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		/// Example: `MyBase, IFoo, IBar` 
 		/// This can be overridden
 		/// </summary>
-		public string BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy";
+		public string BaseClass="Earlz.BarelyMVC.ViewEngine.BarelyViewBase";
 		/// <summary>
 		/// Mark the generated view as a partial class 
 		/// not implemented
@@ -474,15 +474,9 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             }
             GeneratedBefore=true;
             string viewbody=GenerateViewBody();
+
             //add the internals required first
             var f=new Field
-            {
-                Name="__Output",
-                Type="StringBuilder",
-                PrefixDocs="For internal use only!"
-            };
-            Fields.Add(f);
-            f=new Field
             {
                 Name="__InLayout",
                 Type="bool",
@@ -545,73 +539,68 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             m.Name="BuildOutput";
             m.Body=viewbody;
             Methods.Add(m);
+
             m=new Method();
             m.Name="__Init";
-            m.Params.Add(new MethodParam{Name="writer", Type="TextWriter"});
             m.PrefixDocs="internal use only";
-            m.Body="__Writer=writer;";
             if(Layout!=null)
             {
-                m.Body+="Layout=new "+Layout+"(); "+"Layout."+LayoutField+"=this;";
+                m.Body="Layout=new "+Layout+"(); "+"Layout."+LayoutField+"=this;";
             }
+            Methods.Add(m);
 
             //constructors
-            Methods.Add(m);
             m=new Method();
             m.Accessibility="public";
             m.Name=Name;
             m.ReturnType="";
-			m.Body="__Init(new System.IO.StringWriter());";
+			m.Body="__Init();";
             m.PrefixDocs="Initialize with default options";
             Methods.Add(m);
-            m=new Method();
-            m.Accessibility="public";
-            m.Name=Name;
-            m.Params.Add(new MethodParam{Name="outputStream", Type="System.IO.TextWriter"});
-            m.ReturnType="";
-            m.Body="__Init(outputStream);";
-            m.PrefixDocs="Initialize a view to either directly render or not and use the default TextWriter";
-            Methods.Add(m);
+
 
 			//Write methods
             m=new Method();
             m.Name="__Write";
             m.Accessibility="protected virtual";
             m.Params.Add(new MethodParam{Name="s", Type="string"});
-            m.Body="if(__Writer!=null){ __Writer.Write(s); } __Output.Append(s);";
+            m.Body="if(__Writer!=null){ __Writer.Write(s); }";
             m.PrefixDocs="Writes a string to the output (or adds it to the output if direct rendering)";
             Methods.Add(m);
             m=new Method();
             m.Name="__Write";
             m.Accessibility="protected virtual";
             m.Params.Add(new MethodParam{Name="v", Type="IBarelyView"});
-            m.Body="string s=v.RenderView(); __Output.Append(s);";
+            m.Body="v.RenderView(__Writer);";
             m.PrefixDocs="Renders the view and adds it to the output";
             Methods.Add(m);
+
+
             //RenderView
             m=new Method();
             m.Accessibility="public override";
-            m.ReturnType="string";
+            m.ReturnType="void";
+			m.Params.Add(new MethodParam{Name="outputStream", Type="System.IO.TextWriter"});
             m.Name="RenderView";
             m.Body=
-@"__Output=new StringBuilder();
-if(Layout==null){
+@"
+	__Writer=outputStream;
+	if(Layout==null){
         BuildOutput();
-        return __Output.ToString();
-}
-if(__InLayout){
+		return;
+	}
+	if(__InLayout){
         //If we get here, then the layout is currently trying to render itself(and we are being rendered as a partial/sub view)
         __InLayout=false;
         BuildOutput();
-        return __Output.ToString();
-}else{
+	}else{
         //otherwise, we are here and someone called RenderView on us(and we have a layout to render first)
         __InLayout=true;
-        return Layout.RenderView(); 
-}
+        Layout.RenderView(__Writer); 
+	}
 //This should recurse no more than 2 times
 //Basically, this will go to hell if there is ever more than 1 partial view with a Layout set.";
-            m.PrefixDocs="Renders the view to a string and to the chosen TextWriter string if directly rendered";
+            m.PrefixDocs="Renders the view to the passed in TextWriter(using StringWriter if you want to get a copy of the text)";
             Methods.Add(m);
 
 
@@ -973,9 +962,15 @@ if(__InLayout){
     {
         public string Name{get;set;}
         public string Type{get;set;}
+		public string Default{get;set;}
         public override string ToString ()
         {
-            return Type+" "+Name;
+            string s=Type+" "+Name;
+			if(Default!=null)
+			{
+				s+="="+Default;
+			}
+			return s;
         }
     }
 

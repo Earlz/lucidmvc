@@ -34,7 +34,7 @@ namespace BarelyMVC.Tests
 			var r=new Router();
 			var t=r.Controller((c) => new TestController(c));
 			t.Handles("/foo").With((tester) => tester.Test());
-			Assert.AreEqual("foo", t.Current.Responder(null).RenderView());
+			Assert.AreEqual("foo", t.Current.Responder(null).ToString());
 		}
 		[Test]
 		public void Handles_ReturnsLimitedInterface()

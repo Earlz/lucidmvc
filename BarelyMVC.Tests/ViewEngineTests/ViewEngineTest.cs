@@ -18,7 +18,7 @@ namespace Earlz.BarelyMVC.MyViews{
         ///<summary>
         ///
         ///</summary>
-     class TestView: Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy
+     class TestView: Earlz.BarelyMVC.ViewEngine.BarelyViewBase
     {
                 ///<summary>
         ///
@@ -68,43 +68,39 @@ __OutputVariable(__v);
 __Write(@"");
 
         }
-         void __Init(TextWriter writer)
+         void __Init()
         {
-__Writer=writer;
+
         }
         public  TestView()
         {
-__Init(new System.IO.StringWriter());
-        }
-        public  TestView(System.IO.TextWriter outputStream)
-        {
-__Init(outputStream);
+__Init();
         }
         protected virtual void __Write(string s)
         {
-if(__Writer!=null){ __Writer.Write(s); } __Output.Append(s);
+if(__Writer!=null){ __Writer.Write(s); }
         }
         protected virtual void __Write(IBarelyView v)
         {
-string s=v.RenderView(); __Output.Append(s);
+v.RenderView(__Writer);
         }
-        public override string RenderView()
+        public override void RenderView(System.IO.TextWriter outputStream)
         {
-__Output=new StringBuilder();
-if(Layout==null){
+
+	__Writer=outputStream;
+	if(Layout==null){
         BuildOutput();
-        return __Output.ToString();
-}
-if(__InLayout){
+		return;
+	}
+	if(__InLayout){
         //If we get here, then the layout is currently trying to render itself(and we are being rendered as a partial/sub view)
         __InLayout=false;
         BuildOutput();
-        return __Output.ToString();
-}else{
+	}else{
         //otherwise, we are here and someone called RenderView on us(and we have a layout to render first)
         __InLayout=true;
-        return Layout.RenderView(); 
-}
+        Layout.RenderView(__Writer); 
+	}
 //This should recurse no more than 2 times
 //Basically, this will go to hell if there is ever more than 1 partial view with a Layout set.
         }
@@ -136,10 +132,6 @@ if(__InLayout){
                 }        
             }
         }
-                ///<summary>
-        ///For internal use only!
-        ///</summary>
-         StringBuilder __Output;
                 ///<summary>
         ///For internal use only!
         ///</summary>

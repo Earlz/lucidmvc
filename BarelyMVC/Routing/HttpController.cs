@@ -95,6 +95,7 @@ namespace Earlz.BarelyMVC
                 CurrentWriter.Write(s);
             }
         }
+		/*
         public void Write(IBarelyView view){
             string s=view.RenderView();
             ContentLength+=s.Length;
@@ -102,6 +103,7 @@ namespace Earlz.BarelyMVC
                 CurrentWriter.Write(s);
             }
         }
+        */
         /// <summary>
         /// The current HttpContext
         /// </summary>

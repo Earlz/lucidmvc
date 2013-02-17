@@ -31,45 +31,51 @@ using System.Text;
 
 
 //Internal base class
+using System.IO;
+
+
 namespace Earlz.BarelyMVC.ViewEngine
 {
     public interface IBarelyView
     {
-        string RenderView();
+        void RenderView(TextWriter outputStream);
         string Flash{get;set;}
         bool RenderedDirectly{get;}
     }
     /// <summary>
     /// A psuedo view for wrapping just plain old text. 
     /// </summary>
-    public class WrapperView: IBarelyView
+    public class WrapperView : BarelyViewBase
     {
         public WrapperView(string text)
         {
             Text=text;
         }
         string Text;
-        public virtual bool RenderedDirectly{
+        public override bool RenderedDirectly{
             get{
                 return false;
             }
         }
-        public virtual string RenderView()
+        public override void RenderView(TextWriter outputStream)
         {
-            return Text;
+			outputStream.Write(Text);
         }
+    }
+	public abstract class BarelyViewBase : Earlz.BarelyMVC.ViewEngine.IBarelyView{ /*This is needed because we have to make a function overridden and to provide a useful ToString implementation */
+        public virtual void RenderView(TextWriter outputStream){throw new NotImplementedException();}
+        public override string ToString()
+		{
+			var s=new StringWriter();
+			RenderView(s);
+			return s.GetStringBuilder().ToString();
+		}
         public virtual string Flash{get;set;}
+        public abstract bool RenderedDirectly{get;}
     }
 }
 //internal empty namespace declaration
 namespace Earlz.BarelyMVC.ViewEngine.Helpers{}
 
-namespace Earlz.BarelyMVC.ViewEngine.Internal{
-    public abstract class BarelyViewDummy : Earlz.BarelyMVC.ViewEngine.IBarelyView{ /*This is needed because we have to make a function overridden. */
-        public virtual string RenderView(){throw new NotImplementedException();}
-        public override string ToString(){return RenderView();}
-        public virtual string Flash{get;set;}
-        public abstract bool RenderedDirectly{get;}
-    }
-}
+    
 

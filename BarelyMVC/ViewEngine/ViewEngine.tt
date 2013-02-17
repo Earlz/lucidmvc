@@ -84,7 +84,7 @@ var defaults=new ViewConfiguration
 		/// Example: `MyBase, IFoo, IBar` 
 		/// This can be overridden
 		/// </summary>
-		BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy",
+		BaseClass="Earlz.BarelyMVC.ViewEngine.BarelyViewBase",
 		/// <summary>
 		/// Mark the generated view as a partial class
 		/// </summary>

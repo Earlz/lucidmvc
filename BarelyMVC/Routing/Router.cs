@@ -80,7 +80,7 @@ namespace Earlz.BarelyMVC
 				if(route.Pattern!=null && route.Pattern.IsMatch(context.RequestUrl.AbsolutePath) &&
 				   allowed.Any(x=>x.ToLower()==context.RawHttpMethod.ToLower()))
 				{
-					context.Writer.Write(route.Responder(context).RenderView());
+					route.Responder(context).RenderView(context.Writer);
 					return true;
 				}
 			}
