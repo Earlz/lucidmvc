@@ -66,12 +66,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="utilities\" />
-    <Folder Include="integration_stories\" />
     <Folder Include="Caching\" />
     <Folder Include="ViewEngineTests\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="integration_stories\about.txt" />
     <None Include="ViewEngineTests\ViewEngineTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ViewEngineTest.cs</LastGenOutput>

@@ -1,4 +1,0 @@
-These are "integration stories". What I mean is that these cover complete scenarios of certain parts of BarelyMVC. Little to no mocking will take place.
-
-These generally will take longer to run than the rest of the suite and are categorized as "Integration" so that these tests can be excluded during development
-
