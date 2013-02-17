@@ -511,17 +511,6 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             };
             Properties.Add(p);
 			GeneratedInterface.Properties.Add(p.CloneForInterface());
-            p=new Property
-            {
-                Name="RenderedDirectly",
-                Accessibility="public override",
-                Type="bool",
-                GetMethod="get{ return __RenderDirectly; }",
-                SetMethod=null,
-                PrefixDocs="Indicates if this view is set to be rendered directly to the appropriate stream"
-
-            };
-            Properties.Add(p);
             if(!HasFlash)
             {
                 p=new Property();

@@ -78,9 +78,10 @@ namespace Earlz.BarelyMVC
 			{
 				var allowed=route.AllowedMethods ?? defaultallowed;
 				if(route.Pattern!=null && route.Pattern.IsMatch(context.RequestUrl.AbsolutePath) &&
-				   allowed.Any(x=>x.ToLower()==context.RawHttpMethod.ToLower()))
+				   allowed.Any(x=>x.ToLower()==context.HttpMethod.ToLower()))
 				{
-					route.Responder(context).RenderView(context.Writer);
+					var request=new RequestContext(context, this, route, route.Pattern.Params);
+					route.Responder(request).RenderView(context.Writer);
 					return true;
 				}
 			}

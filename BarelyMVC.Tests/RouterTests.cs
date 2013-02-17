@@ -12,7 +12,7 @@ namespace Earlz.BarelyMVC.Tests
 	{
 		class TestController : HttpController
 		{
-			public TestController(IServerContext c) : base(c)
+			public TestController(RequestContext c) : base(c)
 			{
 			}
 			public IBarelyView Tester()
@@ -48,11 +48,11 @@ namespace Earlz.BarelyMVC.Tests
 			router.AddRoute(rt);
 			rt.Pattern=new FakePatternMatcher("/foo");
 			var context=new FakeServerContext();
-			context.RawHttpMethod="GET";
+			context.HttpMethod="GET";
 			context.RequestUrl=new Uri("http://meh.com/foo");
 			rt.Responder=(c) => {
 				var view=new WrapperView("foo");
-				Assert.AreEqual(c, context);
+				Assert.AreEqual(c.Context, context);
 				return view;
 			};
 
@@ -83,7 +83,7 @@ namespace Earlz.BarelyMVC.Tests
 			});
 			var context=new FakeServerContext();
 			context.RequestUrl=new Uri("http://meh.com/foo");
-			context.RawHttpMethod="GET";
+			context.HttpMethod="GET";
 			Assert.IsFalse(router.Execute(context));
 		}
 		public void Execute_RespectsMultipleAllowedHttpMethods()
@@ -97,7 +97,7 @@ namespace Earlz.BarelyMVC.Tests
 			});
 			var context=new FakeServerContext();
 			context.RequestUrl=new Uri("http://meh.com/foo");
-			context.RawHttpMethod="meh";
+			context.HttpMethod="meh";
 			Assert.IsTrue(router.Execute(context));
 		}
 		[Test]
@@ -113,9 +113,9 @@ namespace Earlz.BarelyMVC.Tests
 			router.AddRoute(r);
 			var context=new FakeServerContext();
 			context.RequestUrl=new Uri("http://meh.com/foo");
-			context.RawHttpMethod="post";
+			context.HttpMethod="post";
 			Assert.IsFalse(router.Execute(context));
-			context.RawHttpMethod="get";
+			context.HttpMethod="get";
 			Assert.IsTrue(router.Execute(context));
 		}
 		[Test]

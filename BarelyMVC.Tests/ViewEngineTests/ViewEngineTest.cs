@@ -37,13 +37,6 @@ namespace Earlz.BarelyMVC.TestViews{
         }
 
                 ///<summary>
-        ///Indicates if this view is set to be rendered directly to the appropriate stream
-        ///</summary>
-            public override bool RenderedDirectly{
-        get{ return __RenderDirectly; }
-        }
-
-                ///<summary>
         ///The "Flash" notification text(passes through to the layout
         ///</summary>
             public override string Flash{

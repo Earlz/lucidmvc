@@ -93,7 +93,7 @@ namespace Earlz.BarelyMVC.Tests
 			set;
 		}
 
-		public string RawHttpMethod {
+		public string HttpMethod {
 			get;
 			set;
 		}

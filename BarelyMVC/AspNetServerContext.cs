@@ -8,7 +8,7 @@ namespace Earlz.BarelyMVC
 {
 	public class AspNetServerContext : IServerContext
 	{
-		public string RawHttpMethod {
+		public string HttpMethod {
 			get
 			{
 				return Current.Request.HttpMethod;

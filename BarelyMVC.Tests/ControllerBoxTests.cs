@@ -14,7 +14,7 @@ namespace Earlz.BarelyMVC.Tests
 	{
 		class TestController : HttpController
 		{
-			public TestController(IServerContext c) : base(c)
+			public TestController(RequestContext c) : base(c)
 			{
 			}
 			public IBarelyView Test()
@@ -34,7 +34,8 @@ namespace Earlz.BarelyMVC.Tests
 			var r=new Router();
 			var t=r.Controller((c) => new TestController(c));
 			t.Handles("/foo").With((tester) => tester.Test());
-			Assert.AreEqual("foo", t.Current.Responder(null).ToString());
+			var request=new RequestContext(null, null, null, null);
+			Assert.AreEqual("foo", t.Current.Responder(request).ToString());
 		}
 		[Test]
 		public void Handles_ReturnsLimitedInterface()

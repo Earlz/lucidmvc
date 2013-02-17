@@ -74,6 +74,7 @@
     <Compile Include="Routing\HttpController.cs" />
     <Compile Include="Routing\ControllerBox.cs" />
     <Compile Include="Routing\Route.cs" />
+    <Compile Include="Routing\RequestContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

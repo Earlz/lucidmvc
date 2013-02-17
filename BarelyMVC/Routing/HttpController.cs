@@ -42,9 +42,12 @@ namespace Earlz.BarelyMVC
      */
     public abstract class HttpController
     {
-        public HttpController (IServerContext context)
+        public HttpController (RequestContext context)
         {
-			Context=context;
+			Context=context.Context;
+			RouteRequest=context.Route;
+			RouteParams=context.RouteParams;
+			CurrentRouter=context.Router;
         }
 
         /**Writes to the output stream**/
@@ -76,6 +79,11 @@ namespace Earlz.BarelyMVC
 				return Context.Form;
             }
         }
+		public Router CurrentRouter
+		{
+			get;
+			private set;
+		}
         /// <summary>
         /// When using SimplePattern, this will be populated with router variables
         /// </summary>

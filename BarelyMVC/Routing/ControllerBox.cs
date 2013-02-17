@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Earlz.BarelyMVC
 {
-	public delegate T ControllerCreator<T>(IServerContext context);
+	public delegate T ControllerCreator<T>(RequestContext context);
 	public delegate IBarelyView ControllerInvoker<T>(T controller);
-	public delegate IBarelyView ControllerResponse(IServerContext context);
+	public delegate IBarelyView ControllerResponse(RequestContext context);
 
 
 	public interface IControllerRoute<T>

@@ -87,7 +87,7 @@ namespace Earlz.BarelyMVC
 		/// <summary>
 		/// The HTTP method for the request
 		/// </summary>
-		string RawHttpMethod{get;}
+		string HttpMethod{get;}
 	}
 }
 
