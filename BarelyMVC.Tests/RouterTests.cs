@@ -118,6 +118,11 @@ namespace BarelyMVC.Tests
 			context.RawHttpMethod="get";
 			Assert.IsTrue(router.Execute(context));
 		}
+		[Test]
+		public void Execute_PopulatesHttpController()
+		{
+
+		}
 	}
 }
 
