@@ -33,6 +33,7 @@ using Earlz.BarelyMVC.Authentication;
 using Earlz.BarelyMVC.ViewEngine;
 using System.IO;
 using System.Collections.Specialized;
+using Earlz.BarelyMVC.Caching;
 
 
 namespace Earlz.BarelyMVC
@@ -48,8 +49,13 @@ namespace Earlz.BarelyMVC
 			RouteRequest=context.Route;
 			RouteParams=context.RouteParams;
 			CurrentRouter=context.Router;
+			Cache=Router.GetCacher();
         }
-
+		public virtual ICacheMechanism Cache
+		{
+			get;
+			protected set;
+		}
         /**Writes to the output stream**/
         public virtual void Write(string s){
 			Context.Writer.Write(s);

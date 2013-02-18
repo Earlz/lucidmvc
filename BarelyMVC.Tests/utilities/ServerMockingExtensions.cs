@@ -20,7 +20,7 @@ namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
 	{
 		public static Mock<IServerContext> IsNotLoggedIn(this Mock<IServerContext> mock)
 		{
-			mock.Setup(x=>x.GetHeader("Authorization")).Returns<string>(null);
+			mock.Setup(x=>x.GetHeaders("Authorization")).Returns<List<string>>(null);
 			mock.Setup(x=>x.GetItem("fscauth_currentuser")).Returns<UserData>(null);
 			mock.Setup(x=>x.GetCookie(FSCAuth.Config.SiteName+"_login")).Returns<string>(null);
 			return mock;

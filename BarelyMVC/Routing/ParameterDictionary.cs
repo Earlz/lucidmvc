@@ -72,19 +72,4 @@ namespace Earlz.BarelyMVC
             base[key]=values;
         }
     }
-    public static class ExtensionMethods
-    {
-        public static ParameterDictionary ToParameters(this NameValueCollection c)
-        {
-            var p=new ParameterDictionary();
-            foreach(string key in c.Keys)
-            {
-                if(key!=null)
-                {
-                    p.Add(key, c.GetValues(key).ToList()); //use GetValues because it could be more than 1
-                }
-            }
-            return p;
-        }
-    }
 }

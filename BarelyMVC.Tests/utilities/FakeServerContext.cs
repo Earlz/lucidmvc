@@ -2,6 +2,7 @@ using System;
 using Earlz.BarelyMVC;
 using System.Web;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Earlz.BarelyMVC.Tests
 {
@@ -28,7 +29,7 @@ namespace Earlz.BarelyMVC.Tests
 			throw new NotImplementedException ();
 		}
 
-		public string GetHeader (string name)
+		public IList<string> GetHeaders(string name)
 		{
 			throw new NotImplementedException ();
 		}

@@ -39,16 +39,32 @@ using Earlz.BarelyMVC.ViewEngine;
 using System.Linq;
 using Earlz.BarelyMVC.Authentication;
 using System.Collections.ObjectModel;
+using Earlz.BarelyMVC.Caching;
 
 namespace Earlz.BarelyMVC
 {
 	public delegate IBarelyView HandlerInvoker<T>(T httphandler) where T:HttpController;
 	public delegate T HandlerCreator<T>(Router r) where T:HttpController;
-    
+	public delegate ICacheMechanism CacheMechanismRetriever();
+
     /**The routing engine of EFramework.
      * This is a simple, but powerful router utilizing simple route pattern matching and lambdas for initializing the HttpHandler for a request.**/
     public class Router
     {
+
+		static Router()
+		{
+			GetCacher=() => new ASPCacheMechanism(); //default to ASP.Net
+		}
+		/// <summary>
+		/// Gets a new or existing ICacheMechanism
+		/// Defaults to getting a new ASPCacheMechanism
+		/// </summary>
+		public static CacheMechanismRetriever GetCacher
+		{
+			get;
+			set;
+		}
 		protected IList<Route> Routes
 		{
 			get;

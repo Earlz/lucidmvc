@@ -38,9 +38,9 @@ namespace Earlz.BarelyMVC
 		/// </summary>
 		string UserIP{get;}
 		/// <summary>
-		/// Gets an HTTP header by name from the current request
+		/// Gets the list of HTTP headers by name from the current request
 		/// </summary>
-		string GetHeader(string name);
+		IList<string> GetHeaders(string name);
 		/// <summary>
 		/// Sets an HTTP header to be sent back in the response to the current request
 		/// </summary>

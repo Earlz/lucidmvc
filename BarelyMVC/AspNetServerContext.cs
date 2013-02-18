@@ -1,8 +1,8 @@
 using System;
 using System.Web;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.Extensions;
 using System.IO;
+using System.Linq;
 
 namespace Earlz.BarelyMVC
 {
@@ -91,9 +91,9 @@ namespace Earlz.BarelyMVC
 			return Current.Server.MapPath(path);
 		}
 
-		public string GetHeader (string name)
+		public IList<string> GetHeaders(string name)
 		{
-			return Current.Request.Headers[name];
+			return Current.Request.Headers.GetValues(name).ToList();;
 		}
 
 		public void SetHeader (string name, string value)

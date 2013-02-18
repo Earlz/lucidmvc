@@ -1,4 +1,5 @@
 using System;
+using Earlz.BarelyMVC.Caching;
 
 namespace Earlz.BarelyMVC
 {

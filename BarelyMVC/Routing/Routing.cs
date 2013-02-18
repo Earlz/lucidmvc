@@ -29,7 +29,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Web;
 using System.Text.RegularExpressions;
-using Earlz.BarelyMVC.Extensions;
 
 
 namespace Earlz.BarelyMVC
