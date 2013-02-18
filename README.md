@@ -41,29 +41,22 @@ There are a few things I see some people "like" that aren't in BarelyMVC. This i
 
 Because there is so little magic, you don't have to know any special naming schemes or special attributes to apply. However, this also means there will inheritely be a bit more setup required. 
 
-A barebones example using only the routing and HTTP handler component
+A barebones example using only the routing and HTTP controller component
 
 		//Global.asax.cs:
+		static Router router=null;
 		protected virtual void Application_Start (Object sender, EventArgs e)
 		{
+			router=new Router();
+			var blog=router.Controller(ctx => new BlogController(ctx));
+			blog.Handles("/blog/{id}").With(ctrl => ctrl.View());
 			Routing.AddRoute("/blog/{id}", (r, f) => new TextHandler("ID is "+r["id"]).Get());
 		}
 		protected virtual void Application_BeginRequest (Object sender, EventArgs e)
 		{
-			Routing.DoRequest(Context,this);
+			router.Execute(new AspNetServerContext());
 		}
-
-Of course, this super simple example isn't represenative of real-world use cases, but it shows how explicit, yet concise things are. Here is an example route from my blog:
-
-			SimplePattern.AddShortcut("dateslug","/{Year}/{Month}/{Day}/{Time}/{*}");
-			Routing.AddRoute("view", HttpMethod.Get, new SimplePattern("/view/{!dateslug!}").Dateify(), 
-			                 (r,f)=>new BlogHandler().View(r.Fill(new BlogRouteModel()))
-		                 );
-		                 
-I have a quite complex URL format for my blog. Here I use a shortcut for the pattern matcher and use the `.Dateify` extension method to apply rules that the fields must be integers
-
-And there is also the `r.Fill`. This is the only bit of magic in the system and something unavoidable without forcing all sorts of crappy magic strings. 
-Anyway, it'll take the `route` dictionary and use reflection to populate an instance of one of your classes. 
+Notice that everything but the URL pattern is statically typed and non-magical, yet concise. 
 
 ## Current Status
 
