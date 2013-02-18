@@ -56,7 +56,6 @@
     <Compile Include="ViewEngine\Helpers.cs" />
     <Compile Include="Routing\IPatternMatcher.cs" />
     <Compile Include="Routing\PatternFactory.cs" />
-    <Compile Include="Routing\RedirectHandler.cs" />
     <Compile Include="Routing\ParameterFiller.cs" />
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="ViewEngine\ViewEngineInternal.tt.cs" />
@@ -75,6 +74,7 @@
     <Compile Include="Routing\ControllerBox.cs" />
     <Compile Include="Routing\Route.cs" />
     <Compile Include="Routing\RequestContext.cs" />
+    <Compile Include="Routing\RedirectController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
