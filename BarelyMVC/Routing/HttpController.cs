@@ -61,7 +61,7 @@ namespace Earlz.BarelyMVC
 			Context.Writer.Write(s);
         }
         /// <summary>
-        /// The current HttpContext
+        /// The current ServerContext
         /// </summary>
         public virtual IServerContext Context
         {

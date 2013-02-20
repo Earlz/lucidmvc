@@ -417,7 +417,6 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>True if there is a current user. False if there is not a current user logged in.</returns>
         /// <exception cref="ArgumentException">Throws if UniqueHash is not complete </exception>
         static bool Authenticate(){
-            //HttpContext.Current.Response.Buffer=true; //needed?
             if(Config.UniqueHash==null){
                 throw new ArgumentException("You MUST fill in UniqueHash before using the AuthenticationModule!");
             }
