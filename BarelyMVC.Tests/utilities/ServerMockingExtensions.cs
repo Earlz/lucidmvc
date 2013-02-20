@@ -18,6 +18,7 @@ namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
 	/// </summary>
 	public static class ServerMockingHelpers
 	{
+		/*
 		public static Mock<IServerContext> IsNotLoggedIn(this Mock<IServerContext> mock)
 		{
 			mock.Setup(x=>x.GetHeaders("Authorization")).Returns<List<string>>(null);
@@ -27,6 +28,7 @@ namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
 		}
 		public static Mock<IServerContext> HasLoggedIn(this Mock<IServerContext> mock)
 		{
+
 			mock.Verify(x=>x.SetCookie(
 				It.Is<HttpCookie>(c=>
                      c.Name==FSCAuth.Config.SiteName+"_login" &&
@@ -97,7 +99,7 @@ namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
 			Items.Remove("fscauth_currentuser");
 		}
 
-
+*/
 	}
 }
 

@@ -76,6 +76,8 @@
     <Compile Include="Routing\RequestContext.cs" />
     <Compile Include="Routing\RedirectController.cs" />
     <Compile Include="Authentication\FSCAuth.cs" />
+    <Compile Include="Authentication\FSCAuthConfig.cs" />
+    <Compile Include="Authentication\Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Earlz.BarelyMVC.Authentication
 {
-    interface IAuthMechanism
+    public interface IAuthMechanism
     {
 		/// <summary>
 		/// Computes a hash of the given password using the given UserData
@@ -41,5 +41,7 @@ namespace Earlz.BarelyMVC.Authentication
 		/// Gets the current user store.
 		/// </summary>
         IUserStore UserStore { get; }
+		IServerContext Server{get;}
+		string LoginPage{get;}
     }
 }
