@@ -97,6 +97,7 @@ namespace Earlz.BarelyMVC
 			get;
 			protected internal set;
         }
+		/*
         /// <summary>
         /// The current user logged in with FSCAuth
         /// </summary>
@@ -104,7 +105,7 @@ namespace Earlz.BarelyMVC
             get{
                 return FSCAuth.CurrentUser;
             }
-        }
+        } */
     }
 	/*
 	public delegate IBarelyView TestFoo<T>(T handler) where T:HttpHandler;

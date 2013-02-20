@@ -67,7 +67,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// A list of groups the user belongs to.
         /// </summary>
         public virtual List<GroupData> Groups{get;set;}
-        
+       /* FIXME 
         /// <summary>
         /// Updates the UserStore with this UserData. Basically a shortcut for Authentication.UserStore.UpdateByID
         /// </summary>
@@ -120,6 +120,7 @@ namespace Earlz.BarelyMVC.Authentication
             }
             return FSCAuth.ResetPassword(this);
         }
+*/
     }
 }
 

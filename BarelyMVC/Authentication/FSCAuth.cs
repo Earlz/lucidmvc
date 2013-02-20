@@ -43,10 +43,10 @@ namespace Earlz.BarelyMVC.Authentication
     /// <remarks>
     /// To opt-in for authentication, all that is needed is an IUserStore to be made and SiteName initialized.
     /// </remarks>
-    static public class FSCAuth
+    public class FSCAuth : IAuthMechanism
     {
         public delegate HashWithSalt HashInvoker(string plain, string salt);
-        static FSCAuth(){
+        FSCAuth(){
             if(Config.UniqueHash==null) //must do a null check because references to Config can be done before this static constructor executes
 			{
 				Config.UniqueHash=GetUniqueHash();
@@ -172,13 +172,13 @@ namespace Earlz.BarelyMVC.Authentication
         /// <summary>
         /// The IUserStore to use. This must be populated before Authenticate or anything else can be used in this class.
         /// </summary>
-        public static IUserStore UserStore{get;set;}
+        public IUserStore UserStore{get;set;}
 
         /// <summary>
         /// Is true if the current user was authenticated with Forms Authentication(cookie based).
         /// If false, then no user is logged in, or they were logged in with HTTP Basic Authentication.
         /// </summary>
-        public static bool FormLogin
+        public bool FormLogin
         {
             get
             {
@@ -194,7 +194,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <summary>
         /// The current user logged in for the HTTP request. If there is not a user logged in, this will be null.
         /// </summary>
-        public static UserData CurrentUser{
+        public UserData CurrentUser{
             get{
 				UserData user=null;
                 if((user=Config.Server.GetItem("fscauth_currentuser") as UserData)!=null){
@@ -221,7 +221,7 @@ namespace Earlz.BarelyMVC.Authentication
 		/// <value>
 		/// <c>true</c> if probably logged in; otherwise, <c>false</c>.
 		/// </value>
-		public static bool ProbablyLoggedIn
+		public bool ProbablyLoggedIn
 		{
 			get
 			{
@@ -238,7 +238,7 @@ namespace Earlz.BarelyMVC.Authentication
 		/// <value>
 		/// The name of the probable user.
 		/// </value>
-		public static string ProbableUserName
+		public string ProbableUserName
 		{
 			get
 			{
@@ -261,7 +261,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <param name="group">The group the user must be assigned</param>
         /// <exception cref="HttpException">Throws 401 error if not in group</exception>
-        public static void RequiresInGroup(string group){
+        public void RequiresInGroup(string group){
             if(IsInGroup(group)){
                 return;
             }
@@ -272,7 +272,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <param name="group">the group to check for</param>
         /// <returns>true if in the group, else false</returns>
-        public static bool IsInGroup(string group){
+        public bool IsInGroup(string group){
             if(CurrentUser==null){
                 return false;
             }
@@ -283,7 +283,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <param name="groups">The group the user must be assigned to</param>
         /// <exception cref="HttpException">Throws 401 error if not in group</exception>
-        public static void RequiresInAllGroups(string groups){
+        public void RequiresInAllGroups(string groups){
             if(IsInAllGroups(groups)){
                 return;
             }
@@ -294,7 +294,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <param name="groups">the group to check for. To specify multiple groups, use a comma to seperate group names.</param>
         /// <returns>true if in the groups, else false</returns>
-        public static bool IsInAllGroups(string groups){
+        public bool IsInAllGroups(string groups){
             if(CurrentUser==null){
                 return false;
             }
@@ -311,7 +311,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <param name="groups">The group the user must be assigned to(any of them)</param>
         /// <exception cref="HttpException">Throws 401 error if not in group</exception>
-        public static void RequiresInAnyGroups(string groups){
+        public void RequiresInAnyGroups(string groups){
             if(IsInAnyGroups(groups)){
                 return;
             }
@@ -322,7 +322,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <param name="groups">the groups to check for</param>
         /// <returns>true if in any of the groups, else false</returns>
-        public static bool IsInAnyGroups(string groups){
+        public bool IsInAnyGroups(string groups){
             if(CurrentUser==null){
                 return false;
             }
@@ -341,7 +341,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// Use HTTP Basic authentication or not
         /// </param>
         /// <exception cref="HttpException">Throws if no one is logged in</exception>
-        public static void RequiresLogin(bool usebasic){
+        public void RequiresLogin(bool usebasic){
             if(IsAuthenticated()){
                 return;
             }else{
@@ -364,7 +364,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// Will not allow the request to continue if no one is authenticated
         /// </summary>
         /// <exception cref="HttpException">Throws if no one is logged in</exception>
-        public static void RequiresLogin(){
+        public void RequiresLogin(){
             RequiresLogin(false);
         }
         
@@ -372,7 +372,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// Returns true if a user is logged in, else false.
         /// </summary>
         /// <returns></returns>
-        public static bool IsAuthenticated(){
+        public bool IsAuthenticated(){
             return CurrentUser!=null;
         }
 		/// <summary>
@@ -382,7 +382,7 @@ namespace Earlz.BarelyMVC.Authentication
 		/// <returns>
 		/// The logged in name.
 		/// </returns>
-		static string ProbablyLoggedInName()
+		string ProbablyLoggedInName()
 		{
 			string username=null;
 			string authHeader=Config.Server.GetHeader("Authorization");
@@ -416,7 +416,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// </summary>
         /// <returns>True if there is a current user. False if there is not a current user logged in.</returns>
         /// <exception cref="ArgumentException">Throws if UniqueHash is not complete </exception>
-        static bool Authenticate(){
+        bool Authenticate(){
             if(Config.UniqueHash==null){
                 throw new ArgumentException("You MUST fill in UniqueHash before using the AuthenticationModule!");
             }
@@ -482,7 +482,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// If null, then defaults to the cookie expiring at the end of the user's browser session(or 4 hours, whichever is sooner)
         /// </param>
         /// <returns>True if the user was successfully logged in.</returns>
-        public static bool Login(string username, string password, DateTime? expires)
+        public bool Login(string username, string password, DateTime? expires)
         {
             var user = UserStore.GetUserByName(username);
             if (user == null)
@@ -509,13 +509,13 @@ namespace Earlz.BarelyMVC.Authentication
         /// <param name="password"></param>
         /// <param name="remember">The "Remember Me" option. If true, then it will set the cookie to expire 1 year from now.</param>
         /// <returns>True if the user was successfully logged in.</returns>
-        public static bool Login(string username,string password,bool remember){
+        public bool Login(string username,string password,bool remember){
             return Login(username,password,remember?(DateTime?)DateTime.Today.AddYears(1):null);
         }
         /// <summary>
         /// Will delete the current login cookie, if it exists.
         /// </summary>
-        public static void Logout(){
+        public void Logout(){
             if (FormLogin==false)
             {
                 throw new NotSupportedException("Can not log out a user logged in using HTTP Basic Authentication");
@@ -531,7 +531,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <param name="user">User's information, not including UniqueID or PasswordHash</param>
         /// <param name="password">User's plaintext password</param>
         /// <returns></returns>
-        public static bool AddUser(UserData user,string password){
+        public bool AddUser(UserData user,string password){
             if(!UserStore.AddUser(user)){
                 return false;
             }
@@ -553,7 +553,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <param name="username">The user's username</param>
         /// <param name="uniqueid">The user's unique ID</param>
         /// <returns></returns>
-        public static string ComputePasswordHash(UserData user, string password)
+        public string ComputePasswordHash(UserData user, string password)
         {
             /**Note: The way this hash is computed can not be changed without breaking all password hashes.
              * DO NOT TOUCH unless absolutely needed!. We do not use SiteName here because UniqueID is already a salt, and
@@ -579,7 +579,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>
         /// The generated password
         /// </returns>
-        public static string ResetPassword(UserData user)
+        public string ResetPassword(UserData user)
         {
             string pass=Membership.GeneratePassword(8,2);
             user.Salt=null; //regenerate salt
@@ -597,13 +597,13 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>
         /// The generated password
         /// </returns>
-        public static string ResetPasswordByName(string username)
+        public string ResetPasswordByName(string username)
         {
             return ResetPassword(UserStore.GetUserByName(username));
         }
 
 
-        private static void LoginFromHash(UserData user, DateTime? expires)
+        private void LoginFromHash(UserData user, DateTime? expires)
         {
             var c = new HttpCookie(Config.SiteName + "_login");
             if (expires.HasValue)
@@ -623,7 +623,7 @@ namespace Earlz.BarelyMVC.Authentication
             CurrentUser = user;
         }
 
-        static string ComputeLoginHash(string passwordhash,string salt,DateTime expires){
+        string ComputeLoginHash(string passwordhash,string salt,DateTime expires){
             StringBuilder sb=new StringBuilder();
             sb.Append(passwordhash);
             if(Config.CookieUseIP){
@@ -644,7 +644,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <summary>
         /// Computes a hash using an existing salt 
         /// </summary>
-        static string ComputeHash(string input, string salt)
+        string ComputeHash(string input, string salt)
         {
             if(Config.HashIterations==0){
                 throw new NotSupportedException("HashIterations must be at least one!");
@@ -661,7 +661,7 @@ namespace Earlz.BarelyMVC.Authentication
         /// <summary>
         /// Computes a new hash and gets a new salt
         /// </summary>
-        static HashWithSalt NewHash(string input)
+        HashWithSalt NewHash(string input)
         {
             if(Config.HashIterations==0){
                 throw new NotSupportedException("HashIterations must be at least one!");
@@ -674,7 +674,7 @@ namespace Earlz.BarelyMVC.Authentication
             }
             return v;
         }
-        static void SendHttp401(){ //this will directly write the error, rather than throwing an exception. 
+        void SendHttp401(){ //this will directly write the error, rather than throwing an exception. 
             var c=Config.Server;
             c.HttpStatus="401 Not Authenticated";
             if(Config.HttpRealm!=null){
@@ -691,12 +691,12 @@ namespace Earlz.BarelyMVC.Authentication
 			c.KillIt();
         }
         
-        static void ForceCookieExpiration(){
+        void ForceCookieExpiration(){
             var tmp=new HttpCookie(Config.SiteName+"_login");
             tmp.Expires=DateTime.Now.AddYears(-10); //force expiration
             HttpContext.Current.Response.Cookies.Add(tmp);
         }
-        static string GetUniqueHash()
+        string GetUniqueHash()
         {
             return ConfigurationManager.AppSettings["FSCAuth_UniqueHash"];
         }

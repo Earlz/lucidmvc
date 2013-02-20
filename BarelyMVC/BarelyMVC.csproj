@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Authentication\IAuthMechanism.cs" />
     <Compile Include="Routing\Routing.cs" />
     <Compile Include="Routing\SimplePattern.cs" />
     <Compile Include="Routing\Router.cs" />
@@ -84,12 +85,5 @@
       <LastGenOutput>ViewEngine.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Routing\" />
-    <Folder Include="Authentication\" />
-    <Folder Include="ViewEngine\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Caching\" />
-    <Folder Include="TestingUtilities\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
