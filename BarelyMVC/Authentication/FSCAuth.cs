@@ -45,6 +45,15 @@ namespace Earlz.BarelyMVC.Authentication
     /// </remarks>
     public class FSCAuth : IAuthMechanism
     {
+		#region IAuthMechanism implementation
+
+		public string GetLoginToken (UserData user)
+		{
+			throw new NotImplementedException ();
+		}
+
+		#endregion
+
 		public string LoginPage{get;private set;}
 		FSCAuthConfig Config;
 		public IServerContext Server{get;private set;}

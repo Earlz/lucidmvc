@@ -12,10 +12,6 @@ namespace Earlz.BarelyMVC.Authentication
 		/// </summary>
         UserData CurrentUser { get; }
 		/// <summary>
-		/// Says whether a user is authenticated or not
-		/// </summary>
-		bool IsAuthenticated { get; }
-		/// <summary>
 		/// Will force authentication to not be "lazy". This method should be completely optional to calling code
 		/// </summary>
 		void Authenticate();
@@ -42,6 +38,6 @@ namespace Earlz.BarelyMVC.Authentication
 		/// </summary>
         IUserStore UserStore { get; }
 		IServerContext Server{get;}
-		string LoginPage{get;}
+		string GetLoginToken(UserData user);
     }
 }

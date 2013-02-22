@@ -84,7 +84,7 @@ namespace Earlz.BarelyMVC.Authentication
             }
             return false;
         }
-        
+        /*
         /// <summary>
         /// Will not allow the request to continue if no one is authenticated
         /// </summary>
@@ -118,7 +118,7 @@ namespace Earlz.BarelyMVC.Authentication
         public static void RequiresLogin(this IAuthMechanism auth){
             auth.RequiresLogin(false);
         }
-        
+        */
         /// <summary>
         /// Returns true if a user is logged in, else false.
         /// </summary>
