@@ -7,7 +7,6 @@ namespace Earlz.BarelyMVC.Authentication
 		public FSCAuth()
 		{
 		}
-
 		public string ComputePasswordHash (UserData user, string password)
 		{
 
