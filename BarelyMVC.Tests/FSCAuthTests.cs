@@ -6,6 +6,7 @@ using Earlz.BarelyMVC;
 using System.Web;
 using System.Collections.Generic;
 using Earlz.BarelyMVC.Tests.Extensions.ServerMocking;
+using System.Linq;
 
 namespace Earlz.BarelyMVC.Tests
 {
@@ -23,51 +24,51 @@ namespace Earlz.BarelyMVC.Tests
 		[Test]
 		public void RequiresLogin_should_redirect_when_not_logged_in()
 		{
-			var mock=new Mock<IServerContext>();
-			var auth=new FSCAuth(mock.Object, new FSCAuthConfig(), new SimpleUserStore());
+			var mock=new FakeServerContext();
+			var auth=new FSCAuth(mock, new FSCAuthConfig(), new SimpleUserStore());
 			Prep(auth);
-			mock.IsNotLoggedIn();
-
-			auth.RequiresAuthentication();
-			mock.Verify(x=>x.Redirect("/login"), "Should redirect to login page");
-			mock.HasBeenKilled();
+			bool threw=false;
+			try
+			{
+				auth.RequiresAuthentication();
+			}
+			catch(FakeServerKilledException)
+			{
+				threw=true;
+			}
+			Assert.IsTrue(threw);
+			Assert.AreEqual("/login", mock.RedirectedTo);
 		}
 		[Test]
 		public void Login_should_work_when_given_proper_credentials()
 		{
-			var mock=new Mock<IServerContext>();
-			var auth=new FSCAuth(mock.Object, new FSCAuthConfig(), new SimpleUserStore());
+			var mock=new FakeServerContext();
+			var auth=new FSCAuth(mock, new FSCAuthConfig(), new SimpleUserStore());
 			Prep (auth);
 			auth.Login("user", "pass");
-			mock.HasLoggedIn(auth);
-			mock.Verify(x=>x.SetCookie(
-				It.Is<HttpCookie>(c=>
-                     c.Name==auth.Config.SiteName+"_login" &&
-			         c.Values["secret"].Length>0
-            	)
-			));
+			var cookie=mock.ResponseCookies.Single();
+			Assert.AreEqual(auth.Config.SiteName+"_login", cookie.Name);
+			Assert.IsTrue(cookie["secret"].Length>0);
+			Assert.IsNotNull(auth.CurrentUser);
 		}
 		[Test]
 		public void RequiresLogin_should_pass_through_when_authorized()
 		{
-			var mock=new Mock<IServerContext>();
-			var auth=new FSCAuth(mock.Object, new FSCAuthConfig(), new SimpleUserStore());
-			Prep (auth);
-			mock.IsUsingItems().WillCaptureLoginCookie();
+			var mock=new FakeServerContext();
+			var auth=new FSCAuth(mock, new FSCAuthConfig(), new SimpleUserStore());
+			Prep(auth);
 			auth.Login("user", "pass");
-			mock.RemoveLoginItem(); //we're testing that cookies work
-			mock.Setup(x=>x.GetCookie(auth.Config.SiteName+"_login")).Returns(mock.GetCapturedLoginCookie()).Verifiable();
-			mock.WillNotBeKilled();
-			auth.RequiresAuthentication();
-			mock.Verify();
+			var cookie=mock.ResponseCookies.Single();
+			mock.ResponseCookies.Clear();
+			mock.RequestCookies.Add(cookie);
+			auth.RequiresAuthentication(); //ensure this doesn't cause FakeServerContext to throw FakeServerKilled
 		}
 		[Test]
 		public void RequiresInGroup_should_redirect()
 		{
-			var mock=new Mock<IServerContext>();
-			var auth=new FSCAuth(mock.Object, new FSCAuthConfig(), new SimpleUserStore());
+			var mock=new FakeServerContext();
+			var auth=new FSCAuth(mock, new FSCAuthConfig(), new SimpleUserStore());
 			Prep(auth);
-			mock.IsUsingItems();
 			auth.Login("user", "pass");
 			try
 			{

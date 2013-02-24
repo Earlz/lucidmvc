@@ -118,11 +118,8 @@ namespace Earlz.BarelyMVC.Authentication
                 return false;
             }
 		}
-		public string LoginPage{get;private set;}
 		public FSCAuthConfig Config{get; private set;}
 		public IServerContext Server{get;private set;}
-		string HttpRealm;
-		string SiteName;
 		static bool SupportsUnmanagedCrypto;
 static FSCAuth(){
             try
@@ -263,13 +260,13 @@ static FSCAuth(){
 			TriedProbableLogin=true;
 			string username=null;
 			string authHeader=Server.GetHeader("Authorization");
-			if(HttpRealm!=null && string.IsNullOrEmpty(authHeader))
+			if(Config.SiteName!=null && string.IsNullOrEmpty(authHeader))
 			{
                 string userNameAndPassword = Encoding.Default.GetString(Convert.FromBase64String(authHeader.Substring(6)));
                 string[] parts = userNameAndPassword.Split(':');
                 return parts[0];
 			}
-			var cookie=Server.GetCookie(SiteName+"_login");
+			var cookie=Server.GetCookie(Config.SiteName+"_login");
 			if(cookie==null)
 			{
 				return null;
@@ -305,7 +302,7 @@ static FSCAuth(){
             string password;
             UserData user;
             string authHeader = Server.GetHeader("Authorization");
-            if(HttpRealm!=null && !string.IsNullOrEmpty(authHeader)){ //try HTTP basic auth
+            if(Config.SiteName!=null && !string.IsNullOrEmpty(authHeader)){ //try HTTP basic auth
                 string userNameAndPassword = Encoding.Default.GetString(Convert.FromBase64String(authHeader.Substring(6)));
                 string[] parts = userNameAndPassword.Split(':');
                 username=parts[0];
@@ -323,7 +320,7 @@ static FSCAuth(){
                 }
             }
             //try forms/cookie auth
-            HttpCookie cookie=Server.GetCookie(SiteName+"_login");
+            HttpCookie cookie=Server.GetCookie(Config.SiteName+"_login");
             if(cookie==null){
                 return;
             }
@@ -360,7 +357,7 @@ static FSCAuth(){
             {
                 throw new NotSupportedException("Can not log out a user logged in using HTTP Basic Authentication");
             }
-            var c=Server.GetCookie(SiteName+"_login");
+            var c=Server.GetCookie(Config.SiteName+"_login");
             if(c!=null){
                 ForceCookieExpiration();
             }
@@ -378,8 +375,6 @@ static FSCAuth(){
             if(user.Salt==null){
                 var v=NewHash(text);
 				return v;
-                user.Salt=v.Salt;
-                user.PasswordHash=v.Text;
             }else{
 				return new HashWithSalt(){Text=ComputeHash(text, user.Salt), Salt=user.Salt};
             }
@@ -403,7 +398,7 @@ static FSCAuth(){
 
         private void LoginFromHash(UserData user, DateTime? expires)
         {
-            var c = new HttpCookie(SiteName + "_login");
+            var c = new HttpCookie(Config.SiteName + "_login");
             if (expires.HasValue)
             {
                 c.Expires = (DateTime)expires;
@@ -432,7 +427,7 @@ static FSCAuth(){
             }
             sb.Append(ConvertToUnixTimestamp(expires).ToString());
             sb.Append(Config.UniqueHash);
-            sb.Append(SiteName);
+            sb.Append(Config.SiteName);
             Debug.Assert(salt!=null);
             return ComputeHash(sb.ToString(),salt);
         }
@@ -461,7 +456,7 @@ static FSCAuth(){
         }
        
         void ForceCookieExpiration(){
-            var tmp=new HttpCookie(SiteName+"_login");
+            var tmp=new HttpCookie(Config.SiteName+"_login");
             tmp.Expires=DateTime.Now.AddYears(-10); //force expiration
             HttpContext.Current.Response.Cookies.Add(tmp);
         }
@@ -485,7 +480,7 @@ static FSCAuth(){
         void SendHttp401(){ //this will directly write the error, rather than throwing an exception. 
             Server.HttpStatus="401 Not Authenticated";
             if(Config.SiteName!=null){
-                Server.SetHeader("WWW-Authenticate", "Basic Realm=\""+SiteName+"\"");
+                Server.SetHeader("WWW-Authenticate", "Basic Realm=\""+Config.SiteName+"\"");
             }
             try
             {

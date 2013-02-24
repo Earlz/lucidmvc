@@ -3,60 +3,75 @@ using Earlz.BarelyMVC;
 using System.Web;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Earlz.BarelyMVC.Tests
 {
+	public class FakeServerKilledException : Exception
+	{
+		public FakeServerKilledException(){}
+	}
 	public class FakeServerContext : IServerContext
 	{
-
+		public List<HttpCookie> RequestCookies=new List<HttpCookie>();
 		public HttpCookie GetCookie (string name)
 		{
-			throw new NotImplementedException ();
+			return RequestCookies.SingleOrDefault(x=>x.Name==name);
 		}
-
+		public List<HttpCookie> ResponseCookies=new List<HttpCookie>();
 		public void SetCookie (HttpCookie cookie)
 		{
-			throw new NotImplementedException ();
+			ResponseCookies.Add(cookie);
 		}
 
 		public void KillIt ()
 		{
-			throw new NotImplementedException ();
+			throw new FakeServerKilledException();
 		}
 
 		public string MapPath (string path)
 		{
 			throw new NotImplementedException ();
 		}
-
+		public Dictionary<string, string> RequestHeaders=new Dictionary<string, string>();
 		public IList<string> GetHeaders(string name)
 		{
-			throw new NotImplementedException ();
+			if(!RequestHeaders.ContainsKey(name))
+			{
+				return new string[]{};
+			}
+			return new string[]{RequestHeaders[name]};
 		}
-
+		public Dictionary<string, string> ResponseHeaders=new Dictionary<string, string>();
 		public void SetHeader (string name, string value)
 		{
-			throw new NotImplementedException ();
+			ResponseHeaders.Add(name, value);
 		}
-
+		public string TransferredTo;
 		public void Transfer (string url)
 		{
-			throw new NotImplementedException ();
+			TransferredTo=url;
+			KillIt();
 		}
-
+		public string RedirectedTo;
 		public void Redirect (string url)
 		{
-			throw new NotImplementedException ();
+			RedirectedTo=url;
+			KillIt();
 		}
-
+		public Dictionary<string, object> Items=new Dictionary<string, object>();
 		public object GetItem (string name)
 		{
-			throw new NotImplementedException ();
+			if(!Items.ContainsKey(name))
+			{
+				return null;
+			}
+			return Items[name];
 		}
 
 		public object SetItem (string name, object value)
 		{
-			throw new NotImplementedException ();
+			return Items[name]=value;
 		}
 
 		public string UserAgent {

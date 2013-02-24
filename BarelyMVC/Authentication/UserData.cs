@@ -93,8 +93,12 @@ namespace Earlz.BarelyMVC.Authentication
             if(!string.IsNullOrEmpty(UniqueID)){ //UniqueID can't already be set
                 return false;
             }
+			if(!auth.UserStore.AddUser(this))
+			{
+				return false;
+			}
 			auth.ComputePasswordHash(this, password);
-			return auth.UserStore.AddUser(this);
+			return auth.UserStore.UpdateUserByID(this);
         }
         /// <summary>
         /// Deletes this UserData from the UserStore. Note, if successful, UniqueID will be set to null as well.
