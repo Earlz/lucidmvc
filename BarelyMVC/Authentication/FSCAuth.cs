@@ -46,12 +46,18 @@ namespace Earlz.BarelyMVC.Authentication
     public class FSCAuth : IAuthMechanism
     {
 		#region IAuthMechanism implementation
-
-		public string GetLoginToken (UserData user)
+		public bool Login (string username, string password, DateTime expiration)
 		{
 			throw new NotImplementedException ();
 		}
-
+		public bool Login (string username, string password, TimeSpan expires, DateTime? timeout)
+		{
+			throw new NotImplementedException ();
+		}
+		public bool Login (string username, string password)
+		{
+			throw new NotImplementedException ();
+		}
 		#endregion
 
 		public string LoginPage{get;private set;}

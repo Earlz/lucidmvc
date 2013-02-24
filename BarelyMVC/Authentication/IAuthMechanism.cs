@@ -38,6 +38,21 @@ namespace Earlz.BarelyMVC.Authentication
 		/// </summary>
         IUserStore UserStore { get; }
 		IServerContext Server{get;}
-		string GetLoginToken(UserData user);
+		/// <summary>
+		/// Login the specified user. Expiration is an absolute time of expiration for the session
+		/// If the authentication mechanism doesn't support this, it should throw a NotsSupportedException
+		/// </summary>
+		bool Login(string username, string password, DateTime expiration);
+		/// <summary>
+		/// Login the specified user. The expiration date of the session should be set to `expires` amount of time away from DateTime.Now
+		/// Each time the user hits an authenticated page though, `expires` is amount of time away from last time they hit an authenticated page
+		/// `timeout` is an absolute expiration for the session. By setting these to fairly large values, you can have "remember me" functionality
+		/// </summary>
+		bool Login(string username, string password, TimeSpan expires, DateTime? timeout);
+		/// <summary>
+		/// Login the specified user with default session expiration. This should be a fairly short amount of time OR when the user closes the browser, if possible. 
+		/// </summary>
+		bool Login(string username, string password);
+
     }
 }

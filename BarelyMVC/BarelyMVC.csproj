@@ -78,7 +78,6 @@
     <Compile Include="Authentication\FSCAuth.cs" />
     <Compile Include="Authentication\FSCAuthConfig.cs" />
     <Compile Include="Authentication\Extensions.cs" />
-    <Compile Include="Authentication\IAuthPersister.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
