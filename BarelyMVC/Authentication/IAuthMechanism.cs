@@ -4,9 +4,9 @@ namespace Earlz.BarelyMVC.Authentication
     public interface IAuthMechanism
     {
 		/// <summary>
-		/// Computes a hash of the given password using the given UserData
+		/// Computes a hash of the given password using the given UserData and populates PasswordHash and Salt in the UserData with new values
 		/// </summary>
-        string ComputePasswordHash(UserData user, string password);
+        void ComputePasswordHash(UserData user, string password);
 		/// <summary>
 		/// Gets the current logged in user. Returns null if not authenticated
 		/// </summary>
@@ -53,6 +53,13 @@ namespace Earlz.BarelyMVC.Authentication
 		/// Login the specified user with default session expiration. This should be a fairly short amount of time OR when the user closes the browser, if possible. 
 		/// </summary>
 		bool Login(string username, string password);
+
+		/// <summary>
+		/// Used to indicate the calling application requires authentication. If no user is logged in, then this method should be used to
+		/// redirect to a login page, send a 401 HTTP error, or whatever else you need to allow a user to login. This method should NEVER return
+		/// This method must call Server.KillIt(); and never return for security purposes
+		/// </summary>
+		void RequiresAuthentication();
 
     }
 }

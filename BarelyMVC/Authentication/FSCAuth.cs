@@ -45,23 +45,81 @@ namespace Earlz.BarelyMVC.Authentication
     /// </remarks>
     public class FSCAuth : IAuthMechanism
     {
-		#region IAuthMechanism implementation
+		public FSCAuth(IServerContext server, FSCAuthConfig config, IUserStore store, bool defaultbasic=false)
+		{
+			Server=server;
+			Config=config;
+			if(Config.HasherInvoker==null)
+			{
+				Config.HasherInvoker=DefaultHasher;
+			}
+			BasicByDefault=defaultbasic;
+			UserStore=store;
+		}
+
+		bool BasicByDefault=false;
+		public void RequiresAuthentication ()
+		{
+            if(IsAuthenticated){
+                return;
+			}
+
+            if(BasicByDefault){
+                SendHttp401();
+            }
+            if (string.IsNullOrEmpty(Config.LoginPage))
+            {
+                throw new HttpException(401, "You must be authenticated to access this resource");
+            }
+            else
+            {
+                Server.Redirect(Config.LoginPage); //this will cause an exception, but the redirect will work fine
+				Server.KillIt();
+            }
+		}
+
 		public bool Login (string username, string password, DateTime expiration)
 		{
-			throw new NotImplementedException ();
+            var user = UserStore.GetUserByName(username);
+            if (user == null)
+            {
+                return false;
+            }
+            string hash = PasswordHash(user,password).Text;
+            if (hash == user.PasswordHash)
+            {
+                LoginFromHash(user, expiration);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}
 		public bool Login (string username, string password, TimeSpan expires, DateTime? timeout)
 		{
-			throw new NotImplementedException ();
+			throw new NotSupportedException();
 		}
 		public bool Login (string username, string password)
 		{
-			throw new NotImplementedException ();
+            var user = UserStore.GetUserByName(username);
+            if (user == null)
+            {
+                return false;
+            }
+            string hash = PasswordHash(user,password).Text;
+            if (hash == user.PasswordHash)
+            {
+                LoginFromHash(user, null);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}
-		#endregion
-
 		public string LoginPage{get;private set;}
-		FSCAuthConfig Config;
+		public FSCAuthConfig Config{get; private set;}
 		public IServerContext Server{get;private set;}
 		string HttpRealm;
 		string SiteName;
@@ -254,7 +312,7 @@ static FSCAuth(){
                 password=parts[1];
                 user=UserStore.GetUserByName(username);
                 if(user!=null){
-                    hash=ComputePasswordHash(user,password);
+                    hash=PasswordHash(user,password).Text;
                     if(hash==user.PasswordHash){
                         CurrentUser=user;
                         FormLogin = false;
@@ -295,46 +353,6 @@ static FSCAuth(){
             
         }
         /// <summary>
-        /// Logs in a user. This will try to log in a user. It will check username and password against the UserStore.
-        /// If valid, then it will create a new login cookie and populate CurrentUser.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="expires">The expiration date of the login cookie.
-        /// If null, then defaults to the cookie expiring at the end of the user's browser session(or 4 hours, whichever is sooner)
-        /// </param>
-        /// <returns>True if the user was successfully logged in.</returns>
-        public bool Login(string username, string password, DateTime? expires)
-        {
-            var user = UserStore.GetUserByName(username);
-            if (user == null)
-            {
-                return false;
-            }
-            string hash = ComputePasswordHash(user,password);
-            if (hash == user.PasswordHash)
-            {
-                LoginFromHash(user, expires);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        
-        /// <summary>
-        /// Logs in a user. This will try to log in a user. It will check username and password against the UserStore.
-        /// If valid, then it will create a new login cookie and assign CurrentUser.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="remember">The "Remember Me" option. If true, then it will set the cookie to expire 1 year from now.</param>
-        /// <returns>True if the user was successfully logged in.</returns>
-        public bool Login(string username,string password,bool remember){
-            return Login(username,password,remember?(DateTime?)DateTime.Today.AddYears(1):null);
-        }
-        /// <summary>
         /// Will delete the current login cookie, if it exists.
         /// </summary>
         public void Logout(){
@@ -347,15 +365,9 @@ static FSCAuth(){
                 ForceCookieExpiration();
             }
         }
-        /// <summary>
-        /// Computes a password hash. 
-        /// </summary>
-        /// <param name="password">The plain text password</param>
-        /// <param name="username">The user's username</param>
-        /// <param name="uniqueid">The user's unique ID</param>
-        /// <returns></returns>
-        public string ComputePasswordHash(UserData user, string password)
-        {
+
+		HashWithSalt PasswordHash(UserData user, string password)
+		{
             /**Note: The way this hash is computed can not be changed without breaking all password hashes.
              * DO NOT TOUCH unless absolutely needed!. We do not use SiteName here because UniqueID is already a salt, and
              * SiteName could change in the future, so don't want to limit that flexibility. We DO use UniqueHash however.
@@ -365,12 +377,27 @@ static FSCAuth(){
             string text="fscauth"+password+user.UniqueID+Config.UniqueHash;
             if(user.Salt==null){
                 var v=NewHash(text);
+				return v;
                 user.Salt=v.Salt;
                 user.PasswordHash=v.Text;
-                return user.PasswordHash;
             }else{
-                return ComputeHash(text,user.Salt);
+				return new HashWithSalt(){Text=ComputeHash(text, user.Salt), Salt=user.Salt};
             }
+		}
+
+        /// <summary>
+        /// Computes a password hash. 
+        /// </summary>
+        /// <param name="password">The plain text password</param>
+        /// <param name="username">The user's username</param>
+        /// <param name="uniqueid">The user's unique ID</param>
+        /// <returns></returns>
+        public void ComputePasswordHash(UserData user, string password)
+        {
+			user.Salt=null;
+			var v=PasswordHash(user, password);
+			user.PasswordHash=v.Text;
+			user.Salt=v.Salt;
         }
 
 
@@ -455,6 +482,21 @@ static FSCAuth(){
             return origin.AddSeconds(Convert.ToDouble(timestamp));
         }
         
+        void SendHttp401(){ //this will directly write the error, rather than throwing an exception. 
+            Server.HttpStatus="401 Not Authenticated";
+            if(Config.SiteName!=null){
+                Server.SetHeader("WWW-Authenticate", "Basic Realm=\""+SiteName+"\"");
+            }
+            try
+            {
+                Server.Transfer(CustomErrorsFixer.GetCustomError("401")); //output the 401 page
+            }
+            catch(SecurityException) //running under medium trust
+            {
+                Server.Transfer(Config.LoginPage);
+            }
+			Server.KillIt();
+        }
         
     }
                     

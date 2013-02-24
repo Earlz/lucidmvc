@@ -5,6 +5,7 @@ namespace Earlz.BarelyMVC.Authentication
     public delegate HashWithSalt HashInvoker(string plain, string salt);
     public class FSCAuthConfig
     {
+
         /// <summary>
         /// Sets where anonymous users should be redirected to when trying to access a protected resource.
         /// If a generic 401 Access Denied response should be given instead, then set to null.
@@ -54,6 +55,10 @@ namespace Earlz.BarelyMVC.Authentication
         /// The default is 1. If storing more secretive information, you may wish to increase this. Note that too high of a number may make your website slow
         /// </summary>
 		public int HashIterations=1;
+
+		public bool AllowCookieAuth=true;
+		public bool AllowBasicAuth=false;
+		public string SiteName="fscauth";
 	}
 }
 

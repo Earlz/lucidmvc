@@ -67,18 +67,18 @@ namespace Earlz.BarelyMVC.Authentication
         /// A list of groups the user belongs to.
         /// </summary>
         public virtual List<GroupData> Groups{get;set;}
-       /* FIXME 
+
         /// <summary>
         /// Updates the UserStore with this UserData. Basically a shortcut for Authentication.UserStore.UpdateByID
         /// </summary>
         /// <returns>
         /// true if user updated successfully
         /// </returns>
-        public bool Update(){
+        public bool Update(IAuthMechanism auth){
             if(string.IsNullOrEmpty(UniqueID)){
                 return false;
             }
-            return FSCAuth.UserStore.UpdateUserByID(this);
+            return auth.UserStore.UpdateUserByID(this);
         }
         /// <summary>
         /// Inserts this UserData into the UserStore, generating the password in the process. Basically a shortcut for Authentication.AddUser
@@ -89,11 +89,12 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>
         /// true if successfully inserted
         /// </returns>
-        public bool SaveNew(string password){
+        public bool SaveNew(IAuthMechanism auth, string password){
             if(!string.IsNullOrEmpty(UniqueID)){ //UniqueID can't already be set
                 return false;
             }
-            return FSCAuth.AddUser(this,password);
+			auth.ComputePasswordHash(this, password);
+			return auth.UserStore.AddUser(this);
         }
         /// <summary>
         /// Deletes this UserData from the UserStore. Note, if successful, UniqueID will be set to null as well.
@@ -101,8 +102,8 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>
         /// true if successfully deleted
         /// </returns>
-        public bool Delete(){
-            bool res=FSCAuth.UserStore.DeleteUserByID(this);
+        public bool Delete(IAuthMechanism auth){
+            bool res=auth.UserStore.DeleteUserByID(this);
             if(res){
                 UniqueID=null;
             }
@@ -114,13 +115,12 @@ namespace Earlz.BarelyMVC.Authentication
         /// <returns>
         /// The generated password. Returns null on error.
         /// </returns>
-        public string ResetPassword(){
+        public string ResetPassword(IAuthMechanism auth){
             if(string.IsNullOrEmpty(UniqueID)){
                 return null;
             }
-            return FSCAuth.ResetPassword(this);
+            return auth.ResetPassword(this);
         }
-*/
     }
 }
 
