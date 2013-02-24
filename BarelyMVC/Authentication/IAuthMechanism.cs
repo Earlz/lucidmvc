@@ -39,6 +39,5 @@ namespace Earlz.BarelyMVC.Authentication
         IUserStore UserStore { get; }
 		IServerContext Server{get;}
 		string GetLoginToken(UserData user);
-
     }
 }
