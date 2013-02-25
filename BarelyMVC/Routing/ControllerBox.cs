@@ -9,6 +9,7 @@ namespace Earlz.BarelyMVC
 	public delegate IBarelyView ControllerResponse(RequestContext context, ref bool skip);
 	public delegate bool ControllerRequires<T>(T controller);
 
+	public delegate bool RouteParamsMustMatch(ParameterDictionary param);
 
 	public interface IControllerRoute<T>
 	{
@@ -16,6 +17,8 @@ namespace Earlz.BarelyMVC
 		IControllerRoute<T> Allows(string httpmethod);
 		IControllerRoute<T> RequiresAuthentication();
 		IControllerRoute<T> Requires(ControllerRequires<T> requires);
+		IControllerRoute<T> WithRouteParamLike(string param, Func<string, bool> match);
+		IControllerRoute<T> WithRouteParamsLike(RouteParamsMustMatch matcher);
 	}
 
 
@@ -109,6 +112,18 @@ namespace Earlz.BarelyMVC
 			ControllerRequirements.Add(requires);
 			return this;
 		}
+
+
+		IControllerRoute<T> IControllerRoute<T>.WithRouteParamLike(string param, Func<string, bool> match)
+		{
+			throw new NotImplementedException();
+		}
+
+		IControllerRoute<T> IControllerRoute<T>.WithRouteParamsLike(RouteParamsMustMatch matcher)
+		{
+			throw new NotImplementedException();
+		}
+
 	}
 }
 
