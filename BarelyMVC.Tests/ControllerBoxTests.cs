@@ -139,14 +139,15 @@ namespace Earlz.BarelyMVC.Tests
 			Assert.IsTrue(threw);
 		}
 		[Test]
-		[Ignore] //ignore until `Requires` support
 		public void RequiresAuthentication_AddsAuth()
 		{
 			var r=new Router();
 			var mock=new Mock<IAuthMechanism>();
 			var ctrl=r.Controller(x=>new TestController(x, mock.Object));
 			ctrl.Handles("/foo").With(x=>x.Test()).RequiresAuthentication();
-			r.Execute(new FakeServerContext());
+			bool skip=false;
+			ctrl.Current.Responder(new RequestContext(null, r, null, null), ref skip);
+			Assert.IsTrue(skip); //should be null and therefore not logged in
 			mock.VerifyGet(x=>x.CurrentUser);
 		}
 		[Test]

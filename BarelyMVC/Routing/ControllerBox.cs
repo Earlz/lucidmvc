@@ -96,7 +96,12 @@ namespace Earlz.BarelyMVC
 
 		IControllerRoute<T> IControllerRoute<T>.RequiresAuthentication()
 		{
-			throw new NotImplementedException();
+			ControllerRequires<T> check = (ctrl) =>
+			{
+				return ctrl.Authentication.CurrentUser!=null;
+			};
+			ControllerRequirements.Add(check);
+			return this;
 		}
 		
 		IControllerRoute<T> IControllerRoute<T>.Requires(ControllerRequires<T> requires)
