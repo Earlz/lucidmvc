@@ -50,7 +50,7 @@ namespace Earlz.BarelyMVC.Tests
 			var context=new FakeServerContext();
 			context.HttpMethod="GET";
 			context.RequestUrl=new Uri("http://meh.com/foo");
-			rt.Responder=(c) => {
+			rt.Responder=(RequestContext c,ref bool skip ) => {
 				var view=new WrapperView("foo");
 				Assert.AreEqual(c.Context, context);
 				return view;
@@ -77,7 +77,7 @@ namespace Earlz.BarelyMVC.Tests
 			var router=new Router();
 			router.AddRoute(new Route
 			{
-				Responder=(c) => new WrapperView("foo"),
+				Responder=(RequestContext c, ref bool skip) => new WrapperView("foo"),
 				AllowedMethods=new string[]{"POST"},
 				Pattern=new FakePatternMatcher("/foo")
 			});
@@ -91,7 +91,7 @@ namespace Earlz.BarelyMVC.Tests
 			var router=new Router();
 			router.AddRoute(new Route
 			{
-				Responder=(c) => new WrapperView("foo"),
+				Responder=(RequestContext c, ref bool skip) => new WrapperView("foo"),
 				AllowedMethods=new string[]{"POST", "meh"},
 				Pattern=new FakePatternMatcher("/foo")
 			});
@@ -106,8 +106,8 @@ namespace Earlz.BarelyMVC.Tests
 			var router=new Router();
 			var r=new Route
 			{
+				Responder=(RequestContext c, ref bool skip) => new WrapperView("foo"),
 				AllowedMethods=null,
-				Responder=(c) => new WrapperView("foo"),
 				Pattern=new FakePatternMatcher("/foo")
 			};
 			router.AddRoute(r);

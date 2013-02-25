@@ -6,6 +6,7 @@ using Moq;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using Earlz.BarelyMVC.Authentication;
 
 namespace Earlz.BarelyMVC.Tests
 {
@@ -14,8 +15,9 @@ namespace Earlz.BarelyMVC.Tests
 	{
 		class TestController : HttpController
 		{
-			public TestController(RequestContext c) : base(c)
+			public TestController(RequestContext c, IAuthMechanism auth=null) : base(c)
 			{
+				Authentication=auth;
 			}
 			public IBarelyView Test()
 			{
@@ -35,7 +37,8 @@ namespace Earlz.BarelyMVC.Tests
 			var t=r.Controller((c) => new TestController(c));
 			t.Handles("/foo").With((tester) => tester.Test());
 			var request=new RequestContext(null, null, null, null);
-			Assert.AreEqual("foo", t.Current.Responder(request).ToString());
+			bool skip=false;
+			Assert.AreEqual("foo", t.Current.Responder(request, ref skip).ToString());
 		}
 		[Test]
 		public void Handles_ReturnsLimitedInterface()
@@ -134,7 +137,53 @@ namespace Earlz.BarelyMVC.Tests
 				threw=true;
 			}
 			Assert.IsTrue(threw);
+		}
+		[Test]
+		[Ignore] //ignore until `Requires` support
+		public void RequiresAuthentication_AddsAuth()
+		{
+			var r=new Router();
+			var mock=new Mock<IAuthMechanism>();
+			var ctrl=r.Controller(x=>new TestController(x, mock.Object));
+			ctrl.Handles("/foo").With(x=>x.Test()).RequiresAuthentication();
+			r.Execute(new FakeServerContext());
+			mock.VerifyGet(x=>x.CurrentUser);
+		}
+		[Test]
+		public void Requires_ShouldUseWhenTrue()
+		{
+			var r=new Router();
+			var controller=new TestController(new RequestContext(null, r, null,null));
+			var ctrl=r.Controller(x=>controller);
+			bool calledrequire=false;
+			ctrl.Handles("/foo").With(x=>x.Test()).Requires(
+			x => {
+				calledrequire=true;
+				Assert.AreEqual(controller, x);
+				return true;
+			});
+			bool skip=false;
+			ctrl.Current.Responder(null, ref skip);
+			Assert.IsFalse(skip);
+			Assert.IsTrue(calledrequire);
+		}
 
+		[Test]
+		public void Requires_ShouldNotUseWhenFalse()
+		{
+			var r=new Router();
+			var controller=new TestController(new RequestContext(null, r, null,null));
+			var ctrl=r.Controller(x=>controller);
+			bool calledrequire=false;
+			ctrl.Handles("/foo").With(x=>x.Test()).Requires(
+			x => {
+				calledrequire=true;
+				return false;
+			});
+			bool skip=false;
+			ctrl.Current.Responder(null, ref skip);
+			Assert.IsTrue(skip);
+			Assert.IsTrue(calledrequire);
 		}
 	}
 }

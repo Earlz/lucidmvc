@@ -99,8 +99,17 @@ namespace Earlz.BarelyMVC
 				   allowed.Any(x=>x.ToLower()==context.HttpMethod.ToLower()))
 				{
 					var request=new RequestContext(context, this, route, match.Params);
-					route.Responder(request).RenderView(context.Writer);
-					return true;
+					bool skip=false;
+					var view=route.Responder(request, ref skip);
+					if(view==null)
+					{
+						throw new NotSupportedException("The returned view from a controller must not be null!");
+					}
+					if(!skip)
+					{
+						view.RenderView(context.Writer);
+						return true;
+					}
 				}
 			}
 			return false;

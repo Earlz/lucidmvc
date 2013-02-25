@@ -6,13 +6,16 @@ namespace Earlz.BarelyMVC
 {
 	public delegate T ControllerCreator<T>(RequestContext context);
 	public delegate IBarelyView ControllerInvoker<T>(T controller);
-	public delegate IBarelyView ControllerResponse(RequestContext context);
+	public delegate IBarelyView ControllerResponse(RequestContext context, ref bool skip);
+	public delegate bool ControllerRequires<T>(T controller);
 
 
 	public interface IControllerRoute<T>
 	{
 		IControllerRoute<T> With(ControllerInvoker<T> invoker);
 		IControllerRoute<T> Allows(string httpmethod);
+		IControllerRoute<T> RequiresAuthentication();
+		IControllerRoute<T> Requires(ControllerRequires<T> requires);
 	}
 
 
@@ -50,14 +53,23 @@ namespace Earlz.BarelyMVC
 			Current=new Route();
 			Current.Pattern=pattern;
 			Router.AddRoute(Current);
+			ControllerRequirements=new List<ControllerRequires<T>>(); //new up requirements list
 			return this;
 		}
-
+		List<ControllerRequires<T>> ControllerRequirements=new List<ControllerRequires<T>>();
 		IControllerRoute<T> IControllerRoute<T>.With (ControllerInvoker<T> invoker)
 		{
-			Current.Responder = (c) =>
+			Current.Responder = (RequestContext c, ref bool skip) =>
 			{
 				var controller=Creator(c);
+				foreach(var check in ControllerRequirements)
+				{
+					if(!check(controller))
+					{
+						skip=true;
+						return null;
+					}
+				}
 				return invoker(controller);
 			};
 			return this;
@@ -79,6 +91,17 @@ namespace Earlz.BarelyMVC
 			{
 				list.Add(method);
 			}
+			return this;
+		}
+
+		IControllerRoute<T> IControllerRoute<T>.RequiresAuthentication()
+		{
+			throw new NotImplementedException();
+		}
+		
+		IControllerRoute<T> IControllerRoute<T>.Requires(ControllerRequires<T> requires)
+		{
+			ControllerRequirements.Add(requires);
 			return this;
 		}
 	}
