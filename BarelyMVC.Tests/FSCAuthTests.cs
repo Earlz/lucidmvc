@@ -7,6 +7,7 @@ using System.Web;
 using System.Collections.Generic;
 using Earlz.BarelyMVC.Tests.Extensions.ServerMocking;
 using System.Linq;
+using Earlz.BarelyMVC.Authentication.Experimental;
 
 namespace Earlz.BarelyMVC.Tests
 {
@@ -80,7 +81,28 @@ namespace Earlz.BarelyMVC.Tests
 			}
 			Assert.Fail("Should not reach here. No exception thrown");
 		}
+		[Test]
+		public void Login_Should_Send_401_When_Basic()
+		{
 
+			var mock=new FakeServerContext();
+			var auth=new FSCAuth(mock,new FSCAuthConfig(), new SimpleUserStore(), true);
+			auth.Config.AllowBasicAuth=true;
+			auth.Config.SiteName="Foo bar";
+			Prep(auth);
+			bool threw=false;
+			try
+			{
+				auth.RequiresAuthentication();
+			}
+			catch(HttpException e)
+			{
+				Assert.AreEqual(401, e.GetHttpCode());
+				return;
+			}
+			Assert.Fail("Should not reach here");
+
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ using System.Configuration;
 using System.Web.Security;
 using System.Security;
 
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.BarelyMVC.Authentication.Experimental
 {
     /// <summary>
     /// The main FSCAuth class. It is purely static.
@@ -69,12 +69,11 @@ namespace Earlz.BarelyMVC.Authentication
             }
             if (string.IsNullOrEmpty(Config.LoginPage))
             {
-                throw new HttpException(401, "You must be authenticated to access this resource");
+				throw new ArgumentNullException("Config.LoginPage", "LoginPage must be set");
             }
             else
             {
                 Server.Redirect(Config.LoginPage); //this will cause an exception, but the redirect will work fine
-				Server.KillIt();
             }
 		}
 
@@ -188,7 +187,7 @@ static FSCAuth(){
 				return currentuser;
                 
             }
-            set
+            private set
 			{
 				currentuser=value;
             }
@@ -477,20 +476,13 @@ static FSCAuth(){
             return origin.AddSeconds(Convert.ToDouble(timestamp));
         }
         
-        void SendHttp401(){ //this will directly write the error, rather than throwing an exception. 
+        void SendHttp401(){
             Server.HttpStatus="401 Not Authenticated";
-            if(Config.SiteName!=null){
-                Server.SetHeader("WWW-Authenticate", "Basic Realm=\""+Config.SiteName+"\"");
-            }
-            try
-            {
-                Server.Transfer(CustomErrorsFixer.GetCustomError("401")); //output the 401 page
-            }
-            catch(SecurityException) //running under medium trust
-            {
-                Server.Transfer(Config.LoginPage);
-            }
-			Server.KillIt();
+            if(Config.SiteName==null){
+				throw new ArgumentNullException("Config.SiteName", "SiteName must be set");
+			}
+            Server.SetHeader("WWW-Authenticate", "Basic Realm=\""+Config.SiteName+"\"");
+			throw new HttpException(401, "Must authenticate");
         }
         
     }

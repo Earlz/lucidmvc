@@ -4,6 +4,7 @@ using Moq;
 using System.Web;
 using Earlz.BarelyMVC.Authentication;
 using System.Collections.Generic;
+using Earlz.BarelyMVC.Authentication.Experimental;
 
 namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
 {
