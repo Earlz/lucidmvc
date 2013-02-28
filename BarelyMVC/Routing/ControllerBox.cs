@@ -17,6 +17,7 @@ namespace Earlz.BarelyMVC
 		IControllerRoute<T> Allows(string httpmethod);
 		IControllerRoute<T> RequiresAuthentication();
 		IControllerRoute<T> Requires(ControllerRequires<T> requires);
+		IControllerRoute<T> AlsoExecute(Action<T> action);
 		IControllerRoute<T> WithRouteParamLike(string param, Func<string, bool> match);
 		IControllerRoute<T> WithRouteParamsLike(RouteParamsMustMatch matcher);
 	}
@@ -124,6 +125,11 @@ namespace Earlz.BarelyMVC
 			throw new NotImplementedException();
 		}
 
+		IControllerRoute<T> IControllerRoute<T>.AlsoExecute(Action<T> action)
+		{
+			ControllerRequirements.Add((c)=>{action(c); return true;});
+			return this;
+		}
 	}
 }
 

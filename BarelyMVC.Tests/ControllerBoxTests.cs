@@ -186,6 +186,18 @@ namespace Earlz.BarelyMVC.Tests
 			Assert.IsTrue(skip);
 			Assert.IsTrue(calledrequire);
 		}
+		[Test]
+		public void AlsoExecute_Should_Be_Added()
+		{
+			var r=new Router();
+			var controller=new TestController(new RequestContext(null, r, null, null));
+			var ctrl=r.Controller(x=>controller);
+			bool calledexecute=false;
+			ctrl.Handles("/foo").With(x=>x.Test()).AlsoExecute(c=>calledexecute=true);
+			bool skip=false;
+			ctrl.Current.Responder(null, ref skip);
+			Assert.IsTrue(calledexecute);
+		}
 	}
 }
 
