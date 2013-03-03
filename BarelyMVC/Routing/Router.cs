@@ -86,6 +86,11 @@ namespace Earlz.BarelyMVC
 		{
 			return new ControllerBox<T, object>(this, creator);
 		}
+		public virtual ControllerBox<T, object> Controller<T>(ControllerCreator<T> creator, string root) where T:HttpController
+		{
+			return new ControllerBox<T, object>(this, creator, root);
+		}
+
 
 		public virtual bool Execute(IServerContext context)
 		{

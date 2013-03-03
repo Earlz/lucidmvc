@@ -198,6 +198,15 @@ namespace Earlz.BarelyMVC.Tests
 			ctrl.Current.Responder(null, ref skip);
 			Assert.IsTrue(calledexecute);
 		}
+		[Test]
+		public void RootParameter_ShouldBeRootOfRoutes()
+		{
+			var r=new Router();
+			var ctrl=r.Controller(c => new TestController(c), "/foo");
+			var tmp=ctrl.Handles("index").With((c) => c.Test());
+			Assert.IsTrue(tmp.Current.Pattern.Match("/foo/index").IsMatch);
+
+		}
 	}
 }
 

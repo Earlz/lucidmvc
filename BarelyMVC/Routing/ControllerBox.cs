@@ -20,6 +20,13 @@ namespace Earlz.BarelyMVC
 		IControllerRoute<T, MODEL> AlsoExecute(Action<T> action);
 		IControllerRoute<T, MODEL> WithRouteParamLike(string param, Func<string, bool> match);
 		IControllerRoute<T, MODEL> WithRouteParamsLike(RouteParamsMustMatch matcher);
+		IControllerRoute<T, NEW> UsingModel<NEW>();
+		IControllerRoute<T, NEW> UsingModel<NEW>(Func<T, NEW> creator);
+		IControllerRoute<T, MODEL> FromForm();
+		IControllerRoute<T, MODEL> FromRoute();
+		IControllerRoute<T, MODEL> FromQueryString();
+		IControllerRoute<T, MODEL> When(Func<MODEL, bool> whenlike);
+		Route Current{get;}
 	}
 
 
@@ -42,6 +49,8 @@ namespace Earlz.BarelyMVC
 
 		public ControllerBox(Router r, ControllerCreator<T> creator, string root)
 		{
+			Router=r;
+			Creator=creator;
 			Root=root;
 		}
 		/// <summary>
@@ -56,7 +65,14 @@ namespace Earlz.BarelyMVC
 		public IControllerRoute<T, MODEL> Handles(string pattern)
 		{
 			Current=new Route();
-			Current.Pattern=new SimplePattern(pattern);
+			if(string.IsNullOrEmpty(Root))
+			{
+				Current.Pattern=new SimplePattern(pattern);
+			}
+			else
+			{
+				Current.Pattern=new SimplePattern(Root+"/"+pattern);
+			}
 			Router.AddRoute(Current);
 			return this;
 		}
@@ -137,6 +153,31 @@ namespace Earlz.BarelyMVC
 		{
 			ControllerRequirements.Add((c)=>{action(c); return true;});
 			return this;
+		}
+
+		IControllerRoute<T, NEW> IControllerRoute<T, MODEL>.UsingModel<NEW>()
+		{
+			throw new NotImplementedException();
+		}
+		IControllerRoute<T, NEW> IControllerRoute<T, MODEL>.UsingModel<NEW>(Func<T, NEW> creator)
+		{
+			throw new NotImplementedException();
+		}
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromForm()
+		{
+			throw new NotImplementedException();
+		}
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromRoute()
+		{
+			throw new NotImplementedException();
+		}
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromQueryString()
+		{
+			throw new NotImplementedException();
+		}
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.When(Func<MODEL, bool> whenlike)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
