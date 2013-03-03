@@ -45,5 +45,12 @@ namespace Earlz.BarelyMVC
             return p;
         }
 	}
+	static internal class InternalExtensions
+	{
+		public static T GetInstance<T>(string type)
+		{
+    		return (T)Activator.CreateInstance(Type.GetType(type));
+		}
+	}
 }
 

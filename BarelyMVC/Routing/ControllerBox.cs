@@ -11,19 +11,19 @@ namespace Earlz.BarelyMVC
 
 	public delegate bool RouteParamsMustMatch(ParameterDictionary param);
 
-	public interface IControllerRoute<T>
+	public interface IControllerRoute<T, MODEL>
 	{
-		IControllerRoute<T> With(ControllerInvoker<T> invoker);
-		IControllerRoute<T> Allows(string httpmethod);
-		IControllerRoute<T> RequiresAuthentication();
-		IControllerRoute<T> Requires(ControllerRequires<T> requires);
-		IControllerRoute<T> AlsoExecute(Action<T> action);
-		IControllerRoute<T> WithRouteParamLike(string param, Func<string, bool> match);
-		IControllerRoute<T> WithRouteParamsLike(RouteParamsMustMatch matcher);
+		IControllerRoute<T, MODEL> With(ControllerInvoker<T> invoker);
+		IControllerRoute<T, MODEL> Allows(string httpmethod);
+		IControllerRoute<T, MODEL> RequiresAuthentication();
+		IControllerRoute<T, MODEL> Requires(ControllerRequires<T> requires);
+		IControllerRoute<T, MODEL> AlsoExecute(Action<T> action);
+		IControllerRoute<T, MODEL> WithRouteParamLike(string param, Func<string, bool> match);
+		IControllerRoute<T, MODEL> WithRouteParamsLike(RouteParamsMustMatch matcher);
 	}
 
 
-	public class ControllerBox<T> : IControllerRoute<T> where T:HttpController
+	public class ControllerBox<T, MODEL> : IControllerRoute<T, MODEL> where T:HttpController
 	{
 		public Router Router
 		{
@@ -35,6 +35,14 @@ namespace Earlz.BarelyMVC
 		{
 			Router=r;
 			Creator=creator;
+			Root="";
+		}
+
+		readonly string Root;
+
+		public ControllerBox(Router r, ControllerCreator<T> creator, string root)
+		{
+			Root=root;
 		}
 		/// <summary>
 		/// The current route we're messing with for the Fluent API
@@ -45,14 +53,14 @@ namespace Earlz.BarelyMVC
 			private set;
 		}
 
-		public IControllerRoute<T> Handles(string pattern)
+		public IControllerRoute<T, MODEL> Handles(string pattern)
 		{
 			Current=new Route();
 			Current.Pattern=new SimplePattern(pattern);
 			Router.AddRoute(Current);
 			return this;
 		}
-		public IControllerRoute<T> Handles (IPatternMatcher pattern)
+		public IControllerRoute<T, MODEL> Handles (IPatternMatcher pattern)
 		{
 			Current=new Route();
 			Current.Pattern=pattern;
@@ -61,7 +69,7 @@ namespace Earlz.BarelyMVC
 			return this;
 		}
 		List<ControllerRequires<T>> ControllerRequirements=new List<ControllerRequires<T>>();
-		IControllerRoute<T> IControllerRoute<T>.With (ControllerInvoker<T> invoker)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.With (ControllerInvoker<T> invoker)
 		{
 			Current.Responder = (RequestContext c, ref bool skip) =>
 			{
@@ -79,7 +87,7 @@ namespace Earlz.BarelyMVC
 			return this;
 		}
 
-		IControllerRoute<T> IControllerRoute<T>.Allows(string method)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.Allows(string method)
 		{
 			if(Current.AllowedMethods==null)
 			{
@@ -98,7 +106,7 @@ namespace Earlz.BarelyMVC
 			return this;
 		}
 
-		IControllerRoute<T> IControllerRoute<T>.RequiresAuthentication()
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.RequiresAuthentication()
 		{
 			ControllerRequires<T> check = (ctrl) =>
 			{
@@ -108,24 +116,24 @@ namespace Earlz.BarelyMVC
 			return this;
 		}
 		
-		IControllerRoute<T> IControllerRoute<T>.Requires(ControllerRequires<T> requires)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.Requires(ControllerRequires<T> requires)
 		{
 			ControllerRequirements.Add(requires);
 			return this;
 		}
 
 
-		IControllerRoute<T> IControllerRoute<T>.WithRouteParamLike(string param, Func<string, bool> match)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.WithRouteParamLike(string param, Func<string, bool> match)
 		{
 			throw new NotImplementedException();
 		}
 
-		IControllerRoute<T> IControllerRoute<T>.WithRouteParamsLike(RouteParamsMustMatch matcher)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.WithRouteParamsLike(RouteParamsMustMatch matcher)
 		{
 			throw new NotImplementedException();
 		}
 
-		IControllerRoute<T> IControllerRoute<T>.AlsoExecute(Action<T> action)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.AlsoExecute(Action<T> action)
 		{
 			ControllerRequirements.Add((c)=>{action(c); return true;});
 			return this;

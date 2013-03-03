@@ -44,7 +44,7 @@ namespace Earlz.BarelyMVC.Tests
 		public void Handles_ReturnsLimitedInterface()
 		{
 			var t=new Router().Controller((c) => new TestController(c));
-			Assert.IsTrue(t.Handles("") is IControllerRoute<TestController>);
+			Assert.IsTrue(t.Handles("") is IControllerRoute<TestController, object>);
 
 		}
 		[Test]
@@ -52,7 +52,7 @@ namespace Earlz.BarelyMVC.Tests
 		{
 			var mock=new Mock<Router>();
 			mock.Setup(x=>x.AddRoute(It.IsAny<Route>())).Verifiable();
-			var c=new ControllerBox<TestController>(mock.Object, null);
+			var c=new ControllerBox<TestController, object>(mock.Object, null);
 			c.Handles("foo");
 			mock.Verify();
 		}

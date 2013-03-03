@@ -82,9 +82,9 @@ namespace Earlz.BarelyMVC
 		{
 			Routes.Add(r);
 		}
-		public virtual ControllerBox<T> Controller<T>(ControllerCreator<T> creator) where T:HttpController
+		public virtual ControllerBox<T, object> Controller<T>(ControllerCreator<T> creator) where T:HttpController
 		{
-			return new ControllerBox<T>(this, creator);
+			return new ControllerBox<T, object>(this, creator);
 		}
 
 		public virtual bool Execute(IServerContext context)
