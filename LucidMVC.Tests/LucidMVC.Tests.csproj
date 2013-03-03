@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{47FF3535-5630-4B00-8D0A-5CDDD839310C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Earlz.BarelyMVC.Tests</RootNamespace>
-    <AssemblyName>BarelyMVC.Tests</AssemblyName>
+    <RootNamespace>Earlz.LucidMVC.Tests</RootNamespace>
+    <AssemblyName>LucidMVC.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -41,9 +41,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\BarelyMVC\BarelyMVC.csproj">
+    <ProjectReference Include="..\LucidMVC\LucidMVC.csproj">
       <Project>{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}</Project>
-      <Name>BarelyMVC</Name>
+      <Name>LucidMVC</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

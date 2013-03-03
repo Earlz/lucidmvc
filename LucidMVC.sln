@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarelyMVC", "BarelyMVC\BarelyMVC.csproj", "{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LucidMVC", "LucidMVC\LucidMVC.csproj", "{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarelyMVC.Tests", "BarelyMVC.Tests\BarelyMVC.Tests.csproj", "{47FF3535-5630-4B00-8D0A-5CDDD839310C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LucidMVC.Tests", "LucidMVC.Tests\LucidMVC.Tests.csproj", "{47FF3535-5630-4B00-8D0A-5CDDD839310C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C86323B7-9695-48F4-AD1A-DA76E1C7614F}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,7 +29,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = BarelyMVC\BarelyMVC.csproj
+		StartupItem = LucidMVC\LucidMVC.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

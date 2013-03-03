@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AAFC3FCB-5FF2-4528-91FB-12070BC5AAD1}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Earlz.BarelyMVC</RootNamespace>
-    <AssemblyName>BarelyMVC</AssemblyName>
+    <RootNamespace>Earlz.LucidMVC</RootNamespace>
+    <AssemblyName>LucidMVC</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
