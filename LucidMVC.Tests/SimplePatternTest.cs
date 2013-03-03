@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using Earlz.BarelyMVC;
+using Earlz.LucidMVC;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
     [TestFixture]
     public class SimplePatternTest

@@ -29,7 +29,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Text.RegularExpressions;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     public class RegexPatternMatcher : IPatternMatcher
     {

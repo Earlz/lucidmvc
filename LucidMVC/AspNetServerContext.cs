@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 	public class AspNetServerContext : IServerContext
 	{

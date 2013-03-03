@@ -3,7 +3,7 @@ using System.Web;
 using System.Web.Caching;
 using System.Collections.Generic;
 
-namespace Earlz.BarelyMVC.Caching
+namespace Earlz.LucidMVC.Caching
 {
 	public class ASPCacheMechanism : ICacheMechanism
 	{

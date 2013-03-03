@@ -3,7 +3,7 @@ using System.Web;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 	public interface IRequestContext
 	{
@@ -74,7 +74,7 @@ namespace Earlz.BarelyMVC
 
 	/// <summary>
 	/// This is a very simplified context for server requests and responses
-	/// It should not cover "everything", but should instead have only what BarelyMVC needs to function
+	/// It should not cover "everything", but should instead have only what LucidMVC needs to function
 	/// As a result, it will usually only have the most commonly used things in it
 	/// All "get" methods should normally return null if a given name/key doesn't exist
 	/// </summary>

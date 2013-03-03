@@ -1,9 +1,9 @@
 using System;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Earlz.BarelyMVC.Caching
+namespace Earlz.LucidMVC.Caching
 {
 	/// <summary>
 	/// A set of extension methods on ICacheMechanism to make caching as concise and awesome as possible

@@ -35,15 +35,15 @@ using System.Web.UI;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC.ViewEngine;
 using System.Linq;
-using Earlz.BarelyMVC.Authentication;
+using Earlz.LucidMVC.Authentication;
 using System.Collections.ObjectModel;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
-	public delegate IBarelyView HandlerInvoker<T>(T httphandler) where T:HttpController;
+	public delegate ILucidView HandlerInvoker<T>(T httphandler) where T:HttpController;
 	public delegate T HandlerCreator<T>(Router r) where T:HttpController;
 	public delegate ICacheMechanism CacheMechanismRetriever();
 
@@ -196,7 +196,7 @@ namespace Earlz.BarelyMVC
 
         void CallMethod<T>(IServerContext context, HandlerInvoker<T> invoker) where T:HttpController 
 		{
-			IBarelyView view=invoker(null);//HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
+			ILucidView view=invoker(null);//HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
             int length=0;
             var r=context.Writer;
             if(view!=null){

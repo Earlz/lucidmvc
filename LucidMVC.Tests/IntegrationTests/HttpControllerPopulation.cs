@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using Earlz.BarelyMVC;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC;
+using Earlz.LucidMVC.ViewEngine;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	[TestFixture]
 	[Category("integration")]
@@ -27,7 +27,7 @@ namespace Earlz.BarelyMVC.Tests
 			Assert.AreEqual("mehfoobar", context.WrittenText());
 		}
 
-		class HomeView : BarelyViewBase
+		class HomeView : LucidViewBase
 		{
 			public string Name;
 			public string Foo;
@@ -41,7 +41,7 @@ namespace Earlz.BarelyMVC.Tests
 		class HomeController : HttpController
 		{
 			public HomeController(RequestContext c) : base(c){}
-			public IBarelyView GetHome()
+			public ILucidView GetHome()
 			{
 				Assert.IsNotNull(this.Context);
 				Assert.IsNotNull(this.RouteParams);

@@ -1,7 +1,7 @@
 using System;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 	public class RequestContext
 	{

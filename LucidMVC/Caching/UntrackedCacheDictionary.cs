@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Earlz.BarelyMVC.Caching
+namespace Earlz.LucidMVC.Caching
 {
 	/// <summary>
 	/// This is a cache pass through dictionary which does no tracking of what is possibly cached.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     public delegate HashWithSalt HashInvoker(string plain, string salt);
     public class FSCAuthConfig

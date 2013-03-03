@@ -33,7 +33,7 @@ using System.Collections.Specialized;
 using System.Linq;
 
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     /// <summary>
     /// This is just a simple "specialized" dictionary. 

@@ -35,7 +35,7 @@ using System.Configuration;
 using System.Web.Security;
 using System.Security;
 
-namespace Earlz.BarelyMVC.Authentication.Experimental
+namespace Earlz.LucidMVC.Authentication.Experimental
 {
     /// <summary>
     /// The main FSCAuth class. It is purely static.

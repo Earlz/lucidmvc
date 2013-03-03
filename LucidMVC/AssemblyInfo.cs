@@ -32,7 +32,7 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("BarelyMVC")]
+[assembly: AssemblyTitle("LucidMVC")]
 [assembly: AssemblyDescription("A lightweight MVC framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

@@ -34,9 +34,9 @@ using System.Text;
 using System.IO;
 
 
-namespace Earlz.BarelyMVC.ViewEngine
+namespace Earlz.LucidMVC.ViewEngine
 {
-    public interface IBarelyView
+    public interface ILucidView
     {
         void RenderView(TextWriter outputStream);
         string Flash{get;set;}
@@ -44,7 +44,7 @@ namespace Earlz.BarelyMVC.ViewEngine
     /// <summary>
     /// A psuedo view for wrapping just plain old text. 
     /// </summary>
-    public class WrapperView : BarelyViewBase
+    public class WrapperView : LucidViewBase
     {
         public WrapperView(string text)
         {
@@ -56,7 +56,7 @@ namespace Earlz.BarelyMVC.ViewEngine
 			outputStream.Write(Text);
         }
     }
-	public abstract class BarelyViewBase : Earlz.BarelyMVC.ViewEngine.IBarelyView{ /*This is needed because we have to make a function overridden and to provide a useful ToString implementation */
+	public abstract class LucidViewBase : Earlz.LucidMVC.ViewEngine.ILucidView{ /*This is needed because we have to make a function overridden and to provide a useful ToString implementation */
         public virtual void RenderView(TextWriter outputStream){throw new NotImplementedException();}
         public override string ToString()
 		{
@@ -68,7 +68,7 @@ namespace Earlz.BarelyMVC.ViewEngine
     }
 }
 //internal empty namespace declaration
-namespace Earlz.BarelyMVC.ViewEngine.Helpers{}
+namespace Earlz.LucidMVC.ViewEngine.Helpers{}
 
     
 

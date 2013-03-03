@@ -27,21 +27,21 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 using System;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC.ViewEngine;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     public class RedirectController : HttpController
     {
 		public RedirectController(RequestContext request) : base(request)
 		{
 		}
-		public IBarelyView Redirect(string url)
+		public ILucidView Redirect(string url)
 		{
 			Context.Redirect(url);
 			return null;
 		}
-		public IBarelyView PermanentRedirect(string url)
+		public ILucidView PermanentRedirect(string url)
 		{
 			Context.HttpStatus = "301 Moved Permanently";
 			Context.SetHeader("Location", url);

@@ -29,14 +29,14 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Web;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.Authentication;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC.Authentication;
+using Earlz.LucidMVC.ViewEngine;
 using System.IO;
 using System.Collections.Specialized;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     /**The base class used to handle HTTP requests.
      * This class should be derived from for every different handler for HTTP requests.
@@ -113,12 +113,12 @@ namespace Earlz.BarelyMVC
 		}
 	}
 	/*
-	public delegate IBarelyView TestFoo<T>(T handler) where T:HttpHandler;
+	public delegate ILucidView TestFoo<T>(T handler) where T:HttpHandler;
 	public delegate T HandlerFoo<T>() where T:HttpHandler;
 
 	public class Foo
 	{
-		delegate IBarelyView DoShit();
+		delegate ILucidView DoShit();
 		public static void AddRoute<T>(string name, HandlerFoo<T> handler, TestFoo<T> caller) where T:HttpHandler
 		{
 			DoShit del=()=>
@@ -132,7 +132,7 @@ namespace Earlz.BarelyMVC
 		static List<HandlerFoo<HttpHandler>> list;
 		class TestHandler : HttpHandler
 		{
-			public IBarelyView FooBar(){return null;}
+			public ILucidView FooBar(){return null;}
 		}
 		public static void Test()
 		{

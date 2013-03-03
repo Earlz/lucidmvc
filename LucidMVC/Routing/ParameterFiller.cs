@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq.Expressions;
 using System.Linq;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     public interface IParameterConverter
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.ViewEngine.Internal;
+using Earlz.LucidMVC.ViewEngine.Internal;
 using NUnit.Framework;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
     [TestFixture]
     public class ViewGenerationTests
@@ -16,10 +16,10 @@ namespace Earlz.BarelyMVC.Tests
 			Config=new ViewConfiguration
 			{
 					AutoInterfaces=false,
-					DefaultNamespace="Earlz.BarelyMVC.MyViews",
+					DefaultNamespace="Earlz.LucidMVC.MyViews",
 					RenderDirectly=false,
 					DetectChainedNulls=false,
-					BaseClass="Earlz.BarelyMVC.ViewEngine.Internal.BarelyViewDummy",
+					BaseClass="Earlz.LucidMVC.ViewEngine.Internal.LucidViewDummy",
 					UsePartials=false,
 					UseInternal=false,
 			};

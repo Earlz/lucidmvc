@@ -36,10 +36,10 @@ using System.Web.Caching;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.Linq;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     public enum GroupMatchType
     {

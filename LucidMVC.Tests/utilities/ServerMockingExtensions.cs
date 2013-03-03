@@ -1,12 +1,12 @@
 using System;
-using Earlz.BarelyMVC;
+using Earlz.LucidMVC;
 using Moq;
 using System.Web;
-using Earlz.BarelyMVC.Authentication;
+using Earlz.LucidMVC.Authentication;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.Authentication.Experimental;
+using Earlz.LucidMVC.Authentication.Experimental;
 
-namespace Earlz.BarelyMVC.Tests.Extensions.ServerMocking
+namespace Earlz.LucidMVC.Tests.Extensions.ServerMocking
 {
 	/// <summary>
 	/// Server mocking helper extensions

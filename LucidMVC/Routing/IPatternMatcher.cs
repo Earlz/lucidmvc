@@ -28,7 +28,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
     public interface IPatternMatcher
     {

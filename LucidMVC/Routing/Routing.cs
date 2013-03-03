@@ -31,7 +31,7 @@ using System.Web;
 using System.Text.RegularExpressions;
 
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 	public class StopExecutionException : Exception
 	{

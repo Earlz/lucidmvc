@@ -1,6 +1,6 @@
 using System;
 
-namespace Earlz.BarelyMVC.Converters
+namespace Earlz.LucidMVC.Converters
 {
     public class CheckboxToBoolConverter : IParameterConverter
     {

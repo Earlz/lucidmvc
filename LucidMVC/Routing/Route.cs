@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 
     public class Route

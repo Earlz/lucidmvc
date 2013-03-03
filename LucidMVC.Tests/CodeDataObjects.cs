@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using Earlz.BarelyMVC.ViewEngine.Internal;
+using Earlz.LucidMVC.ViewEngine.Internal;
 using System.Text.RegularExpressions;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
     [TestFixture]
     public class CodeDataObjects

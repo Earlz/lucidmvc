@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace Earlz.BarelyMVC.TestingUtilities
+namespace Earlz.LucidMVC.TestingUtilities
 {
 	/*
 	/// <summary>

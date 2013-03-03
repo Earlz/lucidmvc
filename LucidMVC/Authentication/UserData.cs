@@ -27,7 +27,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections.Generic;
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     /// <summary>
     /// The class to function as a DTO for user data.

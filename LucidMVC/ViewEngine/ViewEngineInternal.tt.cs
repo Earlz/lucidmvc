@@ -29,7 +29,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     
 #if NOT_IN_T4
 //Apparently T4 places classes into another class, making namespaces impossible
-namespace Earlz.BarelyMVC.ViewEngine.Internal
+namespace Earlz.LucidMVC.ViewEngine.Internal
 {
     using System;
     using System.Linq;
@@ -49,7 +49,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		/// The default namespace to use for the generated view class
 		/// this can be overridden
 		/// </summary>
-		public string DefaultNamespace="Earlz.BarelyMVC.MyViews";
+		public string DefaultNamespace="Earlz.LucidMVC.MyViews";
 		/// <summary>
 		/// Controls whether the view is rendered directly to the DefaultWriter or if it is first built-up into a string
 		/// Performance comparisons between the two have not been conclusive thus far
@@ -67,7 +67,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 		/// Example: `MyBase, IFoo, IBar` 
 		/// This can be overridden
 		/// </summary>
-		public string BaseClass="Earlz.BarelyMVC.ViewEngine.BarelyViewBase";
+		public string BaseClass="Earlz.LucidMVC.ViewEngine.LucidViewBase";
 		/// <summary>
 		/// Mark the generated view as a partial class 
 		/// not implemented
@@ -507,7 +507,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                 SetMethod="set;",
                 PrefixDocs="This is the layout of the given view (master page)",
                 Accessibility="public",
-                Type=Layout ?? "IBarelyView"
+                Type=Layout ?? "ILucidView"
             };
             Properties.Add(p);
 			GeneratedInterface.Properties.Add(p.CloneForInterface());
@@ -559,7 +559,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
             m=new Method();
             m.Name="__Write";
             m.Accessibility="protected virtual";
-            m.Params.Add(new MethodParam{Name="v", Type="IBarelyView"});
+            m.Params.Add(new MethodParam{Name="v", Type="ILucidView"});
             m.Body="v.RenderView(__Writer);";
             m.PrefixDocs="Renders the view and adds it to the output";
             Methods.Add(m);
@@ -606,7 +606,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                     if (e!=null)
                     {
                         foreach(var item in e){ 
-                            var view=item as Earlz.BarelyMVC.ViewEngine.IBarelyView;
+                            var view=item as Earlz.LucidMVC.ViewEngine.ILucidView;
                             if(view!=null){
                                 __Write(view);
                             }else{
@@ -614,7 +614,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
                             }
                         }
                     }else{
-                        var view=v as Earlz.BarelyMVC.ViewEngine.IBarelyView;
+                        var view=v as Earlz.LucidMVC.ViewEngine.ILucidView;
                         if(view!=null){
                             __Write(view);
                         }else{
@@ -628,7 +628,7 @@ namespace Earlz.BarelyMVC.ViewEngine.Internal
 			GeneratedInterface.PrefixDocs=PrefixDocs;
 			GeneratedInterface.Namespace=Namespace;
 			GeneratedInterface.Name="I"+Name;
-			GeneratedInterface.BaseClass="IBarelyView";
+			GeneratedInterface.BaseClass="ILucidView";
         }
 
         string Escape(char c){

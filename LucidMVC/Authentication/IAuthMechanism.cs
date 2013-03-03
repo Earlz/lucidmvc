@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     public interface IAuthMechanism
     {

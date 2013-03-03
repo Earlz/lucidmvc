@@ -29,7 +29,7 @@ using System;
 using System.Web;
 using System.Web.Configuration;
 using System.Configuration;
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     public static class CustomErrorsFixer
     {

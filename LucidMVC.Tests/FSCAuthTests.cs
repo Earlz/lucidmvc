@@ -1,15 +1,15 @@
 using System;
 using NUnit.Framework;
-using Earlz.BarelyMVC.Authentication;
+using Earlz.LucidMVC.Authentication;
 using Moq;
-using Earlz.BarelyMVC;
+using Earlz.LucidMVC;
 using System.Web;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.Tests.Extensions.ServerMocking;
+using Earlz.LucidMVC.Tests.Extensions.ServerMocking;
 using System.Linq;
-using Earlz.BarelyMVC.Authentication.Experimental;
+using Earlz.LucidMVC.Authentication.Experimental;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	[Category("FSCAuth")]
 	[TestFixture]

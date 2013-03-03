@@ -4,7 +4,7 @@ using System.Threading;
 using System.Linq;
 using System.Collections.Specialized;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 	static public class ExtensionMethods
 	{

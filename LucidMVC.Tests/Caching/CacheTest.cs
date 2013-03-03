@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
 using System.Threading;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	public class CacheTest
 	{

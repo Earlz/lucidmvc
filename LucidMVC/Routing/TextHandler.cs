@@ -28,8 +28,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
 using System.Web;
-using Earlz.BarelyMVC.ViewEngine;
-namespace Earlz.BarelyMVC
+using Earlz.LucidMVC.ViewEngine;
+namespace Earlz.LucidMVC
 {
 	/*
     public class TextHandler : HttpHandler
@@ -39,7 +39,7 @@ namespace Earlz.BarelyMVC
         {
             Text=text;
         }
-        public IBarelyView Get()
+        public ILucidView Get()
         {
             Response.ContentType="text/plain";
             return new WrapperView(Text);

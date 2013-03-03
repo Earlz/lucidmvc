@@ -26,7 +26,7 @@ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     /// <summary>
     /// thrown when trying to create a new user and the username is already in use(if applicable)

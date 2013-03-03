@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Earlz.BarelyMVC.Caching
+namespace Earlz.LucidMVC.Caching
 {
 	/// <summary>
 	/// A very simplistic interface to different caching mechanisms. 

@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     /// <summary>
     /// This class is the base group class. If you wish to hold more information in a group than just a name, derive from this class

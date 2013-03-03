@@ -1,14 +1,14 @@
 using System;
 using NUnit.Framework;
-using Earlz.BarelyMVC;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC;
+using Earlz.LucidMVC.ViewEngine;
 using Moq;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using Earlz.BarelyMVC.Authentication;
+using Earlz.LucidMVC.Authentication;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	[TestFixture]
 	public class ControllerBoxTests
@@ -19,7 +19,7 @@ namespace Earlz.BarelyMVC.Tests
 			{
 				Authentication=auth;
 			}
-			public IBarelyView Test()
+			public ILucidView Test()
 			{
 				return new WrapperView("foo");
 			}

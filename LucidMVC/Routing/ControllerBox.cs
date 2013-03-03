@@ -1,12 +1,12 @@
 using System;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC.ViewEngine;
 using System.Collections.Generic;
 
-namespace Earlz.BarelyMVC
+namespace Earlz.LucidMVC
 {
 	public delegate T ControllerCreator<T>(RequestContext context);
-	public delegate IBarelyView ControllerInvoker<T>(T controller);
-	public delegate IBarelyView ControllerResponse(RequestContext context, ref bool skip);
+	public delegate ILucidView ControllerInvoker<T>(T controller);
+	public delegate ILucidView ControllerResponse(RequestContext context, ref bool skip);
 	public delegate bool ControllerRequires<T>(T controller);
 
 	public delegate bool RouteParamsMustMatch(ParameterDictionary param);

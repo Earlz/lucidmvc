@@ -1,6 +1,6 @@
 using System;
 
-namespace Earlz.BarelyMVC.Caching
+namespace Earlz.LucidMVC.Caching
 {
 	//StoreToCache will handle removal, replacement, and addition to the cache
 	public interface ICacheDictionary<K,V>

@@ -2,7 +2,7 @@ using System;
 using System.Web;
 using System.Web.Security;
 
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
 	static public class IAuthMechanismExtensions
 	{

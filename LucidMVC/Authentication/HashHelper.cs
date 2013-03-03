@@ -29,7 +29,7 @@ using System;
 using System.Text;
 using System.Security.Cryptography;
 using System.Web;
-namespace Earlz.BarelyMVC.Authentication
+namespace Earlz.LucidMVC.Authentication
 {
     public class HashWithSalt
     {

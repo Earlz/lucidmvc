@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 using System.Collections.Generic;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	public class MockCacheMechanism : ICacheMechanism
 	{

@@ -1,11 +1,11 @@
 using System;
-using Earlz.BarelyMVC;
+using Earlz.LucidMVC;
 using System.Web;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	public class FakeServerKilledException : Exception
 	{

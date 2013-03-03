@@ -1,11 +1,11 @@
 using System;
 using NUnit.Framework;
-using Earlz.BarelyMVC;
-using Earlz.BarelyMVC.ViewEngine;
+using Earlz.LucidMVC;
+using Earlz.LucidMVC.ViewEngine;
 using Moq;
 using System.IO;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	[TestFixture]
 	public class RouterTests
@@ -15,7 +15,7 @@ namespace Earlz.BarelyMVC.Tests
 			public TestController(RequestContext c) : base(c)
 			{
 			}
-			public IBarelyView Tester()
+			public ILucidView Tester()
 			{
 				return new WrapperView("meh");
 			}

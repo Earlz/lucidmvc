@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Earlz.BarelyMVC.Caching;
+using Earlz.LucidMVC.Caching;
 
-namespace Earlz.BarelyMVC.Unstable.Caching
+namespace Earlz.LucidMVC.Unstable.Caching
 {
 
 	/// <summary>

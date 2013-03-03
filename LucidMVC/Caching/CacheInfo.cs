@@ -1,6 +1,6 @@
 using System;
 
-namespace Earlz.BarelyMVC.Caching
+namespace Earlz.LucidMVC.Caching
 {
 	/// <summary>
 	/// Priority of the cache item

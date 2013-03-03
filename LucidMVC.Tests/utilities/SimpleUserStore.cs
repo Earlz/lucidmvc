@@ -1,9 +1,9 @@
 using System;
-using Earlz.BarelyMVC.Authentication;
+using Earlz.LucidMVC.Authentication;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Earlz.BarelyMVC.Tests
+namespace Earlz.LucidMVC.Tests
 {
 	public class SimpleUserStore : IUserStore
 	{
