@@ -1,6 +1,6 @@
 ## Welcome!
 
-BarelyMVC is a simple MVC framework built ontop of vanilla ASP.Net and especially designed for easy integration on Mono/Linux(though it works on .Net/Windows just as well) 
+LucidMVC is a simple MVC framework built ontop of vanilla ASP.Net and especially designed for easy integration on Mono/Linux(though it works on .Net/Windows just as well) 
 
 ## What's so awesome about it
 1. Clearly see what code will execute
@@ -18,18 +18,18 @@ More awesomeness to come, but I'll only list things here which are "complete"
 
 ## Puzzle Pieces
 
-BarelyMVC has always been designed to be minimalist. Despite this, it has quite a few good parts
+LucidMVC has always been designed to be minimalist. Despite this, it has quite a few good parts
 
 * Router
 * Powerful `SimplePattern` pattern matcher
 * Highly scaleable `FSCAuth` authentication system
-* Powerful `IServerContext` bridge meaning BarelyMVC will eventually be portable to places other than ASP.Net.. and very easy to mock and test
+* Powerful `IServerContext` bridge meaning LucidMVC will eventually be portable to places other than ASP.Net.. and very easy to mock and test
 * Caching framework capable of transparently caching into places other than ASP.Net and ensuring generation of cache proxy classes is as concise as possible
 * Very effecient compile time T4 view engine. Misspell a property in a view and get a compiler error. No magical anonymous classes or dictionaries. Real properties in plain ol' classes
 
 ## What you won't find
 
-There are a few things I see some people "like" that aren't in BarelyMVC. This is a list of things which I will (most likely) never implement:
+There are a few things I see some people "like" that aren't in LucidMVC. This is a list of things which I will (most likely) never implement:
 
 * Wizards and "rich" HTML controls for authentication that look like crap
 * Automatic class discovery and method names mapping to route names(ie, magic)
@@ -60,7 +60,7 @@ Notice that everything but the URL pattern is statically typed and non-magical, 
 
 ## Current Status
 
-Currently BarelyMVC is at late-Alpha. It'll be stabilized into Beta in a few months, but at this moment the API is still unstable. 
+Currently LucidMVC is at late-Alpha. It'll be stabilized into Beta in a few months, but at this moment the API is still unstable. 
 If you write code with it right now I can't guarantee you won't have to rewrite it using a different API in 6 months. Although, most of the core(routing/handler/view enigne) API should be stable now. 
 
 Platforms:
@@ -71,7 +71,6 @@ Platforms:
 
 As the API stabilizes, I'll be providing more and more samples. For a large up-to-date(usually) sample though you can view my blog's source code at https://bitbucket.org/earlz/lastyearswishes
 
-Source can be downloaded(and possibly pushed?) via Git or Mercurial
+Source can be downloaded(and possibly pushed?) via Mercurial
 
-* Mercurial@bitbucket: https://bitbucket.org/earlz/barelymvc
-* Git@github: https://github.com/Earlz/barelymvc
+* Mercurial@bitbucket: https://bitbucket.org/earlz/Lucidmvc
