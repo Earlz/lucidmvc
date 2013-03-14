@@ -20,12 +20,14 @@ More awesomeness to come, but I'll only list things here which are "complete"
 
 LucidMVC has always been designed to be minimalist. Despite this, it has quite a few good parts
 
-* Router
 * Powerful `SimplePattern` pattern matcher
 * Highly scaleable `FSCAuth` authentication system
 * Powerful `IServerContext` bridge meaning LucidMVC will eventually be portable to places other than ASP.Net.. and very easy to mock and test
 * Caching framework capable of transparently caching into places other than ASP.Net and ensuring generation of cache proxy classes is as concise as possible
 * Very effecient compile time T4 view engine. Misspell a property in a view and get a compiler error. No magical anonymous classes or dictionaries. Real properties in plain ol' classes
+* Fluent router. Very clear what will execute. Place rules on routes to ensure your controllers only receive valid data
+
+
 
 ## What you won't find
 
@@ -36,6 +38,7 @@ There are a few things I see some people "like" that aren't in LucidMVC. This is
 * Strict MVC enforcement. I make it easy to adhere to, but if you need to do something hacky, I don't actively prevent you from doing it
 * GPL or LGPL licensed code. Everything here will be BSD or similar license. Likewise, if you contribute, your code must be under BSD or compatible license
 * Asynchronize all the things! (see also: WinRT) 
+* XML configuration. This I loathe almost more than magic
 
 ## Some Code
 
@@ -56,6 +59,7 @@ A barebones example using only the routing and HTTP controller component
 		{
 			router.Execute(new AspNetServerContext());
 		}
+
 Notice that everything but the URL pattern is statically typed and non-magical, yet concise. 
 
 ## Current Status
@@ -68,9 +72,10 @@ Platforms:
 * Requires .Net 4.0. No plans(yet) to upgrade to .Net 4.5
 * Tested on Mono 2.10.8/Arch Linux 64 bit
 * Thoroughly tested under Apache and tested somewhat well under IIS 7 (IIS 6 is filled with horrors. Not supported)
+* Actively developed using MonoDevelop on Arch Linux(so it'll always work pretty good there)
 
 As the API stabilizes, I'll be providing more and more samples. For a large up-to-date(usually) sample though you can view my blog's source code at https://bitbucket.org/earlz/lastyearswishes
 
-Source can be downloaded(and possibly pushed?) via Mercurial
+Source can be downloaded or forked via Mercurial
 
 * Mercurial@bitbucket: https://bitbucket.org/earlz/Lucidmvc

@@ -205,7 +205,15 @@ namespace Earlz.LucidMVC.Tests
 			var ctrl=r.Controller(c => new TestController(c), "/foo");
 			var tmp=ctrl.Handles("index").With((c) => c.Test());
 			Assert.IsTrue(tmp.Current.Pattern.Match("/foo/index").IsMatch);
-
+		}
+		[Ignore]
+		[Test]
+		public void WithModel_Should_Use_New_Model()
+		{
+			var r = new Router();
+			var ctrl = r.Controller(c => new TestController(c));
+			var foo = ctrl.Handles("/meh").UsingModel(c=>"foo");
+			Assert.IsTrue(foo is IControllerRoute<TestController, string>);
 		}
 	}
 }

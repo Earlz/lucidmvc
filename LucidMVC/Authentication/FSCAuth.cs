@@ -38,7 +38,7 @@ using System.Security;
 namespace Earlz.LucidMVC.Authentication.Experimental
 {
     /// <summary>
-    /// The main FSCAuth class. It is purely static.
+    /// The main FSCAuth class
     /// </summary>
     /// <remarks>
     /// To opt-in for authentication, all that is needed is an IUserStore to be made and SiteName initialized.
@@ -120,7 +120,7 @@ namespace Earlz.LucidMVC.Authentication.Experimental
 		public FSCAuthConfig Config{get; private set;}
 		public IServerContext Server{get;private set;}
 		static bool SupportsUnmanagedCrypto;
-static FSCAuth(){
+		static FSCAuth(){
             try
             {
                 SupportsUnmanagedCrypto=true;
