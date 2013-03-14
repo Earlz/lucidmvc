@@ -27,10 +27,6 @@ namespace Earlz.LucidMVC
 		/// </summary>
 		IList<string> GetHeaders(string name);
 
-		/// <summary>
-		/// Gets or sets the HTTP status code
-		/// </summary>
-		string HttpStatus{get;set;}
 
 		/// <summary>
 		/// Gets the URL of the current request
@@ -54,6 +50,11 @@ namespace Earlz.LucidMVC
 		/// Sets a cookie to send with the current response
 		/// </summary>
 		void SetCookie(HttpCookie cookie);
+
+		/// <summary>
+		/// Gets or sets the HTTP status code
+		/// </summary>
+		string HttpStatus{get;set;}
 
 		/// <summary>
 		/// Sets an HTTP header to be sent back in the response to the current request
