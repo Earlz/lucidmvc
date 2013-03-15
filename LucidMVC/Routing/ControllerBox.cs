@@ -69,6 +69,7 @@ namespace Earlz.LucidMVC
 			get;
 			set;
 		}
+		Action<RequestContext, MODEL> ModelPopulator;
 		/// <summary>
 		/// The current route we're messing with for the Fluent API
 		/// </summary>
@@ -118,6 +119,10 @@ namespace Earlz.LucidMVC
 				if(ModelCreator!=null)
 				{
 					var model=ModelCreator(controller);
+					if(ModelPopulator!=null)
+					{
+						ModelPopulator(c, model);
+					}
 					foreach(var check in ModelRequirements)
 					{
 						if(!check(model))
@@ -206,7 +211,11 @@ namespace Earlz.LucidMVC
 		}
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromRoute()
 		{
-			throw new NotImplementedException();
+			ModelPopulator += (r, m) =>
+			{
+				r.RouteParams.Fill(m);
+			};
+			return this;
 		}
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromQueryString()
 		{

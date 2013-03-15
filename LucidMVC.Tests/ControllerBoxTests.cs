@@ -261,6 +261,22 @@ namespace Earlz.LucidMVC.Tests
 			Assert.AreNotEqual(null, view);
 			Assert.IsFalse(skip);
 		}
+		[Test]
+		public void FromRoute_Should_Populate_Model()
+		{
+			var r = new Router();
+			var ctrl = r.Controller(c => new TestController(c));
+			var foo = ctrl.Handles("/foo").
+				UsingModel(c => new TestModel()).
+				FromRoute().
+				With((c, m) => c.TestWithModel(m));
+			bool skip = false;
+			var routeparams=new ParameterDictionary();
+			routeparams.Add("Foo", new string[]{"bar"});
+			var view=foo.Current.Responder(
+				new RequestContext(null, null, null, routeparams), ref skip);
+			Assert.AreEqual("foobar", view.ToString());
+		}
 	}
 }
 

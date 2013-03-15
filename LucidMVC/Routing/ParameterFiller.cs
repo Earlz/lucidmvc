@@ -74,6 +74,8 @@ namespace Earlz.LucidMVC
     public class ParameterFiller<T>
     {
         //because this is always deterministic, the cache is extremely simple without a need to ever clear.
+		//to clarify, this will never "grow" more than the amount of types you use at compile-time with it
+		//(which should be negligble unless you're doing some crazy reflection stuff)
         static Dictionary<Type, HashSet<ParameterCacheObject<T>>> Cache=new Dictionary<Type, HashSet<ParameterCacheObject<T>>>();
         ParameterDictionary Values;
         public T Target{get{return target_;}}
