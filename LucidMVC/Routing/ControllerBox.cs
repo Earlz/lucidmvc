@@ -207,7 +207,11 @@ namespace Earlz.LucidMVC
 		}
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromForm()
 		{
-			throw new NotImplementedException();
+			ModelPopulator += (r, m) =>
+			{
+				r.Context.Form.Fill(m);
+			};
+			return this;
 		}
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromRoute()
 		{

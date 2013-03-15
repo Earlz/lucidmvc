@@ -25,12 +25,13 @@ namespace Earlz.LucidMVC.Tests
 			}
 			public ILucidView TestWithModel(TestModel model)
 			{
-				return new WrapperView("foo" + model.Foo);
+				return new WrapperView("foo" + model.Foo+(model.Bar ?? ""));
 			}
 		}
 		class TestModel
 		{
 			public string Foo{ get; set; }
+			public string Bar{ get; set; }
 		}
 		[SetUp]
 		public void SetUp()
@@ -276,6 +277,27 @@ namespace Earlz.LucidMVC.Tests
 			var view=foo.Current.Responder(
 				new RequestContext(null, null, null, routeparams), ref skip);
 			Assert.AreEqual("foobar", view.ToString());
+		}
+		[Test]
+		public void FromXXX_Should_Populate_Model_In_An_Additive_Manner()
+		{
+			var r = new Router();
+			var ctrl = r.Controller(c => new TestController(c));
+			var foo = ctrl.Handles("/foo").
+				UsingModel(c => new TestModel()).
+				FromForm().
+				FromRoute().
+				With((c, m) => c.TestWithModel(m));
+			bool skip = false;
+			var formparams=new ParameterDictionary();
+			formparams.Add("Foo", new string[]{"bar"});
+			var context = new FakeServerContext();
+			context.Form = formparams;
+			var routeparams = new ParameterDictionary();
+			routeparams.Add("Bar", new string[]{"baz"});
+			var view=foo.Current.Responder(
+				new RequestContext(context, null, null, routeparams), ref skip);
+			Assert.AreEqual("foobarbaz", view.ToString());
 		}
 	}
 }
