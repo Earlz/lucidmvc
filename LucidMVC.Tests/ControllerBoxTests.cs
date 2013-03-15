@@ -232,7 +232,34 @@ namespace Earlz.LucidMVC.Tests
 			var view=foo.Current.Responder(
 				new RequestContext(null, null, null, null), ref trash);
 			Assert.AreEqual("foobar", view.ToString());
-
+		}
+		[Test]
+		public void When_Should_Skip_Incorrect_Models()
+		{
+			var r = new Router();
+			var ctrl = r.Controller(c => new TestController(c));
+			var foo = ctrl.Handles("/foo").UsingModel(
+				c => new TestModel(){Foo="bar"}).With((c, m) => c.TestWithModel(m))
+				.When(m => m.Foo == "foo");
+			bool skip = false;
+			var view=foo.Current.Responder(
+				new RequestContext(null, null, null, null), ref skip);
+			Assert.AreEqual(null, view);
+			Assert.IsTrue(skip);
+		}
+		[Test]
+		public void When_Should_Not_Skip_Correct_Models()
+		{
+			var r = new Router();
+			var ctrl = r.Controller(c => new TestController(c));
+			var foo = ctrl.Handles("/foo").UsingModel(
+				c => new TestModel(){Foo="bar"}).With((c, m) => c.TestWithModel(m))
+				.When(m => m.Foo == "bar");
+			bool skip = false;
+			var view=foo.Current.Responder(
+				new RequestContext(null, null, null, null), ref skip);
+			Assert.AreNotEqual(null, view);
+			Assert.IsFalse(skip);
 		}
 	}
 }

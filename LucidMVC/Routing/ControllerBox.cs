@@ -9,7 +9,7 @@ namespace Earlz.LucidMVC
 	public delegate ILucidView ControllerInvokerWithModel<T, M>(T controller, M model);
 	public delegate ILucidView ControllerResponse(RequestContext context, ref bool skip);
 	public delegate bool ControllerRequires<T>(T controller);
-
+	public delegate bool ModelRequires<M>(M model);
 	public delegate bool RouteParamsMustMatch(ParameterDictionary param);
 
 	public interface IControllerRoute<T, MODEL>
@@ -27,7 +27,7 @@ namespace Earlz.LucidMVC
 		IControllerRoute<T, MODEL> FromForm();
 		IControllerRoute<T, MODEL> FromRoute();
 		IControllerRoute<T, MODEL> FromQueryString();
-		IControllerRoute<T, MODEL> When(Func<MODEL, bool> whenlike);
+		IControllerRoute<T, MODEL> When(ModelRequires<MODEL> whenlike);
 		Route Current{get;}
 	}
 
@@ -115,15 +115,25 @@ namespace Earlz.LucidMVC
 						return null;
 					}
 				}
-				if(invoker!=null)
+				if(ModelCreator!=null)
 				{
-					return invoker(controller);
+					var model=ModelCreator(controller);
+					foreach(var check in ModelRequirements)
+					{
+						if(!check(model))
+						{
+							skip=true;
+							return null;
+						}
+					}
+					return withmodel(controller, model);
 				}
-				return withmodel(controller, ModelCreator(controller));
+				return invoker(controller);
 			};
 		}
 
 		List<ControllerRequires<T>> ControllerRequirements=new List<ControllerRequires<T>>();
+		List<ModelRequires<MODEL>> ModelRequirements=new List<ModelRequires<MODEL>>();
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.With (ControllerInvoker<T> invoker)
 		{
 			GenerateResponder(invoker, null);
@@ -202,9 +212,10 @@ namespace Earlz.LucidMVC
 		{
 			throw new NotImplementedException();
 		}
-		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.When(Func<MODEL, bool> whenlike)
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.When(ModelRequires<MODEL> whenlike)
 		{
-			throw new NotImplementedException();
+			ModelRequirements.Add(whenlike);
+			return this;
 		}
 
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.With(ControllerInvokerWithModel<T, MODEL> invoker)
