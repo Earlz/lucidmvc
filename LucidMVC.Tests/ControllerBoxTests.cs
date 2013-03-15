@@ -23,8 +23,15 @@ namespace Earlz.LucidMVC.Tests
 			{
 				return new WrapperView("foo");
 			}
+			public ILucidView TestWithModel(TestModel model)
+			{
+				return new WrapperView("foo" + model.Foo);
+			}
 		}
-
+		class TestModel
+		{
+			public string Foo{ get; set; }
+		}
 		[SetUp]
 		public void SetUp()
 		{
@@ -206,14 +213,26 @@ namespace Earlz.LucidMVC.Tests
 			var tmp=ctrl.Handles("index").With((c) => c.Test());
 			Assert.IsTrue(tmp.Current.Pattern.Match("/foo/index").IsMatch);
 		}
-		[Ignore]
 		[Test]
-		public void WithModel_Should_Use_New_Model()
+		public void UsingModel_Should_Use_New_Model()
 		{
 			var r = new Router();
 			var ctrl = r.Controller(c => new TestController(c));
 			var foo = ctrl.Handles("/meh").UsingModel(c=>"foo");
 			Assert.IsTrue(foo is IControllerRoute<TestController, string>);
+		}
+		[Test]
+		public void With_Using_Model_Should_Use_Correct_Model()
+		{
+			var r = new Router();
+			var ctrl = r.Controller(c => new TestController(c));
+			var foo = ctrl.Handles("/foo").UsingModel(
+				c => new TestModel(){Foo="bar"}).With((c, m) => c.TestWithModel(m));
+			bool trash = false;
+			var view=foo.Current.Responder(
+				new RequestContext(null, null, null, null), ref trash);
+			Assert.AreEqual("foobar", view.ToString());
+
 		}
 	}
 }

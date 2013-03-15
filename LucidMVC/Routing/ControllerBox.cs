@@ -6,6 +6,7 @@ namespace Earlz.LucidMVC
 {
 	public delegate T ControllerCreator<T>(RequestContext context);
 	public delegate ILucidView ControllerInvoker<T>(T controller);
+	public delegate ILucidView ControllerInvokerWithModel<T, M>(T controller, M model);
 	public delegate ILucidView ControllerResponse(RequestContext context, ref bool skip);
 	public delegate bool ControllerRequires<T>(T controller);
 
@@ -14,6 +15,7 @@ namespace Earlz.LucidMVC
 	public interface IControllerRoute<T, MODEL>
 	{
 		IControllerRoute<T, MODEL> With(ControllerInvoker<T> invoker);
+		IControllerRoute<T, MODEL> With(ControllerInvokerWithModel<T, MODEL> invoker);
 		IControllerRoute<T, MODEL> Allows(string httpmethod);
 		IControllerRoute<T, MODEL> RequiresAuthentication();
 		IControllerRoute<T, MODEL> Requires(ControllerRequires<T> requires);
@@ -53,6 +55,20 @@ namespace Earlz.LucidMVC
 			Creator=creator;
 			Root=root;
 		}
+		protected ControllerBox(Router r, ControllerCreator<T> creator, string root, Route current,
+		                        Func<T, MODEL> model)
+		{
+			Router = r;
+			Creator = creator;
+			Root = root;
+			Current = current;
+			ModelCreator = model;
+		}
+		public Func<T, MODEL> ModelCreator
+		{
+			get;
+			set;
+		}
 		/// <summary>
 		/// The current route we're messing with for the Fluent API
 		/// </summary>
@@ -84,8 +100,9 @@ namespace Earlz.LucidMVC
 			ControllerRequirements=new List<ControllerRequires<T>>(); //new up requirements list
 			return this;
 		}
-		List<ControllerRequires<T>> ControllerRequirements=new List<ControllerRequires<T>>();
-		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.With (ControllerInvoker<T> invoker)
+
+		void GenerateResponder(ControllerInvoker<T> invoker, 
+		                       ControllerInvokerWithModel<T, MODEL> withmodel)
 		{
 			Current.Responder = (RequestContext c, ref bool skip) =>
 			{
@@ -98,8 +115,18 @@ namespace Earlz.LucidMVC
 						return null;
 					}
 				}
-				return invoker(controller);
+				if(invoker!=null)
+				{
+					return invoker(controller);
+				}
+				return withmodel(controller, ModelCreator(controller));
 			};
+		}
+
+		List<ControllerRequires<T>> ControllerRequirements=new List<ControllerRequires<T>>();
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.With (ControllerInvoker<T> invoker)
+		{
+			GenerateResponder(invoker, null);
 			return this;
 		}
 
@@ -161,7 +188,7 @@ namespace Earlz.LucidMVC
 		}
 		IControllerRoute<T, NEW> IControllerRoute<T, MODEL>.UsingModel<NEW>(Func<T, NEW> creator)
 		{
-			throw new NotImplementedException();
+			return new ControllerBox<T, NEW>(Router, Creator, Root, Current, creator);
 		}
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.FromForm()
 		{
@@ -179,6 +206,13 @@ namespace Earlz.LucidMVC
 		{
 			throw new NotImplementedException();
 		}
+
+		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.With(ControllerInvokerWithModel<T, MODEL> invoker)
+		{
+			GenerateResponder(null, invoker);
+			return this;
+		}
+
 	}
 }
 
