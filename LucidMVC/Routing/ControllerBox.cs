@@ -14,19 +14,84 @@ namespace Earlz.LucidMVC
 
 	public interface IControllerRoute<T, MODEL>
 	{
+		/// <summary>
+		/// Handle the current route with the specified method on the controller
+		/// In general, this should usually be the last "word" of the statement
+		/// </summary>
+		/// <param name="invoker">Invoker.</param>
 		IControllerRoute<T, MODEL> With(ControllerInvoker<T> invoker);
+		/// <summary>
+		/// Handle the current route with the specified method on the controller using a model 
+		/// In general, this should usually be the last "word" of the statement
+		/// </summary>
+		/// <param name="invoker">Invoker.</param>
 		IControllerRoute<T, MODEL> With(ControllerInvokerWithModel<T, MODEL> invoker);
+		/// <summary>
+		/// Specify the allowed HTTP method (GET is allowed by default).
+		/// Can be called multiple times for multiple methods.
+		/// Is case insensitive.
+		/// </summary>
+		/// <param name="httpmethod">Httpmethod.</param>
 		IControllerRoute<T, MODEL> Allows(string httpmethod);
+		/// <summary>
+		/// The current route requires authentication
+		/// </summary>
+		/// <returns>The authentication.</returns>
 		IControllerRoute<T, MODEL> RequiresAuthentication();
+		/// <summary>
+		/// The current route requires the Controller to be in a specified state
+		/// </summary>
+		/// <param name="requires">Requires.</param>
 		IControllerRoute<T, MODEL> Requires(ControllerRequires<T> requires);
+		/// <summary>
+		/// Also execute this delegate when the route is requested
+		/// (useful for logging and analytics)
+		/// </summary>
+		/// <returns>The execute.</returns>
+		/// <param name="action">Action.</param>
 		IControllerRoute<T, MODEL> AlsoExecute(Action<T> action);
+		/// <summary>
+		/// 
+		/// </summary>
 		IControllerRoute<T, MODEL> WithRouteParamLike(string param, Func<string, bool> match);
 		IControllerRoute<T, MODEL> WithRouteParamsLike(RouteParamsMustMatch matcher);
+		/// <summary>
+		/// Use the specified model
+		/// Can only be used if the model has a public default constructor
+		/// </summary>
+		/// <returns>The model.</returns>
+		/// <typeparam name="NEW">The 1st type parameter.</typeparam>
 		IControllerRoute<T, NEW> UsingModel<NEW>();
+		/// <summary>
+		/// Use the delegate to generate an appropriate model 
+		/// (which can later be populated by FromRoute and friends)
+		/// </summary>
+		/// <returns>The model.</returns>
+		/// <param name="creator">Creator.</param>
+		/// <typeparam name="NEW">The 1st type parameter.</typeparam>
 		IControllerRoute<T, NEW> UsingModel<NEW>(Func<T, NEW> creator);
+		/// <summary>
+		/// Populate the model from passed in HTTP FORM values
+		/// Unspecified values won't be modified
+		/// </summary>
+		/// <returns>The form.</returns>
 		IControllerRoute<T, MODEL> FromForm();
+		/// <summary>
+		/// Populate the model from passed in Route parameter values
+		/// Unspecified values won't be modified
+		/// </summary>
+		/// <returns>The route.</returns>
 		IControllerRoute<T, MODEL> FromRoute();
+		/// <summary>
+		/// Populate the model from passed in query string values
+		/// Unspecified values won't be modified
+		/// </summary>
+		/// <returns>The query string.</returns>
 		IControllerRoute<T, MODEL> FromQueryString();
+		/// <summary>
+		/// The model for this route must be in this particular state to not be skipped.
+		/// </summary>
+		/// <param name="whenlike">Whenlike.</param>
 		IControllerRoute<T, MODEL> When(ModelRequires<MODEL> whenlike);
 		Route Current{get;}
 	}
