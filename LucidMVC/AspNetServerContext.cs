@@ -142,6 +142,22 @@ namespace Earlz.LucidMVC
 				return HttpContext.Current.Response.Output;
 			}
 		}
+		string barepost=null;
+		public string BarePost
+		{
+			get
+			{
+				if(barepost==null)
+				{
+
+				    using (StreamReader sr = new StreamReader(HttpContext.Current.Request.InputStream))
+				    {
+						barepost=sr.ReadToEnd();
+			    	}
+				}
+				return barepost ?? "";;
+			}
+		}
 
 		public AspNetServerContext ()
 		{

@@ -38,6 +38,8 @@ namespace Earlz.LucidMVC
 		/// </summary>
 		ParameterDictionary Form{get;}
 
+		string BarePost{get;}
+
 		/// <summary>
 		/// The HTTP method for the request
 		/// </summary>

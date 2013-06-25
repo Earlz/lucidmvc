@@ -117,6 +117,13 @@ namespace Earlz.LucidMVC.Tests
 		{
 			return ((StringWriter)Writer).GetStringBuilder().ToString();
 		}
+		public string BarePost
+		{
+			get
+			{
+				return null;
+			}
+		}
 
 		public FakeServerContext ()
 		{

@@ -136,6 +136,7 @@ namespace Earlz.LucidMVC.ViewEngine.Internal
         }
         void Init(string text,string name,ViewConfiguration config)
 		{
+			Accessibility="public";
 			GeneratedInterface=new InterfaceGenerator();
 			AutoInterfaces=config.AutoInterfaces;
 			DefaultBaseClass=config.BaseClass;
