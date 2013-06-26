@@ -308,6 +308,7 @@ namespace Earlz.LucidMVC.ViewEngine.Internal
             ");
             return end+=3;
         }
+		string Initializations="";
         int ParseKeyword(int start){
             int end=Input.Substring(start+1).IndexOf("!}");
             if(end==-1){
@@ -323,6 +324,9 @@ namespace Earlz.LucidMVC.ViewEngine.Internal
                 keyword=block.Substring(0,stop);
             }
             switch(keyword){
+				case "init":
+					Initializations+=block.Substring(stop+1);
+				break;
                 case "base":
                     BaseClass=block.Substring(stop+1);
                 break;
@@ -527,7 +531,7 @@ namespace Earlz.LucidMVC.ViewEngine.Internal
 
             var m=new Method();
             m.Name="BuildOutput";
-            m.Body=viewbody;
+            m.Body=Initializations+" "+viewbody;
             Methods.Add(m);
 
             m=new Method();
