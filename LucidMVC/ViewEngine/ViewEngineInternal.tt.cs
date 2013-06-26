@@ -531,7 +531,7 @@ namespace Earlz.LucidMVC.ViewEngine.Internal
 
             var m=new Method();
             m.Name="BuildOutput";
-            m.Body=Initializations+" "+viewbody;
+            m.Body=viewbody;
             Methods.Add(m);
 
             m=new Method();
@@ -576,7 +576,7 @@ namespace Earlz.LucidMVC.ViewEngine.Internal
             m.ReturnType="void";
 			m.Params.Add(new MethodParam{Name="outputStream", Type="System.IO.TextWriter"});
             m.Name="RenderView";
-            m.Body=
+            m.Body=Initializations+
 @"
 	__Writer=outputStream;
 	if(Layout==null){
