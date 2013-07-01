@@ -1,6 +1,0 @@
-syntax: glob
-*/bin/*
-*.userprefs
-test-results/*
-*.orig
-
