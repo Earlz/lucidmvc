@@ -4,7 +4,7 @@ using Moq;
 using System.Web;
 using Earlz.LucidMVC.Authentication;
 using System.Collections.Generic;
-using Earlz.LucidMVC.Authentication.Experimental;
+using Earlz.LucidMVC.Unstable.Authentication;
 
 namespace Earlz.LucidMVC.Tests.Extensions.ServerMocking
 {

@@ -34,8 +34,9 @@ using System.Diagnostics;
 using System.Configuration;
 using System.Web.Security;
 using System.Security;
+using Earlz.LucidMVC.Authentication;
 
-namespace Earlz.LucidMVC.Authentication.Experimental
+namespace Earlz.LucidMVC.Unstable.Authentication
 {
     /// <summary>
     /// The main FSCAuth class

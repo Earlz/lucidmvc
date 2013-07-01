@@ -7,7 +7,7 @@ using System.Web;
 using System.Collections.Generic;
 using Earlz.LucidMVC.Tests.Extensions.ServerMocking;
 using System.Linq;
-using Earlz.LucidMVC.Authentication.Experimental;
+using Earlz.LucidMVC.Unstable.Authentication;
 
 namespace Earlz.LucidMVC.Tests
 {
