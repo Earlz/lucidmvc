@@ -76,6 +76,5 @@ Platforms:
 
 As the API stabilizes, I'll be providing more and more samples. For a large up-to-date(usually) sample though you can view my blog's source code at https://bitbucket.org/earlz/lastyearswishes
 
-Source can be downloaded or forked via Mercurial
 
-* Mercurial@bitbucket: https://bitbucket.org/earlz/Lucidmvc
+
