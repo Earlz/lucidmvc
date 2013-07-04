@@ -68,6 +68,8 @@ namespace Earlz.LucidMVC
 		/// </summary>
 		TextWriter Writer{get;}
 
+		Stream WriterStream{get;}
+
 		/// <summary>
 		/// The HTTP Content-Type header value to be sent back with the response
 		/// </summary>

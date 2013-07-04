@@ -142,6 +142,13 @@ namespace Earlz.LucidMVC
 				return HttpContext.Current.Response.Output;
 			}
 		}
+		public Stream WriterStream
+		{
+			get
+			{
+				return HttpContext.Current.Response.OutputStream;
+			}
+		}
 		string barepost=null;
 		public string BarePost
 		{

@@ -124,6 +124,13 @@ namespace Earlz.LucidMVC.Tests
 				return null;
 			}
 		}
+		public Stream WriterStream
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
 
 		public FakeServerContext ()
 		{

@@ -58,6 +58,12 @@ namespace Earlz.LucidMVC.ViewEngine
 			outputStream.Write(Text);
         }
     }
+	public class NullView : LucidViewBase
+	{
+        public override void RenderView(TextWriter outputStream)
+        {
+        }
+	}
 	public abstract class LucidViewBase : Earlz.LucidMVC.ViewEngine.ILucidView{ /*This is needed because we have to make a function overridden and to provide a useful ToString implementation */
 		public IRouter Router{get;set;}
 		public Route CurrentRoute{get;set;}
