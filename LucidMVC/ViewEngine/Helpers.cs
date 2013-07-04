@@ -39,6 +39,7 @@ namespace Earlz.LucidMVC.ViewEngine
     public interface ILucidView
     {
         void RenderView(TextWriter outputStream);
+
         string Flash{get;set;}
     }
     /// <summary>

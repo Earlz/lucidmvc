@@ -52,15 +52,11 @@ namespace Earlz.LucidMVC
     public class Router
     {
 
-		static Router()
-		{
-			GetCacher=() => new ASPCacheMechanism(); //default to ASP.Net
-		}
 		/// <summary>
 		/// Gets a new or existing ICacheMechanism
 		/// Defaults to getting a new ASPCacheMechanism
 		/// </summary>
-		public static CacheMechanismRetriever GetCacher
+		public CacheMechanismRetriever GetCacher
 		{
 			get;
 			set;
@@ -76,6 +72,7 @@ namespace Earlz.LucidMVC
 		}
 		public Router()
 		{
+			GetCacher=() => new ASPCacheMechanism(); //default to ASP.Net
 			Routes=new List<Route>();
 		}
 		public virtual void AddRoute(Route r)
@@ -119,102 +116,7 @@ namespace Earlz.LucidMVC
 			}
 			return false;
 		}
-
-
-        /// <summary>
-        /// Adds a route to the router
-        /// </summary>
-		/// 
-		/*
-        public void AddRoute<T>(HttpMethod method, string pattern, HandlerCreator<T> creator, HandlerInvoker<T> invoker) where T:HttpHandl
-        {
-            //var r=new Route{Pattern=new SimplePattern(pattern), Invoker=handler, ID=id, Method=method};
-            //Routes.Add(r);
-        }*/
-		/*
-        public void AddRoute(string id,HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
-        {
-            var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method};
-            Routes.Add(r);
-        }
-		/// <summary>
-		/// Adds a route to the router which requires authentication
-		/// </summary>
-		public void AddSecureRoute(string id, HttpMethod method, IPatternMatcher pattern, HandlerInvoker handler)
-		{
-			var r=new Route{Pattern=pattern, ID=id, Invoker=handler, Method=method, Secure=true};
-			Routes.Add(r);
-		}
-		public void AddSecureRoute(string id, HttpMethod method, string pattern, HandlerInvoker invoker)
-		{
-			var r=new Route{Pattern=new SimplePattern(pattern), Invoker=invoker, ID=id, Method=method, Secure=true};
-			Routes.Add(r);
-		}
-        */
-        void DoHandler (Route r,IServerContext c,ParameterDictionary p)
-        {
-			/*
-            HttpHandler.RouteRequest=r;
-            HttpHandler.Method=c.SaneHttpMethod();
-            HttpHandler.RawRouteParams=p;
-
-            CallMethod(c, r.Invoker);
-            */
-        }
-		/*
-        /// <summary>
-        /// Handles the current request
-        /// </summary>
-        public bool DoRoute(IServerContext c){
-			bool foundwrongmethod=false;
-            foreach(var r in Routes){
-                if(r.Pattern.IsMatch(c.RequestUrl.AbsolutePath))
-                {
-                    var m=c.SaneHttpMethod();
-                    if(r.Method == HttpMethod.Any || m==r.Method || 
-                       (r.Method==HttpMethod.Get && m==HttpMethod.Head))
-                    {
-
-						if(r.Secure)
-						{
-							FSCAuth.RequiresLogin();
-						}
-                        DoHandler(r, c, r.Pattern.Params);
-                        return true;
-                    }else
-					{
-						foundwrongmethod=true;
-					}
-                }
-            }
-			if(foundwrongmethod)
-			{
-				throw new HttpException(405, "Method not allowed");;
-			}
-            return false;
-        }
-
-        void CallMethod<T>(IServerContext context, HandlerInvoker<T> invoker) where T:HttpController 
-		{
-			ILucidView view=invoker(null);//HttpHandler.RawRouteParams, HttpHandler.Form.ToParameters());
-            int length=0;
-            var r=context.Writer;
-            if(view!=null){
-                //even if "directly-rendered", if ignoring the view, it won't really be rendered
-                var s=view.RenderView();
-                
-                length+=s.Length;
-                
-                if(!view.RenderedDirectly){
-                    r.Write(s);
-                }
-            }
-                
-        }
-        */
-        
-    }
-
+	}
 
 	/*example fluent API usage:
 	 * 
@@ -242,7 +144,6 @@ namespace Earlz.LucidMVC
 	 * */
 
 }
-
 
 
 

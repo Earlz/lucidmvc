@@ -49,7 +49,7 @@ namespace Earlz.LucidMVC
 			RouteRequest=context.Route;
 			RouteParams=context.RouteParams;
 			CurrentRouter=context.Router;
-			Cache=Router.GetCacher();
+			Cache=CurrentRouter.GetCacher();
         }
 		public virtual ICacheMechanism Cache
 		{
