@@ -49,17 +49,16 @@ namespace Earlz.LucidMVC
 			RouteRequest=context.Route;
 			RouteParams=context.RouteParams;
 			CurrentRouter=context.Router;
-			Cache=CurrentRouter.GetCacher();
+			if(CurrentRouter!=null)
+			{
+				Cache=CurrentRouter.GetCacher();
+			}
         }
 		public virtual ICacheMechanism Cache
 		{
 			get;
 			protected set;
 		}
-        /**Writes to the output stream**/
-        public virtual void Write(string s){
-			Context.Writer.Write(s);
-        }
         /// <summary>
         /// The current ServerContext
         /// </summary>

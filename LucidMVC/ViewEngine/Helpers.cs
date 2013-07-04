@@ -39,7 +39,8 @@ namespace Earlz.LucidMVC.ViewEngine
     public interface ILucidView
     {
         void RenderView(TextWriter outputStream);
-
+		IRouter Router{get;set;}
+		Route CurrentRoute{get;set;}
         string Flash{get;set;}
     }
     /// <summary>
@@ -58,6 +59,8 @@ namespace Earlz.LucidMVC.ViewEngine
         }
     }
 	public abstract class LucidViewBase : Earlz.LucidMVC.ViewEngine.ILucidView{ /*This is needed because we have to make a function overridden and to provide a useful ToString implementation */
+		public IRouter Router{get;set;}
+		public Route CurrentRoute{get;set;}
         public virtual void RenderView(TextWriter outputStream){throw new NotImplementedException();}
         public override string ToString()
 		{

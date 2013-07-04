@@ -24,7 +24,7 @@ namespace Earlz.LucidMVC.Tests
 			context.RequestUrl=new Uri("http://foo.bar/home");
 			context.HttpMethod="get";
 			router.Execute(context);
-			Assert.AreEqual("mehfoobar", context.WrittenText());
+			Assert.AreEqual("foobar", context.WrittenText());
 		}
 
 		class HomeView : LucidViewBase
@@ -46,7 +46,6 @@ namespace Earlz.LucidMVC.Tests
 				Assert.IsNotNull(this.Context);
 				Assert.IsNotNull(this.RouteParams);
 				Assert.IsNotNull(this.RouteRequest);
-				Write("meh");
 				return new HomeView(){Name="foo", Foo="bar"};
 			}
 		}

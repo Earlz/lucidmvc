@@ -46,10 +46,25 @@ namespace Earlz.LucidMVC
 	public delegate ILucidView HandlerInvoker<T>(T httphandler) where T:HttpController;
 	public delegate T HandlerCreator<T>(Router r) where T:HttpController;
 	public delegate ICacheMechanism CacheMechanismRetriever();
+	public interface IRouter
+	{
 
+		/// <summary>
+		/// Gets a new or existing ICacheMechanism
+		/// Defaults to getting a new ASPCacheMechanism
+		/// </summary>
+		CacheMechanismRetriever GetCacher{get;set;}
+		Route[] GetRoutes();
+		void AddRoute(Route r);
+		ControllerBox<T, object> Controller<T>(ControllerCreator<T> creator) where T:HttpController;
+		ControllerBox<T, object> Controller<T>(ControllerCreator<T> creator, string root) where T:HttpController;
+
+
+		bool Execute(IServerContext context);
+	}
     /**The routing engine of EFramework.
      * This is a simple, but powerful router utilizing simple route pattern matching and lambdas for initializing the HttpHandler for a request.**/
-    public class Router
+    public class Router : IRouter
     {
 
 		/// <summary>
