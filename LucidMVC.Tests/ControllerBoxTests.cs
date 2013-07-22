@@ -15,7 +15,7 @@ namespace Earlz.LucidMVC.Tests
 	{
 		class TestController : HttpController
 		{
-			public TestController(RequestContext c, IAuthMechanism auth=null) : base(c)
+			public TestController(RequestContext c, IAuthMechanism auth=null)
 			{
 				Authentication=auth;
 			}

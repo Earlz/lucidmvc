@@ -12,7 +12,7 @@ namespace Earlz.LucidMVC.Tests
 	{
 		class TestController : HttpController
 		{
-			public TestController(RequestContext c) : base(c)
+			public TestController()
 			{
 			}
 			public ILucidView Tester()
@@ -24,7 +24,7 @@ namespace Earlz.LucidMVC.Tests
 		public void Controller_LinksToThis()
 		{
 			var router=new Router();
-			var controller=router.Controller((c) => new TestController(c));
+			var controller=router.Controller((c) => new TestController());
 			Assert.AreEqual(router, controller.Router);
 		}
 		[Test]

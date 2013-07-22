@@ -173,6 +173,7 @@ namespace Earlz.LucidMVC
 			Current.Responder = (RequestContext c, ref bool skip) =>
 			{
 				var controller=Creator(c);
+				controller.Initialize(c);
 				foreach(var check in ControllerRequirements)
 				{
 					if(!check(controller))

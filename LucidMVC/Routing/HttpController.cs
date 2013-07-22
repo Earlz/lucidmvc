@@ -43,17 +43,20 @@ namespace Earlz.LucidMVC
      */
     public abstract class HttpController
     {
-        public HttpController (RequestContext context)
-        {
-			Context=context.Context;
-			RouteRequest=context.Route;
-			RouteParams=context.RouteParams;
-			CurrentRouter=context.Router;
-			if(CurrentRouter!=null)
+		public virtual void Initialize(RequestContext context)
+		{
+			if(context!=null)
 			{
-				Cache=CurrentRouter.GetCacher();
+				Context=context.Context;
+				RouteRequest=context.Route;
+				RouteParams=context.RouteParams;
+				CurrentRouter=context.Router;
+				if(CurrentRouter!=null)
+				{
+					Cache=CurrentRouter.GetCacher();
+				}
 			}
-        }
+		}
 		public virtual ICacheMechanism Cache
 		{
 			get;

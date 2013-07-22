@@ -33,7 +33,7 @@ namespace Earlz.LucidMVC
 {
     public class RedirectController : HttpController
     {
-		public RedirectController(RequestContext request) : base(request)
+		public RedirectController()
 		{
 		}
 		public ILucidView Redirect(string url)

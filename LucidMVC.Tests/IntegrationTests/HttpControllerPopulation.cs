@@ -18,7 +18,7 @@ namespace Earlz.LucidMVC.Tests
 		public void ControllerGetsPopulated()
 		{
 			var router=new Router();
-			var home=router.Controller(c => new HomeController(c));
+			var home=router.Controller(c => new HomeController());
 			home.Handles("/home").With(x=>x.GetHome());
 			var context=new FakeServerContext();
 			context.RequestUrl=new Uri("http://foo.bar/home");
@@ -40,7 +40,6 @@ namespace Earlz.LucidMVC.Tests
 
 		class HomeController : HttpController
 		{
-			public HomeController(RequestContext c) : base(c){}
 			public ILucidView GetHome()
 			{
 				Assert.IsNotNull(this.Context);
