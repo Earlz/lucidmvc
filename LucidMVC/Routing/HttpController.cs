@@ -41,7 +41,7 @@ namespace Earlz.LucidMVC
     /**The base class used to handle HTTP requests.
      * This class should be derived from for every different handler for HTTP requests.
      */
-    public abstract class HttpController
+    public abstract class HttpController : IDisposable
     {
         public HttpController (RequestContext context)
         {
@@ -60,6 +60,11 @@ namespace Earlz.LucidMVC
         public virtual void Write(string s){
 			Context.Writer.Write(s);
         }
+
+        public virtual void Dispose()
+        {
+        }
+
         /// <summary>
         /// The current ServerContext
         /// </summary>
@@ -111,6 +116,7 @@ namespace Earlz.LucidMVC
 				return Authentication.CurrentUser;
 			}
 		}
+        
 	}
 
 

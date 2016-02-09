@@ -172,33 +172,40 @@ namespace Earlz.LucidMVC
 		{
 			Current.Responder = (RequestContext c, ref bool skip) =>
 			{
-				var controller=Creator(c);
-				foreach(var check in ControllerRequirements)
-				{
-					if(!check(controller))
-					{
-						skip=true;
-						return null;
-					}
-				}
-				if(ModelCreator!=null)
-				{
-					var model=ModelCreator(controller);
-					if(ModelPopulator!=null)
-					{
-						ModelPopulator(c, model);
-					}
-					foreach(var check in ModelRequirements)
-					{
-						if(!check(model))
-						{
-							skip=true;
-							return null;
-						}
-					}
-					return withmodel(controller, model);
-				}
-				return invoker(controller);
+                using (var controller = Creator(c))
+                {
+                    foreach (var check in ControllerRequirements)
+                    {
+                        if (!check(controller))
+                        {
+                            skip = true;
+                            return null;
+                        }
+                    }
+                    ILucidView view;
+                    if (ModelCreator != null)
+                    {
+                        var model = ModelCreator(controller);
+                        if (ModelPopulator != null)
+                        {
+                            ModelPopulator(c, model);
+                        }
+                        foreach (var check in ModelRequirements)
+                        {
+                            if (!check(model))
+                            {
+                                skip = true;
+                                return null;
+                            }
+                        }
+                        view = withmodel(controller, model);
+                    }
+                    else
+                    {
+                        view = invoker(controller);
+                    }
+                    return view;
+                }
 			};
 		}
 
