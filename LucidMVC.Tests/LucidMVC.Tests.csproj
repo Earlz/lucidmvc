@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -62,20 +62,20 @@
     <Compile Include="utilities\FakeServerContext.cs" />
     <Compile Include="ViewEngineTests\ViewEngineTest.cs">
       <DependentUpon>ViewEngineTest.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="IntegrationTests\HttpControllerPopulation.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="utilities\" />
-    <Folder Include="Caching\" />
-    <Folder Include="ViewEngineTests\" />
-    <Folder Include="IntegrationTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="ViewEngineTests\ViewEngineTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ViewEngineTest.cs</LastGenOutput>
     </None>
     <None Include="ViewEngineTests\TestView.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
 </Project>

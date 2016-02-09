@@ -112,34 +112,6 @@ namespace Earlz.LucidMVC
 			}
 		}
 	}
-	/*
-	public delegate ILucidView TestFoo<T>(T handler) where T:HttpHandler;
-	public delegate T HandlerFoo<T>() where T:HttpHandler;
-
-	public class Foo
-	{
-		delegate ILucidView DoShit();
-		public static void AddRoute<T>(string name, HandlerFoo<T> handler, TestFoo<T> caller) where T:HttpHandler
-		{
-			DoShit del=()=>
-			{
-				var h=handler();
-				return caller(h);
-			};
-			tmp.Add(del);
-		}
-		static List<DoShit> tmp;
-		static List<HandlerFoo<HttpHandler>> list;
-		class TestHandler : HttpHandler
-		{
-			public ILucidView FooBar(){return null;}
-		}
-		public static void Test()
-		{
-			Foo.AddRoute("", ()=> new TestHandler(), (h)=>h.FooBar());
-		}
-	}
-	*/
 
 
 }

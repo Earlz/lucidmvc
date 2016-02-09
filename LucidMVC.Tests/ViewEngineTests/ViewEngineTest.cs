@@ -18,7 +18,7 @@ namespace Earlz.LucidMVC.TestViews{
         ///<summary>
         ///
         ///</summary>
-     class TestView: Earlz.LucidMVC.ViewEngine.LucidViewBase
+    public class TestView: Earlz.LucidMVC.ViewEngine.LucidViewBase
     {
                 ///<summary>
         ///
@@ -58,7 +58,8 @@ __Write(@"
                 
 __OutputVariable(__v);
 }
-__Write(@"");
+__Write(@"
+");
 
         }
          void __Init()
