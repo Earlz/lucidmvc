@@ -21,7 +21,6 @@ More awesomeness to come, but I'll only list things here which are "complete"
 LucidMVC has always been designed to be minimalist. Despite this, it has quite a few good parts
 
 * Powerful `SimplePattern` pattern matcher
-* Highly scaleable `FSCAuth` authentication system
 * Powerful `IServerContext` bridge meaning LucidMVC will eventually be portable to places other than ASP.Net.. and very easy to mock and test
 * Caching framework capable of transparently caching into places other than ASP.Net and ensuring generation of cache proxy classes is as concise as possible
 * Very effecient compile time T4 view engine. Misspell a property in a view and get a compiler error. No magical anonymous classes or dictionaries. Real properties in plain ol' classes
