@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Authentication\IAuthMechanism.cs" />
+    <Compile Include="Routing\ParameterLikeHelpers.cs" />
     <Compile Include="Routing\Routing.cs" />
     <Compile Include="Routing\SimplePattern.cs" />
     <Compile Include="Routing\Router.cs" />

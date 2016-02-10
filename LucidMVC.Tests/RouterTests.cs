@@ -4,6 +4,7 @@ using Earlz.LucidMVC;
 using Earlz.LucidMVC.ViewEngine;
 using Moq;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Earlz.LucidMVC.Tests
 {
@@ -118,6 +119,46 @@ namespace Earlz.LucidMVC.Tests
 			context.HttpMethod="get";
 			Assert.IsTrue(router.Execute(context));
 		}
+        [Test]
+        public void Execute_ChecksValidators()
+        {
+			var router=new Router();
+            var parameters = new ParameterDictionary();
+            parameters.Add("id", "1234");
+            var goodvalidators = new List<RouteParamsMustMatch>();
+            goodvalidators.Add(x => x["id"] == "1234");
+            var good = new Route
+            {
+                Responder = (RequestContext c, ref bool skip) => new WrapperView("good"),
+                Pattern = new FakePatternMatcher("/foo/1234", parameters),
+                ParameterValidators = goodvalidators
+            };
+            router.AddRoute(good);
+			var context=new FakeServerContext();
+			context.RequestUrl=new Uri("http://meh.com/foo/1234");
+			context.HttpMethod="get";
+			Assert.IsTrue(router.Execute(context));
+        }
+        [Test]
+        public void Execute_ChecksValidatorsForBadParameters()
+        {
+			var router=new Router();
+            var parameters = new ParameterDictionary();
+            parameters.Add("id", "1234");
+            var badvalidators = new List<RouteParamsMustMatch>();
+            badvalidators.Add(x => x["id"] == "xxx");
+			var bad=new Route
+			{
+				Responder=(RequestContext c, ref bool skip) => new WrapperView("bad"),
+				Pattern=new FakePatternMatcher("/foo/1234", parameters),
+                ParameterValidators=badvalidators
+			};
+			router.AddRoute(bad);
+			var context=new FakeServerContext();
+			context.RequestUrl=new Uri("http://meh.com/foo/1234");
+			context.HttpMethod="get";
+			Assert.IsFalse(router.Execute(context));
+        }
 		[Test]
 		public void Execute_PopulatesHttpController()
 		{

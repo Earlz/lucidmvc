@@ -91,6 +91,21 @@ namespace Earlz.LucidMVC
 			return new ControllerBox<T, object>(this, creator, root);
 		}
 
+        bool CheckValidators(IEnumerable<RouteParamsMustMatch> validators, ParameterDictionary d)
+        {
+            if (validators == null)
+            {
+                return true; //exit early if possible
+            }
+            foreach(var v in validators)
+            {
+                if(v(d) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
 		public virtual bool Execute(IServerContext context)
 		{
@@ -101,7 +116,8 @@ namespace Earlz.LucidMVC
 				var allowed=route.AllowedMethods ?? defaultallowed;
 				var match=route.Pattern.Match(context.RequestUrl.AbsolutePath);
 				if(match.IsMatch &&
-				   allowed.Any(x=>x.ToLower()==context.HttpMethod.ToLower()))
+				   allowed.Any(x=>x.ToLower()==context.HttpMethod.ToLower()) &&
+                   CheckValidators(route.ParameterValidators, match.Params))
 				{
 					var request=new RequestContext(context, this, route, match.Params);
 					bool skip=false;

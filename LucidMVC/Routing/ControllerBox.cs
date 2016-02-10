@@ -223,12 +223,14 @@ namespace Earlz.LucidMVC
 			{
 				Current.AllowedMethods=new List<string>();
 			}
+
 			var list=Current.AllowedMethods as ICollection<string>;
 
 			if(list==null && list.IsReadOnly)
 			{
 				throw new NotSupportedException("To use ControllerBox.Allows, the exact type of AllowedMethods must implement ICollection<string> and it must not be readonly");
 			}
+
 			if(!list.Contains(method))
 			{
 				list.Add(method);
@@ -253,14 +255,34 @@ namespace Earlz.LucidMVC
 		}
 
 
-		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.WithRouteParamLike(string param, Func<string, bool> match)
-		{
-			throw new NotImplementedException();
-		}
+        IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.WithRouteParamLike(string param, Func<string, bool> match)
+        {
+            return ((IControllerRoute<T, MODEL>)this).WithRouteParamsLike(x =>
+               {
+                   if (!x.ContainsKey(param) || x[param] == null)
+                   {
+                       return false;
+                   }
+                   return match(x[param]);
+               });
+        }
 
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.WithRouteParamsLike(RouteParamsMustMatch matcher)
 		{
-			throw new NotImplementedException();
+            if(Current.ParameterValidators == null)
+            {
+                Current.ParameterValidators = new List<RouteParamsMustMatch>();
+            }
+            var validators = Current.ParameterValidators as ICollection<RouteParamsMustMatch>;
+			if(validators==null && validators.IsReadOnly)
+			{
+				throw new NotSupportedException("To use ControllerBox.WithRouteParamsLike, the exact type of ParameterValidators must implement ICollection<string> and it must not be readonly");
+			}
+            if (!validators.Contains(matcher))
+            {
+                validators.Add(matcher);
+            }
+            return this;
 		}
 
 		IControllerRoute<T, MODEL> IControllerRoute<T, MODEL>.AlsoExecute(Action<T> action)

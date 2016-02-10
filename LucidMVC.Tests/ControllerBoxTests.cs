@@ -146,6 +146,35 @@ namespace Earlz.LucidMVC.Tests
 			}
 			Assert.IsTrue(threw);
 		}
+        [Test]
+        public void WithRouteParamLike_ThrowsForBadType()
+        {
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			var tmp=ctrl.Handles("/foo");
+			ctrl.Current.ParameterValidators=new ReadOnlyCollection<RouteParamsMustMatch>(new List<RouteParamsMustMatch>());
+			bool threw=false;
+			try
+			{
+                tmp.WithRouteParamLike("x", (x) => true);
+			}
+			catch(NotSupportedException e)
+			{
+				threw=true;
+			}
+			Assert.IsTrue(threw);
+        }
+        [Test]
+        public void WithRouteParamLike_AddsValidatorToRoute()
+        {
+			var r=new Router();
+			var ctrl=r.Controller<TestController>(null);
+			var tmp=ctrl.Handles("/foo/{id}");
+            tmp.WithRouteParamLike("id", (x) => { int tmpout; return int.TryParse(x, out tmpout); });
+            var p = new ParameterDictionary();
+            p.Add("id", "123");
+            Assert.IsTrue(r.GetRoutes()[0].ParameterValidators.First()(p));
+        }
 		[Test]
 		public void RequiresAuthentication_AddsAuth()
 		{
