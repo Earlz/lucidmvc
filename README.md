@@ -36,7 +36,6 @@ There are a few things I see some people "like" that aren't in LucidMVC. This is
 * Automatic class discovery and method names mapping to route names(ie, magic)
 * Strict MVC enforcement. I make it easy to adhere to, but if you need to do something hacky, I don't actively prevent you from doing it
 * GPL or LGPL licensed code. Everything here will be BSD or similar license. Likewise, if you contribute, your code must be under BSD or compatible license
-* Asynchronize all the things! (see also: WinRT) 
 * XML configuration. This I loathe almost more than magic
 
 ## Some Code
@@ -52,7 +51,6 @@ A barebones example using only the routing and HTTP controller component
 			router=new Router();
 			var blog=router.Controller(ctx => new BlogController(ctx));
 			blog.Handles("/blog/{id}").With(ctrl => ctrl.View());
-			Routing.AddRoute("/blog/{id}", (r, f) => new TextHandler("ID is "+r["id"]).Get());
 		}
 		protected virtual void Application_BeginRequest (Object sender, EventArgs e)
 		{
@@ -60,6 +58,34 @@ A barebones example using only the routing and HTTP controller component
 		}
 
 Notice that everything but the URL pattern is statically typed and non-magical, yet concise. 
+
+Another cool thing is the view engine, for instance:
+
+	{@ Title as string; @}
+	<html><head>
+	<title>{=Title=}</title>
+	<body>
+	Hey check out the dynamic title
+	</body>
+	</html>
+
+This will generate a plain class at compile time. If you change the `{=Title=}` bit and try to compile it, you'll get an error because that variable isn't found. Because all of the hardwork is done at compile time, this also means performance is very good. Basically all it boils down to is either a bunch of string or stream appends (depending on settings). 
+
+And using this view from a Controller method is equally as easy:
+
+	ILucidView GetWidget(string title)
+	{
+	    return new WidgetView(){Title=title};
+	}
+
+No string dictionaries to keep track of or runtime errors caused by typos to worry about. 
+
+And finally, just to reiterate, to actually use that controller method you might have
+
+    var widget=router.Controller(ctx => new WidgetController(ctx));
+    widget.Handles("/blog/{title}").With(ctrl => ctrl.View(ctrl.RouteParmas["title"]));
+
+Short and concise without a ton of magic. And if the `"title"` string bothers you, there is also an option for automatically mapping route parameters to model objects. This is I believe the only actual use of reflection in this project, and it's not really avoidable, nor unintuitive. 
 
 ## Current Status
 
